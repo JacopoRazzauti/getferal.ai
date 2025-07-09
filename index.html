@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feral AI Documentation</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -24,12 +26,13 @@
     <!-- Your React App component -->
     <script type="module">
         // Import the App component from your App.js file
+        // Ensure App.js is in the same directory as index.html
         import App from './App.js';
 
-        // Get the root DOM element
+        // Get the root DOM element where the React app will be mounted
         const rootElement = document.getElementById('root');
 
-        // Create a React root and render your App component
+        // Create a React root and render your App component into it
         const root = ReactDOM.createRoot(rootElement);
         root.render(
             <React.StrictMode>
