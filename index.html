@@ -11,22 +11,15 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-        }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
-    <script type="module">
-        import React from 'https://esm.sh/react@18.2.0';
-        import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
-        import App from './App.js'; // Assuming App.js is in the same directory
+<script type="module">
+          import React from 'https://esm.sh/react@18.2.0';
+          import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
+          import App from './App.js'; // Assuming App.js is in the same directory
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(
-            <React.StrictMode>
-                <App />
-            </React.StrictMode>
-        );
-    </script>
-</body>
-</html>
+          const root = ReactDOM.createRoot(document.getElementById('root'));
+          root.render(
+              <React.StrictMode>
+                  <App />
+              </React.StrictMode>
+          );
+      </script>

@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
 
 // Main App Component
 function App() {
@@ -12,20 +15,19 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 font-inter text-gray-800 antialiased flex flex-col">
+    <div className="min-h-screen bg-gray-50 font-inter text-gray-800 antialiased flex flex-col">
       {/* Tailwind CSS CDN - IMPORTANT: In a real React app, Tailwind would be set up via npm,
           but for this self-contained example, we include the CDN for immediate preview. */}
-      <script src="https://cdn.tailwindcss.com"></script>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
+      
       {/* Header */}
-      <header className="bg-white shadow-sm py-4 px-6 md:px-8 flex flex-col items-center justify-center sticky top-0 z-50">
-        <div className="flex items-center justify-center w-full mb-2 md:mb-0">
-          <h1 className="text-3xl font-bold text-gray-900">getferal.ai</h1>
+      <header className="bg-white shadow-sm py-4 px-6 md:px-8 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center">
+          <h1 className="text-2xl font-bold text-indigo-700">getferal.ai</h1>
+          <span className="ml-2 text-sm text-gray-500">Documentation</span>
         </div>
         {/* Mobile menu button */}
         <button
-          className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 absolute top-4 left-4"
+          className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           aria-label="Toggle navigation"
         >
@@ -38,7 +40,7 @@ function App() {
           </svg>
         </button>
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-6 mt-4">
+        <nav className="hidden md:flex space-x-6">
           <NavLink section="home" current={activeSection} onClick={handleNavClick}>Home</NavLink>
           <NavLink section="getting-started" current={activeSection} onClick={handleNavClick}>Getting Started</NavLink>
           <NavLink section="api-reference" current={activeSection} onClick={handleNavClick}>API Reference</NavLink>
@@ -86,11 +88,11 @@ function App() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-6 px-8 text-center text-sm">
+      <footer className="bg-gray-800 text-white py-6 px-8 text-center text-sm">
         <p>&copy; {new Date().getFullYear()} Feral AI. All rights reserved.</p>
         <p className="mt-2">
-          <a href="#" className="text-gray-400 hover:underline mx-2">Privacy Policy</a> |
-          <a href="#" className="text-gray-400 hover:underline mx-2">Terms of Service</a>
+          <a href="#" className="text-indigo-300 hover:underline mx-2">Privacy Policy</a> |
+          <a href="#" className="text-indigo-300 hover:underline mx-2">Terms of Service</a>
         </p>
       </footer>
     </div>
@@ -102,9 +104,9 @@ const NavLink = ({ section, current, onClick, children }) => (
   <button
     className={`px-3 py-2 rounded-md text-sm font-medium
       ${current === section
-        ? 'bg-gray-200 text-gray-900'
+        ? 'bg-indigo-100 text-indigo-700'
         : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-      } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300`}
+      } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
     onClick={() => onClick(section)}
   >
     {children}
@@ -116,9 +118,9 @@ const SidebarLink = ({ section, current, onClick, children }) => (
   <button
     className={`block w-full text-left px-3 py-2 rounded-md text-sm
       ${current === section
-        ? 'bg-gray-200 text-gray-900 font-semibold'
+        ? 'bg-indigo-50 text-indigo-700 font-semibold'
         : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-      } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300`}
+      } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
     onClick={() => onClick(section)}
   >
     {children}
@@ -140,7 +142,7 @@ const HomeSection = () => (
       Explore our interactive tools to ensure your datasets are perfectly structured for optimal performance.
     </p>
     <div className="mt-6 flex flex-wrap gap-4">
-      <button className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+      <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
         Get Started
       </button>
       <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
@@ -165,7 +167,7 @@ const GettingStartedSection = () => (
     </ul>
     <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Installation</h3>
     <p className="text-gray-700 leading-relaxed">
-      Please refer to the <a href="#" onClick={() => window.alert('Navigating to Installation section')} className="text-gray-600 hover:underline">Installation</a> section for detailed instructions.
+      Please refer to the <a href="#" onClick={() => window.alert('Navigating to Installation section')} className="text-indigo-600 hover:underline">Installation</a> section for detailed instructions.
     </p>
   </section>
 );
@@ -210,7 +212,7 @@ const DataPreparationSection = () => (
       </code></pre>
     </div>
     <p className="text-gray-700 leading-relaxed mt-4">
-      For a detailed check of your dataset's compliance, please use the <a href="#" onClick={() => window.alert('Navigating to Dataset Validator')} className="text-gray-600 hover:underline">Dataset Validator</a> tool.
+      For a detailed check of your dataset's compliance, please use the <a href="#" onClick={() => window.alert('Navigating to Dataset Validator')} className="text-indigo-600 hover:underline">Dataset Validator</a> tool.
     </p>
   </section>
 );
@@ -226,7 +228,7 @@ const RunningFeralSection = () => (
       <pre><code>feral-ai process --config config.yaml --output results/</code></pre>
     </div>
     <p className="text-gray-700 leading-relaxed mt-4">
-      Refer to the <a href="#" onClick={() => window.alert('Navigating to API Reference')} className="text-gray-600 hover:underline">API Reference</a> for all available command-line arguments and configuration options.
+      Refer to the <a href="#" onClick={() => window.alert('Navigating to API Reference')} className="text-indigo-600 hover:underline">API Reference</a> for all available command-line arguments and configuration options.
     </p>
   </section>
 );
@@ -268,7 +270,7 @@ const InteractiveToolsSection = () => (
       Use the Dataset Validator to ensure your files are correctly structured before running the algorithm.
     </p>
     <button
-      className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
+      className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
       onClick={() => window.alert('Navigating to Dataset Validator')}
     >
       Go to Dataset Validator
@@ -391,8 +393,8 @@ const DatasetValidatorSection = () => {
             file:mr-4 file:py-2 file:px-4
             file:rounded-full file:border-0
             file:text-sm file:font-semibold
-            file:bg-gray-200 file:text-gray-700
-            hover:file:bg-gray-300"
+            file:bg-indigo-50 file:text-indigo-700
+            hover:file:bg-indigo-100"
         />
         {file && (
           <p className="mt-2 text-sm text-gray-600">Selected file: <span className="font-medium">{file.name}</span></p>
@@ -402,7 +404,7 @@ const DatasetValidatorSection = () => {
       <button
         onClick={validateDataset}
         disabled={!file || isLoading}
-        className={`bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md
+        className={`bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-md
           transition duration-300 ease-in-out transform hover:-translate-y-1
           ${(!file || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
@@ -420,11 +422,11 @@ const DatasetValidatorSection = () => {
         <div className={`mt-6 p-6 rounded-lg shadow-inner
           ${validationResult.status === 'success' ? 'bg-green-50 border-green-400' :
              validationResult.status === 'warning' ? 'bg-yellow-50 border-yellow-400' :
-             'bg-gray-50 border-gray-400'} border-l-4`}> {/* Changed info to gray */}
+             'bg-blue-50 border-blue-400'} border-l-4`}>
           <h3 className={`text-xl font-bold mb-2
             ${validationResult.status === 'success' ? 'text-green-700' :
                validationResult.status === 'warning' ? 'text-yellow-700' :
-               'text-gray-700'}`}> {/* Changed info to gray */}
+               'text-blue-700'}`}>
             Validation {validationResult.status === 'success' ? 'Successful!' :
                         validationResult.status === 'warning' ? 'with Warnings' :
                         'Information'}
@@ -461,14 +463,14 @@ const ExamplesSection = () => (
         <p className="text-gray-600 text-sm">
           Example demonstrating tracking and segmenting locomotion patterns in rodents.
         </p>
-        <button className="mt-4 text-gray-600 hover:underline text-sm">View Example</button>
+        <button className="mt-4 text-indigo-600 hover:underline text-sm">View Example</button>
       </div>
       <div className="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
         <h3 className="text-xl font-semibold text-gray-800 mb-2">Fish Schooling Behavior</h3>
         <p className="text-gray-600 text-sm">
           Analyzing collective behavior and interactions in fish schools.
         </p>
-        <button className="mt-4 text-gray-600 hover:underline text-sm">View Example</button>
+        <button className="mt-4 text-indigo-600 hover:underline text-sm">View Example</button>
       </div>
     </div>
   </section>
