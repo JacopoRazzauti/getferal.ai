@@ -34,13 +34,15 @@
     <div id="root"></div>
 
     <!-- React and ReactDOM CDNs -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.client.production.min.js"></script>
+    <!-- Using React 17 compatible rendering to avoid React 18 client bundle CORS issues -->
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 
     <script type="module">
         const { useState, useEffect } = React;
-        const { createRoot } = ReactDOM;
+        // For React 17 compatible rendering, ReactDOM is globally available
+        // No need to destructure createRoot as we'll use ReactDOM.render
+        // const { createRoot } = ReactDOM; // Removed this line
 
         // Main App Component
         function App() {
@@ -544,10 +546,9 @@
             </section>
         );
 
-        // Render the App component
+        // Render the App component using React 17 compatible ReactDOM.render
         const container = document.getElementById('root');
-        const root = createRoot(container);
-        root.render(<App />);
+        ReactDOM.render(<App />, container);
     </script>
 </body>
 </html>
