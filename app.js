@@ -244,7 +244,7 @@ const ApiReferenceSection = () => (
     </p>
     <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
       <pre><code>
-        def process_video(video_path: str, config: dict) -> dict:
+        def process_video(video_path: str, config: dict) -&gt; dict:
             """
             Processes a video and returns behavioral segmentation data.
 
