@@ -37,12 +37,14 @@
     <!-- Using React 17 compatible rendering to avoid React 18 client bundle CORS issues -->
     <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <!-- Babel Standalone for JSX transpilation in the browser -->
+    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
 
-    <script type="module">
+    <!-- Changed type to text/babel for JSX transpilation -->
+    <script type="text/babel">
         const { useState, useEffect } = React;
         // For React 17 compatible rendering, ReactDOM is globally available
         // No need to destructure createRoot as we'll use ReactDOM.render
-        // const { createRoot } = ReactDOM; // Removed this line
 
         // Main App Component
         function App() {
@@ -104,7 +106,7 @@
                                 <SidebarLink section="api-reference" current={activeSection} onClick={handleNavClick}>API Reference</SidebarLink>
                                 <SidebarLink section="interactive-tools" current={activeSection} onClick={handleNavClick}>Interactive Tools</SidebarLink>
                                 <SidebarLink section="dataset-validator" current={activeSection} onClick={handleNavClick}>Dataset Validator</SidebarLink>
-                                <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</SidebarLink>
+                                <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</NavLink>
                                 <SidebarLink section="faq" current={activeSection} onClick={handleNavClick}>FAQ</SidebarLink>
                             </nav>
                         </aside>
