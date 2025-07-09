@@ -34,27 +34,23 @@
     <div id="root"></div>
 
     <!-- React and ReactDOM CDNs -->
-    <!-- Using React 17 compatible rendering to avoid React 18 client bundle CORS issues -->
     <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <!-- Babel Standalone for JSX transpilation in the browser -->
     <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
 
-    <!-- Changed type to text/babel for JSX transpilation -->
     <script type="text/babel">
         const { useState, useEffect } = React;
-        // For React 17 compatible rendering, ReactDOM is globally available
-        // No need to destructure createRoot as we'll use ReactDOM.render
 
         // Main App Component
         function App() {
-            const [activeSection, setActiveSection] = useState('home'); // State to manage active section for navigation
-            const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for mobile sidebar visibility
+            const [activeSection, setActiveSection] = useState('home');
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
             // Function to handle navigation clicks
             const handleNavClick = (section) => {
                 setActiveSection(section);
-                setIsSidebarOpen(false); // Close sidebar on navigation click
+                setIsSidebarOpen(false);
             };
 
             return (
@@ -106,7 +102,7 @@
                                 <SidebarLink section="api-reference" current={activeSection} onClick={handleNavClick}>API Reference</SidebarLink>
                                 <SidebarLink section="interactive-tools" current={activeSection} onClick={handleNavClick}>Interactive Tools</SidebarLink>
                                 <SidebarLink section="dataset-validator" current={activeSection} onClick={handleNavClick}>Dataset Validator</SidebarLink>
-                                <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</NavLink>
+                                <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</SidebarLink>
                                 <SidebarLink section="faq" current={activeSection} onClick={handleNavClick}>FAQ</SidebarLink>
                             </nav>
                         </aside>
@@ -125,6 +121,14 @@
                             {activeSection === 'faq' && <FAQSection />}
                         </main>
                     </div>
+
+                    {/* Overlay for mobile sidebar */}
+                    {isSidebarOpen && (
+                        <div 
+                            className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+                            onClick={() => setIsSidebarOpen(false)}
+                        ></div>
+                    )}
 
                     {/* Footer */}
                     <footer className="bg-gray-900 text-white py-6 px-8 text-center text-sm">
@@ -166,7 +170,7 @@
             </button>
         );
 
-        // --- Content Sections (Placeholder Components) ---
+        // --- Content Sections ---
 
         const HomeSection = () => (
             <section className="bg-white p-8 rounded-lg shadow-md mb-8">
@@ -181,10 +185,16 @@
                     Explore our interactive tools to ensure your datasets are perfectly structured for optimal performance.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-4">
-                    <button className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    <button 
+                        onClick={() => handleNavClick('getting-started')}
+                        className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
+                    >
                         Get Started
                     </button>
-                    <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    <button 
+                        onClick={() => handleNavClick('examples')}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
+                    >
                         View Examples
                     </button>
                 </div>
@@ -206,7 +216,14 @@
                 </ul>
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Installation</h3>
                 <p className="text-gray-700 leading-relaxed">
-                    Please refer to the <a href="#" onClick={() => console.log('Navigating to Installation section')} className="text-gray-600 hover:underline">Installation</a> section for detailed instructions.
+                    Please refer to the{' '}
+                    <button 
+                        onClick={() => handleNavClick('installation')} 
+                        className="text-blue-600 hover:underline font-medium"
+                    >
+                        Installation
+                    </button>{' '}
+                    section for detailed instructions.
                 </p>
             </section>
         );
@@ -223,7 +240,9 @@
                 </div>
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">From source</h3>
                 <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>git clone https://github.com/your-repo/feral-ai.git<br/>cd feral-ai<br/>pip install -e .</code></pre>
+                    <pre><code>{`git clone https://github.com/your-repo/feral-ai.git
+cd feral-ai
+pip install -e .`}</code></pre>
                 </div>
             </section>
         );
@@ -240,18 +259,23 @@
                     Your project directory should generally follow this structure:
                 </p>
                 <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>
-                        my_project/<br/>
-                        ├── videos/<br/>
-                        │   ├── video1.mp4<br/>
-                        │   └── video2.avi<br/>
-                        └── annotations/<br/>
-                            ├── video1_annotations.csv<br/>
-                            └── video2_annotations.json
-                    </code></pre>
+                    <pre><code>{`my_project/
+├── videos/
+│   ├── video1.mp4
+│   └── video2.avi
+└── annotations/
+    ├── video1_annotations.csv
+    └── video2_annotations.json`}</code></pre>
                 </div>
                 <p className="text-gray-700 leading-relaxed mt-4">
-                    For a detailed check of your dataset's compliance, please use the <a href="#" onClick={() => console.log('Navigating to Dataset Validator')} className="text-gray-600 hover:underline">Dataset Validator</a> tool.
+                    For a detailed check of your dataset's compliance, please use the{' '}
+                    <button 
+                        onClick={() => handleNavClick('dataset-validator')} 
+                        className="text-blue-600 hover:underline font-medium"
+                    >
+                        Dataset Validator
+                    </button>{' '}
+                    tool.
                 </p>
             </section>
         );
@@ -267,7 +291,14 @@
                     <pre><code>feral-ai process --config config.yaml --output results/</code></pre>
                 </div>
                 <p className="text-gray-700 leading-relaxed mt-4">
-                    Refer to the <a href="#" onClick={() => console.log('Navigating to API Reference')} className="text-gray-600 hover:underline">API Reference</a> for all available command-line arguments and configuration options.
+                    Refer to the{' '}
+                    <button 
+                        onClick={() => handleNavClick('api-reference')} 
+                        className="text-blue-600 hover:underline font-medium"
+                    >
+                        API Reference
+                    </button>{' '}
+                    for all available command-line arguments and configuration options.
                 </p>
             </section>
         );
@@ -284,19 +315,17 @@
                     Processes a single video file to extract behavioral segments.
                 </p>
                 <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>
-                        def process_video(video_path: str, config: dict) -&gt; dict:
-                            """
-                            Processes a video and returns behavioral segmentation data.
+                    <pre><code>{`def process_video(video_path: str, config: dict) -> dict:
+    """
+    Processes a video and returns behavioral segmentation data.
 
-                            Args:
-                                video_path (str): Path to the input video file.
-                                config (dict): Configuration dictionary for the algorithm.
+    Args:
+        video_path (str): Path to the input video file.
+        config (dict): Configuration dictionary for the algorithm.
 
-                            Returns:
-                                dict: A dictionary containing segmentation results.
-                            """
-                    </code></pre>
+    Returns:
+        dict: A dictionary containing segmentation results.
+    """`}</code></pre>
                 </div>
             </section>
         );
@@ -310,14 +339,14 @@
                 </p>
                 <button
                     className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
-                    onClick={() => console.log('Navigating to Dataset Validator')}
+                    onClick={() => handleNavClick('dataset-validator')}
                 >
                     Go to Dataset Validator
                 </button>
             </section>
         );
 
-        // DatasetValidatorSection - This is where your interactive widget will go
+        // DatasetValidatorSection - Interactive widget
         const DatasetValidatorSection = () => {
             const [file, setFile] = useState(null);
             const [validationResult, setValidationResult] = useState(null);
@@ -340,11 +369,7 @@
                 setError(null);
                 setValidationResult(null);
 
-                // Simulate API call to a backend or client-side processing
-                // In a real scenario, you'd send the file to your backend for validation
-                // or process it client-side if feasible (e.g., parsing JSON/CSV).
                 try {
-                    // Example: Read file as text and simulate validation
                     const reader = new FileReader();
                     reader.onload = async (e) => {
                         const fileContent = e.target.result;
@@ -461,13 +486,16 @@
                         <div className={`mt-6 p-6 rounded-lg shadow-inner
                             ${validationResult.status === 'success' ? 'bg-green-50 border-green-400' :
                                 validationResult.status === 'warning' ? 'bg-yellow-50 border-yellow-400' :
-                                'bg-gray-50 border-gray-400'} border-l-4`}> {/* Changed info to gray */}
+                                validationResult.status === 'error' ? 'bg-red-50 border-red-400' :
+                                'bg-gray-50 border-gray-400'} border-l-4`}>
                             <h3 className={`text-xl font-bold mb-2
                                 ${validationResult.status === 'success' ? 'text-green-700' :
                                     validationResult.status === 'warning' ? 'text-yellow-700' :
-                                    'text-gray-700'}`}> {/* Changed info to gray */}
+                                    validationResult.status === 'error' ? 'text-red-700' :
+                                    'text-gray-700'}`}>
                                 Validation {validationResult.status === 'success' ? 'Successful!' :
                                             validationResult.status === 'warning' ? 'with Warnings' :
+                                            validationResult.status === 'error' ? 'Failed' :
                                             'Information'}
                             </h3>
                             <p className="text-gray-800 mb-2">{validationResult.message}</p>
@@ -488,7 +516,6 @@
             );
         };
 
-
         const ExamplesSection = () => (
             <section className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Examples</h2>
@@ -502,14 +529,14 @@
                         <p className="text-gray-600 text-sm">
                             Example demonstrating tracking and segmenting locomotion patterns in rodents.
                         </p>
-                        <button className="mt-4 text-gray-600 hover:underline text-sm">View Example</button>
+                        <button className="mt-4 text-blue-600 hover:underline text-sm">View Example</button>
                     </div>
                     <div className="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
                         <h3 className="text-xl font-semibold text-gray-800 mb-2">Fish Schooling Behavior</h3>
                         <p className="text-gray-600 text-sm">
                             Analyzing collective behavior and interactions in fish schools.
                         </p>
-                        <button className="mt-4 text-gray-600 hover:underline text-sm">View Example</button>
+                        <button className="mt-4 text-blue-600 hover:underline text-sm">View Example</button>
                     </div>
                 </div>
             </section>
@@ -548,7 +575,7 @@
             </section>
         );
 
-        // Render the App component using React 17 compatible ReactDOM.render
+        // Render the App component
         const container = document.getElementById('root');
         ReactDOM.render(<App />, container);
     </script>
