@@ -13,11 +13,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 font-inter text-gray-800 antialiased flex flex-col">
-      {/* Tailwind CSS CDN - IMPORTANT: In a real React app, Tailwind would be set up via npm,
-          but for this self-contained example, we include the CDN for immediate preview. */}
-      <script src="https://cdn.tailwindcss.com"></script>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
       {/* Header */}
       <header className="bg-white shadow-sm py-4 px-6 md:px-8 flex flex-col items-center justify-center sticky top-0 z-50">
         <div className="flex items-center justify-center w-full mb-2 md:mb-0">
