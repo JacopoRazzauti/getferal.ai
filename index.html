@@ -40,14 +40,12 @@
 
         // Main App Component
         function App() {
-            const [activeSection, setActiveSection] = useState('home'); // State to manage active section for navigation
-            const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for mobile sidebar visibility
+            const [activeSection, setActiveSection] = useState('home');
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-            // Function to handle navigation clicks
             const handleNavClick = (section) => {
                 setActiveSection(section);
-                setIsSidebarOpen(false); // Close sidebar on navigation click
-                // Optional: Scroll to top of the section for better UX
+                setIsSidebarOpen(false);
                 document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' });
             };
 
@@ -55,15 +53,13 @@
                 <div className="min-h-screen bg-gray-100 font-inter text-gray-800 antialiased flex flex-col">
                     {/* Header */}
                     <header className="bg-white shadow-sm py-4 px-6 md:px-8 flex flex-col md:flex-row items-center justify-between sticky top-0 z-50">
-                        {/* Logo and Title Container */}
                         <div className="flex items-center justify-center md:justify-start w-full md:w-auto relative mb-2 md:mb-0">
-                            {/* Mobile menu button (positioned absolutely) */}
                             <button
                                 className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 absolute left-0"
                                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                                 aria-label="Toggle navigation"
                             >
-                                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     {isSidebarOpen ? (
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                                     ) : (
@@ -71,17 +67,13 @@
                                     )}
                                 </svg>
                             </button>
-
-                            {/* Logo: Adjust src path if your logo is in a subfolder like /images/feral-logo.png */}
                             <img
                                 src="./src/images/feral-logo.png"
                                 alt="Feral AI Logo"
-                                className="h-8 w-8 mr-2 ml-10 md:ml-0" // Small size, margin right, and left margin for mobile button space
+                                className="h-8 w-8 mr-2 ml-10 md:ml-0"
                             />
                             <h1 className="text-3xl font-bold text-gray-900">FERAL</h1>
                         </div>
-
-                        {/* Desktop Navigation */}
                         <nav className="hidden md:flex space-x-6 mt-4 md:mt-0">
                             <NavLink section="home" current={activeSection} onClick={handleNavClick}>Home</NavLink>
                             <NavLink section="getting-started" current={activeSection} onClick={handleNavClick}>Getting Started</NavLink>
@@ -93,12 +85,8 @@
 
                     {/* Main Content Area */}
                     <div className="flex flex-1 overflow-hidden">
-                        {/* Sidebar Navigation */}
-                        <aside
-                            className={`fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-                                md:relative md:translate-x-0 w-64 bg-white shadow-lg p-6 overflow-y-auto
-                                transition-transform duration-300 ease-in-out z-40 md:z-auto`}
-                        >
+                        {/* Sidebar */}
+                        <aside className={`fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 w-64 bg-white shadow-lg p-6 overflow-y-auto transition-transform duration-300 ease-in-out z-40 md:z-auto`}>
                             <h2 className="text-lg font-semibold text-gray-900 mb-4">Documentation</h2>
                             <nav className="space-y-2">
                                 <SidebarLink section="home" current={activeSection} onClick={handleNavClick}>Introduction</SidebarLink>
@@ -131,10 +119,7 @@
 
                     {/* Overlay for mobile sidebar */}
                     {isSidebarOpen && (
-                        <div
-                            className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
-                            onClick={() => setIsSidebarOpen(false)}
-                        ></div>
+                        <div className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>
                     )}
 
                     {/* Footer */}
@@ -149,36 +134,26 @@
             );
         }
 
-        // NavLink Component for Desktop Navigation
+        // Navigation Components
         const NavLink = ({ section, current, onClick, children }) => (
             <button
-                className={`px-3 py-2 rounded-md text-sm font-medium
-                    ${current === section
-                        ? 'bg-gray-200 text-gray-900'
-                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                    } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300`}
+                className={`px-3 py-2 rounded-md text-sm font-medium ${current === section ? 'bg-gray-200 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300`}
                 onClick={() => onClick(section)}
             >
                 {children}
             </button>
         );
 
-        // SidebarLink Component for Sidebar Navigation
         const SidebarLink = ({ section, current, onClick, children }) => (
             <button
-                className={`block w-full text-left px-3 py-2 rounded-md text-sm
-                    ${current === section
-                        ? 'bg-gray-200 text-gray-900 font-semibold'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                    } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300`}
+                className={`block w-full text-left px-3 py-2 rounded-md text-sm ${current === section ? 'bg-gray-200 text-gray-900 font-semibold' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300`}
                 onClick={() => onClick(section)}
             >
                 {children}
             </button>
         );
 
-        // --- Content Sections ---
-
+        // Content Sections
         const HomeSection = ({ handleNavClick }) => (
             <section id="home" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Feral AI Documentation</h2>
@@ -211,27 +186,269 @@
         const GettingStartedSection = ({ handleNavClick }) => (
             <section id="getting-started" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Getting Started</h2>
-                <p className="text-gray-700 leading-relaxed">
-                    This section will walk you through the initial steps to get Feral AI up and running.
-                    You'll learn about prerequisites, installation, and a basic workflow.
+                <p className="text-gray-700 leading-relaxed mb-6">
+                    FERAL offers three different ways to run behavioral analysis, each suited to different needs and technical expertise levels. 
+                    Choose the option that best fits your requirements and available resources.
                 </p>
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Prerequisites</h3>
-                <ul className="list-disc list-inside text-gray-600 ml-4 space-y-2">
-                    <li>Python 3.8+</li>
-                    <li>NVIDIA GPU (recommended for performance)</li>
-                    <li>Basic understanding of command-line interface</li>
-                </ul>
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Installation</h3>
-                <p className="text-gray-700 leading-relaxed">
-                    Please refer to the{' '}
-                    <button
-                        onClick={() => handleNavClick('installation')}
-                        className="text-blue-600 hover:underline font-medium"
-                    >
-                        Installation
-                    </button>{' '}
-                    section for detailed instructions.
-                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    {/* Option 1: Local Installation */}
+                    <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <div className="flex items-center mb-4">
+                            <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3">1</div>
+                            <h3 className="text-xl font-semibold text-blue-900">Local Installation</h3>
+                        </div>
+                        <p className="text-blue-800 text-sm mb-4">
+                            Install and run FERAL directly on your computer. Best for users with dedicated hardware and advanced technical skills.
+                        </p>
+                        <div className="space-y-2 text-sm">
+                            <div className="flex items-center text-blue-700">
+                                <span className="w-4 h-4 mr-2">💻</span>
+                                <span>Full control over environment</span>
+                            </div>
+                            <div className="flex items-center text-blue-700">
+                                <span className="w-4 h-4 mr-2">🔒</span>
+                                <span>Data stays on your machine</span>
+                            </div>
+                            <div className="flex items-center text-blue-700">
+                                <span className="w-4 h-4 mr-2">⚡</span>
+                                <span>No usage limits</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Option 2: Google Colab */}
+                    <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
+                        <div className="flex items-center mb-4">
+                            <div className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold mr-3">2</div>
+                            <h3 className="text-xl font-semibold text-orange-900">Google Colab</h3>
+                        </div>
+                        <p className="text-orange-800 text-sm mb-4">
+                            Run FERAL in Google Colab notebooks with free GPU access. Perfect for getting started or small datasets.
+                        </p>
+                        <div className="space-y-2 text-sm">
+                            <div className="flex items-center text-orange-700">
+                                <span className="w-4 h-4 mr-2">🆓</span>
+                                <span>Free GPU access</span>
+                            </div>
+                            <div className="flex items-center text-orange-700">
+                                <span className="w-4 h-4 mr-2">☁️</span>
+                                <span>No local installation needed</span>
+                            </div>
+                            <div className="flex items-center text-orange-700">
+                                <span className="w-4 h-4 mr-2">📚</span>
+                                <span>Easy to share and collaborate</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Option 3: RunPod (Recommended) */}
+                    <div className="bg-green-50 p-6 rounded-lg border border-green-200 relative">
+                        <div className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                            RECOMMENDED
+                        </div>
+                        <div className="flex items-center mb-4">
+                            <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-bold mr-3">3</div>
+                            <h3 className="text-xl font-semibold text-green-900">RunPod</h3>
+                        </div>
+                        <p className="text-green-800 text-sm mb-4">
+                            Professional cloud GPU platform optimized for deep learning. Best performance and reliability for production use.
+                        </p>
+                        <div className="space-y-2 text-sm">
+                            <div className="flex items-center text-green-700">
+                                <span className="w-4 h-4 mr-2">🚀</span>
+                                <span>High-performance GPUs</span>
+                            </div>
+                            <div className="flex items-center text-green-700">
+                                <span className="w-4 h-4 mr-2">📊</span>
+                                <span>Persistent storage</span>
+                            </div>
+                            <div className="flex items-center text-green-700">
+                                <span className="w-4 h-4 mr-2">🔧</span>
+                                <span>Pre-configured environments</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Detailed Instructions */}
+                <div className="space-y-8">
+                    {/* Local Installation Details */}
+                    <div className="border border-blue-200 rounded-lg p-6">
+                        <h3 className="text-2xl font-semibold text-blue-900 mb-4">🖥️ Option 1: Local Installation</h3>
+                        
+                        <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                            <h4 className="font-semibold text-blue-800 mb-2">Prerequisites</h4>
+                            <ul className="list-disc list-inside text-blue-700 space-y-1 text-sm">
+                                <li>NVIDIA GPU with CUDA support (GTX 1060 or better recommended)</li>
+                                <li>CUDA 11.8 or higher installed</li>
+                                <li>Python 3.8-3.11</li>
+                                <li>Anaconda or Miniconda</li>
+                                <li>At least 8GB RAM (16GB recommended)</li>
+                            </ul>
+                        </div>
+
+                        <h4 className="font-semibold text-gray-800 mb-3">Installation Steps</h4>
+                        <div className="space-y-3">
+                            <div className="bg-gray-100 p-3 rounded-md">
+                                <p className="font-mono text-sm text-gray-700 mb-1"># Create conda environment</p>
+                                <code className="text-sm">conda create -n feral python=3.10</code>
+                            </div>
+                            <div className="bg-gray-100 p-3 rounded-md">
+                                <p className="font-mono text-sm text-gray-700 mb-1"># Activate environment</p>
+                                <code className="text-sm">conda activate feral</code>
+                            </div>
+                            <div className="bg-gray-100 p-3 rounded-md">
+                                <p className="font-mono text-sm text-gray-700 mb-1"># Install PyTorch with CUDA</p>
+                                <code className="text-sm">pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118</code>
+                            </div>
+                            <div className="bg-gray-100 p-3 rounded-md">
+                                <p className="font-mono text-sm text-gray-700 mb-1"># Install FERAL</p>
+                                <code className="text-sm">pip install feral-ai</code>
+                            </div>
+                            <div className="bg-gray-100 p-3 rounded-md">
+                                <p className="font-mono text-sm text-gray-700 mb-1"># Run training</p>
+                                <code className="text-sm">feral train --config your_config.yaml --data your_data.json</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Google Colab Details */}
+                    <div className="border border-orange-200 rounded-lg p-6">
+                        <h3 className="text-2xl font-semibold text-orange-900 mb-4">☁️ Option 2: Google Colab</h3>
+                        
+                        <div className="bg-orange-50 p-4 rounded-lg mb-4">
+                            <h4 className="font-semibold text-orange-800 mb-2">What you'll need</h4>
+                            <ul className="list-disc list-inside text-orange-700 space-y-1 text-sm">
+                                <li>Google account with Google Drive access</li>
+                                <li>Your video files and JSON dataset</li>
+                                <li>Internet connection for uploading data</li>
+                            </ul>
+                        </div>
+
+                        <h4 className="font-semibold text-gray-800 mb-3">Setup Steps</h4>
+                        <div className="space-y-3">
+                            <div className="flex items-start">
+                                <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">1</div>
+                                <div>
+                                    <p className="font-medium text-gray-800">Upload your data to Google Drive</p>
+                                    <p className="text-gray-600 text-sm">Create a folder in Google Drive and upload your videos and JSON dataset file.</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start">
+                                <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">2</div>
+                                <div>
+                                    <p className="font-medium text-gray-800">Open our FERAL Colab notebook</p>
+                                    <p className="text-gray-600 text-sm">Click the link to access our pre-configured Jupyter notebook.</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start">
+                                <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">3</div>
+                                <div>
+                                    <p className="font-medium text-gray-800">Mount Google Drive and import your data</p>
+                                    <p className="text-gray-600 text-sm">Run the provided code cells to connect to your Drive and load your dataset.</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start">
+                                <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">4</div>
+                                <div>
+                                    <p className="font-medium text-gray-800">Run the training cells</p>
+                                    <p className="text-gray-600 text-sm">Execute the notebook cells to start training your FERAL model.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="mt-4 p-4 bg-orange-100 rounded-lg">
+                            <p className="text-orange-800 text-sm">
+                                <strong>Note:</strong> Google Colab has session limits (12 hours) and may disconnect. 
+                                For longer training jobs, consider using Colab Pro or switching to RunPod.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* RunPod Details */}
+                    <div className="border border-green-200 rounded-lg p-6">
+                        <h3 className="text-2xl font-semibold text-green-900 mb-4">🚀 Option 3: RunPod (Recommended)</h3>
+                        
+                        <div className="bg-green-50 p-4 rounded-lg mb-4">
+                            <h4 className="font-semibold text-green-800 mb-2">Why RunPod?</h4>
+                            <ul className="list-disc list-inside text-green-700 space-y-1 text-sm">
+                                <li>Professional-grade GPUs (RTX 4090, A100, H100)</li>
+                                <li>Persistent storage - your work is saved between sessions</li>
+                                <li>No session timeouts - run training for days if needed</li>
+                                <li>Pre-configured FERAL environment</li>
+                                <li>Pay-per-use pricing - only pay for what you use</li>
+                            </ul>
+                        </div>
+
+                        <h4 className="font-semibold text-gray-800 mb-3">Setup Steps</h4>
+                        <div className="space-y-3">
+                            <div className="flex items-start">
+                                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">1</div>
+                                <div>
+                                    <p className="font-medium text-gray-800">Create RunPod account</p>
+                                    <p className="text-gray-600 text-sm">Sign up at runpod.io and add credits to your account.</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start">
+                                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">2</div>
+                                <div>
+                                    <p className="font-medium text-gray-800">Deploy FERAL template</p>
+                                    <p className="text-gray-600 text-sm">Search for "FERAL" in RunPod templates and deploy an instance.</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start">
+                                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">3</div>
+                                <div>
+                                    <p className="font-medium text-gray-800">Upload your data</p>
+                                    <p className="text-gray-600 text-sm">Use the Jupyter interface to upload your videos and JSON dataset.</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start">
+                                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">4</div>
+                                <div>
+                                    <p className="font-medium text-gray-800">Run training</p>
+                                    <p className="text-gray-600 text-sm">Open the provided FERAL notebook and start training with your data.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-4 p-4 bg-green-100 rounded-lg">
+                            <p className="text-green-800 text-sm">
+                                <strong>Estimated costs:</strong> $0.50-2.00 per hour depending on GPU type. 
+                                Most training jobs complete within 2-8 hours.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Next Steps */}
+                <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mt-8">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-4">🎯 Next Steps</h3>
+                    <p className="text-gray-700 mb-4">
+                        Once you've chosen your preferred method, make sure your data is properly formatted:
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                        <button
+                            onClick={() => handleNavClick('data-preparation')}
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
+                        >
+                            📋 Data Preparation Guide
+                        </button>
+                        <button
+                            onClick={() => handleNavClick('dataset-validator')}
+                            className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
+                        >
+                            ✅ Validate Your Dataset
+                        </button>
+                        <button
+                            onClick={() => handleNavClick('examples')}
+                            className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
+                        >
+                            🎬 View Examples
+                        </button>
+                    </div>
+                </div>
             </section>
         );
 
@@ -267,14 +484,12 @@ pip install -e .`}</code></pre>
                     Your project directory should generally follow this structure:
                 </p>
                 <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>
-                        my_project/<br/>
-                        ├── videos/<br/>
-                        │   ├── video1.mp4<br/>
-                        │   └── video2.avi<br/>
-                        └── annotations/<br/>
-                            └── video_annotations.json
-                    </code></pre>
+                    <pre><code>{`my_project/
+├── videos/
+│   ├── video1.mp4
+│   └── video2.avi
+└── annotations/
+    └── video_annotations.json`}</code></pre>
                 </div>
 
                 <p className="text-gray-700 leading-relaxed mt-4">
@@ -317,7 +532,6 @@ pip install -e .`}</code></pre>
                 </div>
 
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Field Descriptions</h3>
-
                 <div className="space-y-4">
                     <div>
                         <h4 className="text-lg font-semibold text-gray-800 mb-2">labels_are_mece (boolean)</h4>
@@ -333,7 +547,7 @@ pip install -e .`}</code></pre>
                         <p className="text-gray-700 leading-relaxed">
                             <strong>Required:</strong> Yes<br/>
                             <strong>Description:</strong> Maps numeric class IDs to human-readable class names<br/>
-                            <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{"class_id": "class_name"}</code><br/>
+                            <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{'{'}"class_id": "class_name"{'}'}</code><br/>
                             <strong>Note:</strong> Class IDs must be strings, even for numeric values (e.g., <code className="bg-gray-100 px-2 py-1 rounded text-sm">"0"</code>, <code className="bg-gray-100 px-2 py-1 rounded text-sm">"1"</code>)
                         </p>
                     </div>
@@ -343,7 +557,7 @@ pip install -e .`}</code></pre>
                         <p className="text-gray-700 leading-relaxed">
                             <strong>Required:</strong> Yes<br/>
                             <strong>Description:</strong> Contains frame-by-frame or time-segment labels for each video<br/>
-                            <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{"video_filename.mp4": [array_of_class_ids]}</code><br/>
+                            <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{'{'}"video_filename.mp4": [array_of_class_ids]{'}'}</code><br/>
                             <strong>Note:</strong> Each integer in the array must correspond to a class ID defined in <code className="bg-gray-100 px-2 py-1 rounded text-sm">class_names</code>
                         </p>
                     </div>
@@ -376,6 +590,134 @@ pip install -e .`}</code></pre>
                         and understand whether labels are mutually exclusive.
                     </p>
                 </div>
+
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Conversion to JSON Format</h3>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                    FERAL does not provide a native annotation tool, but there are many excellent behavioral annotation tools available that researchers commonly use. These include:
+                </p>
+                
+                <ul className="text-gray-700 leading-relaxed space-y-2 mb-4">
+                    <li><strong>BORIS</strong> (Behavioral Observation Research Interactive Software) - Free and open-source event logging software</li>
+                    <li><strong>EthoVision XT</strong> (Noldus) - Commercial video tracking software for animal behavior</li>
+                    <li><strong>The Observer XT</strong> (Noldus) - Professional software for behavioral research</li>
+                    <li><strong>JAABA</strong> (Janelia Automatic Animal Behavior Annotator) - Machine learning-based annotation tool</li>
+                    <li><strong>DeepLabCut</strong> - Deep learning-based pose estimation and tracking</li>
+                    <li><strong>ToxTrac</strong> - Fast and robust tracking software</li>
+                </ul>
+
+                <p className="text-gray-700 leading-relaxed mb-4">
+                    For these common annotation tools, we provide conversion scripts that you can run locally on your computer to convert their output formats to the JSON structure required by FERAL.
+                </p>
+
+                <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-3">BORIS to JSON Conversion Script</h4>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                    Here's an updated conversion script for BORIS TSV files that produces the correct JSON structure:
+                </p>
+
+                <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+                    <pre><code>{`import pandas as pd
+import json
+import re
+from pathlib import Path
+
+def convert_tsv_to_json(tsv_folder_path):
+    # Define the behavioral mapping
+    behavior_to_class = {
+        "contact": 1,
+        "attempt": 2,
+        "flight": 3,
+        "kicking": 4,
+        "genital contact": 5,
+        "mating": 6
+    }
+    
+    # Initialize the output structure
+    out = {
+        "labels_are_mece": True,
+        "class_names": {
+            "0": "other",
+            "1": "contact",
+            "2": "attempt",
+            "3": "flight",
+            "4": "kicking",
+            "5": "genital_contact",
+            "6": "mating"
+        },
+        "labels": {},
+        "splits": {
+            "train": [],
+            "val": []
+        }
+    }
+    
+    # Process each TSV file
+    for tsv_file in Path(tsv_folder_path).glob("*.tsv"):
+        df = pd.read_csv(tsv_file, sep='\\t')
+        video_name = re.sub(r'_(Virgin|Mated)$', '', tsv_file.stem) + '.mp4'
+        
+        # Extract video properties
+        duration = df['Media duration (s)'].iloc[0]
+        fps = df['FPS'].iloc[0]
+        total_frames = round(duration * fps)
+        frame_labels = [0] * total_frames
+        active_behaviors = {}
+        
+        # Process each row in the TSV
+        for _, row in df.iterrows():
+            behavior = row['Behavior']
+            behavior_type = row['Behavior type']
+            time_sec = row['Time']
+            
+            if pd.isna(behavior) or behavior == 'start' or behavior_type == 'POINT':
+                continue
+                
+            frame_num = int(time_sec * fps)
+            
+            if behavior_type == 'START':
+                active_behaviors[behavior] = frame_num
+            elif behavior_type == 'STOP' and behavior in active_behaviors:
+                start_frame = active_behaviors[behavior]
+                end_frame = frame_num
+                behavior_class = behavior_to_class.get(behavior, 0)
+                
+                # Label frames between start and end
+                for frame in range(start_frame, min(end_frame + 1, total_frames)):
+                    if frame_labels[frame] == 0 or behavior_class > frame_labels[frame]:
+                        frame_labels[frame] = behavior_class
+                        
+                del active_behaviors[behavior]
+        
+        # Add to output structure
+        out["labels"][video_name] = frame_labels
+        
+        # Assign to train/val split (alternating for simplicity)
+        if len(out["splits"]["train"]) <= len(out["splits"]["val"]):
+            out["splits"]["train"].append(video_name)
+        else:
+            out["splits"]["val"].append(video_name)
+    
+    # Save the output
+    output_path = Path(tsv_folder_path) / "feral_behavioral_labels.json"
+    with open(output_path, 'w') as f:
+        json.dump(out, f, indent=2)
+    
+    return out
+
+# Usage example:
+# convert_tsv_to_json("/path/to/your/tsv/files")`}</code></pre>
+                </div>
+
+                <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
+                    <p className="text-yellow-800 font-medium">
+                        ⚠️ <strong>Note:</strong> This script assumes your BORIS TSV files contain columns for 'Media duration (s)', 'FPS', 'Behavior', 'Behavior type', and 'Time'. 
+                        You may need to adjust the column names and behavioral mappings based on your specific annotation setup.
+                    </p>
+                </div>
+
+                <p className="text-gray-700 leading-relaxed mt-4">
+                    Similar conversion scripts are available for other popular annotation tools. If you're using a different annotation software, 
+                    please contact our support team or check our GitHub repository for additional conversion utilities.
+                </p>
             </section>
         );
 
@@ -445,7 +787,6 @@ pip install -e .`}</code></pre>
             </section>
         );
 
-        // DatasetValidatorSection - Interactive widget
         const DatasetValidatorSection = () => {
             const [file, setFile] = useState(null);
             const [validationResult, setValidationResult] = useState(null);
@@ -456,6 +797,174 @@ pip install -e .`}</code></pre>
                 setFile(event.target.files[0]);
                 setValidationResult(null);
                 setError(null);
+            };
+
+            const validateFeralDataset = (data) => {
+                const issues = [];
+                const warnings = [];
+                let isValid = true;
+
+                // Check required top-level keys
+                const requiredKeys = ['labels_are_mece', 'class_names', 'labels', 'splits'];
+                for (const key of requiredKeys) {
+                    if (!(key in data)) {
+                        issues.push(`Missing required key: "${key}"`);
+                        isValid = false;
+                    }
+                }
+
+                if (!isValid) {
+                    return { isValid: false, issues, warnings, metadata: null };
+                }
+
+                // Validate labels_are_mece
+                if (typeof data.labels_are_mece !== 'boolean') {
+                    issues.push('labels_are_mece must be a boolean value');
+                    isValid = false;
+                }
+
+                // Validate class_names
+                if (typeof data.class_names !== 'object' || Array.isArray(data.class_names)) {
+                    issues.push('class_names must be an object');
+                    isValid = false;
+                } else {
+                    const classIds = Object.keys(data.class_names);
+                    if (classIds.length === 0) {
+                        issues.push('class_names cannot be empty');
+                        isValid = false;
+                    }
+                }
+
+                // Validate labels structure
+                if (typeof data.labels !== 'object' || Array.isArray(data.labels)) {
+                    issues.push('labels must be an object');
+                    isValid = false;
+                } else {
+                    const videoFiles = Object.keys(data.labels);
+                    if (videoFiles.length === 0) {
+                        issues.push('labels cannot be empty');
+                        isValid = false;
+                    }
+                }
+
+                // Validate splits structure
+                if (typeof data.splits !== 'object' || Array.isArray(data.splits)) {
+                    issues.push('splits must be an object');
+                    isValid = false;
+                } else {
+                    if (!Array.isArray(data.splits.train)) {
+                        issues.push('splits.train must be an array');
+                        isValid = false;
+                    }
+                    if (!Array.isArray(data.splits.val)) {
+                        issues.push('splits.val must be an array');
+                        isValid = false;
+                    }
+                }
+
+                if (!isValid) {
+                    return { isValid: false, issues, warnings, metadata: null };
+                }
+
+                // Detailed validation and metadata extraction
+                const classIds = Object.keys(data.class_names);
+                const videoFiles = Object.keys(data.labels);
+                const trainFiles = data.splits.train || [];
+                const valFiles = data.splits.val || [];
+                const allSplitFiles = [...trainFiles, ...valFiles];
+
+                // Check consistency between labels and splits
+                const missingInLabels = allSplitFiles.filter(f => !videoFiles.includes(f));
+                const missingInSplits = videoFiles.filter(f => !allSplitFiles.includes(f));
+                
+                if (missingInLabels.length > 0) {
+                    issues.push(`Files in splits but missing in labels: ${missingInLabels.join(', ')}`);
+                }
+                if (missingInSplits.length > 0) {
+                    warnings.push(`Files in labels but missing in splits: ${missingInSplits.join(', ')}`);
+                }
+
+                // Check for duplicate files in splits
+                const duplicates = trainFiles.filter(f => valFiles.includes(f));
+                if (duplicates.length > 0) {
+                    issues.push(`Files appear in both train and val splits: ${duplicates.join(', ')}`);
+                }
+
+                // Analyze labels for each video
+                const videoMetadata = {};
+                const behaviorCounts = {};
+                const classCounts = {};
+
+                // Initialize behavior counts
+                Object.values(data.class_names).forEach(behavior => {
+                    behaviorCounts[behavior] = 0;
+                });
+
+                // Initialize class counts
+                classIds.forEach(id => {
+                    classCounts[id] = 0;
+                });
+
+                for (const [videoFile, labelArray] of Object.entries(data.labels)) {
+                    if (!Array.isArray(labelArray)) {
+                        issues.push(`Labels for "${videoFile}" must be an array`);
+                        continue;
+                    }
+
+                    const frameCount = labelArray.length;
+                    const videoBehaviorCounts = {};
+                    const videoClassCounts = {};
+
+                    // Initialize counts for this video
+                    Object.values(data.class_names).forEach(behavior => {
+                        videoBehaviorCounts[behavior] = 0;
+                    });
+                    classIds.forEach(id => {
+                        videoClassCounts[id] = 0;
+                    });
+
+                    // Count occurrences
+                    labelArray.forEach(label => {
+                        const labelStr = String(label);
+                        if (!classIds.includes(labelStr)) {
+                            issues.push(`Invalid class ID "${label}" in video "${videoFile}"`);
+                            return;
+                        }
+                        
+                        const behaviorName = data.class_names[labelStr];
+                        videoBehaviorCounts[behaviorName]++;
+                        videoClassCounts[labelStr]++;
+                        behaviorCounts[behaviorName]++;
+                        classCounts[labelStr]++;
+                    });
+
+                    videoMetadata[videoFile] = {
+                        frameCount,
+                        behaviorCounts: videoBehaviorCounts,
+                        classIdCounts: videoClassCounts,
+                        split: trainFiles.includes(videoFile) ? 'train' : 
+                               valFiles.includes(videoFile) ? 'val' : 'unassigned'
+                    };
+                }
+
+                const metadata = {
+                    totalVideos: videoFiles.length,
+                    trainVideos: trainFiles.length,
+                    valVideos: valFiles.length,
+                    totalClasses: classIds.length,
+                    classNames: data.class_names,
+                    totalFrames: Object.values(videoMetadata).reduce((sum, meta) => sum + meta.frameCount, 0),
+                    behaviorCounts,
+                    classCounts,
+                    videoMetadata
+                };
+
+                return {
+                    isValid: issues.length === 0,
+                    issues,
+                    warnings,
+                    metadata
+                };
             };
 
             const validateDataset = async () => {
@@ -474,67 +983,47 @@ pip install -e .`}</code></pre>
                         const fileContent = e.target.result;
                         let result = {};
 
-                        // Simulate different validation outcomes based on file content
                         if (file.name.endsWith('.json')) {
                             try {
                                 const data = JSON.parse(fileContent);
-                                // Enhanced simulation for DataPreparationSection JSON structure
-                                if (data.labels_are_mece !== undefined && data.class_names && data.labels && data.splits) {
-                                    result = {
-                                        status: 'success',
-                                        message: `JSON file "${file.name}" seems to have a valid Feral AI dataset structure.`,
-                                        details: `Found 'labels_are_mece', 'class_names', 'labels', and 'splits' keys.`,
-                                        issues: []
-                                    };
-                                } else {
-                                    result = {
-                                        status: 'warning',
-                                        message: `JSON file "${file.name}" might be missing expected Feral AI dataset keys.`,
-                                        details: `Expected 'labels_are_mece', 'class_names', 'labels', and 'splits' keys.`,
-                                        issues: []
-                                    };
-                                    if (data.labels_are_mece === undefined) result.issues.push('Missing "labels_are_mece" field');
-                                    if (!data.class_names) result.issues.push('Missing "class_names" object');
-                                    if (!data.labels) result.issues.push('Missing "labels" object');
-                                    if (!data.splits) result.issues.push('Missing "splits" object');
-                                }
+                                const validation = validateFeralDataset(data);
+                                
+                                result = {
+                                    status: validation.isValid ? 'success' : 'error',
+                                    message: validation.isValid ? 
+                                        `JSON file "${file.name}" is valid!` : 
+                                        `JSON file "${file.name}" has validation errors.`,
+                                    details: validation.isValid ? 
+                                        'All required fields are present and properly formatted.' : 
+                                        'Please fix the issues listed below.',
+                                    issues: validation.issues,
+                                    warnings: validation.warnings,
+                                    metadata: validation.metadata
+                                };
                             } catch (parseError) {
                                 result = {
                                     status: 'error',
                                     message: `Invalid JSON format for file "${file.name}".`,
                                     details: parseError.message,
-                                    issues: ['JSON parsing error']
-                                };
-                            }
-                        } else if (file.name.endsWith('.csv')) {
-                            if (fileContent.includes('video_id,timestamp,x,y,behavior')) {
-                                result = {
-                                    status: 'success',
-                                    message: `CSV file "${file.name}" has expected headers.`,
-                                    details: `Looks like a valid annotation CSV.`,
-                                    issues: []
-                                };
-                            } else {
-                                result = {
-                                    status: 'warning',
-                                    message: `CSV file "${file.name}" might have unexpected headers.`,
-                                    details: `Expected 'video_id,timestamp,x,y,behavior'.`,
-                                    issues: ['Unexpected CSV headers']
+                                    issues: ['JSON parsing error'],
+                                    warnings: [],
+                                    metadata: null
                                 };
                             }
                         } else {
                             result = {
                                 status: 'info',
-                                message: `File "${file.name}" is not a recognized format (.json, .csv).`,
-                                details: 'Please upload a JSON or CSV file for validation.',
-                                issues: []
+                                message: `File "${file.name}" is not a JSON file.`,
+                                details: 'Please upload a JSON file for FERAL dataset validation.',
+                                issues: ['Wrong file format'],
+                                warnings: [],
+                                metadata: null
                             };
                         }
                         setValidationResult(result);
                         setIsLoading(false);
                     };
                     reader.readAsText(file);
-
                 } catch (err) {
                     setError(`An unexpected error occurred: ${err.message}`);
                     setIsLoading(false);
@@ -545,24 +1034,20 @@ pip install -e .`}</code></pre>
                 <section id="dataset-validator" className="bg-white p-8 rounded-lg shadow-md mb-8">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Dataset Validator</h2>
                     <p className="text-gray-700 leading-relaxed mb-6">
-                        Use this tool to check if your dataset's structure is compatible with Feral AI.
-                        Upload your configuration file (e.g., JSON) or annotation file (e.g., CSV) to get instant feedback.
+                        Upload your FERAL dataset JSON file to validate its structure and get detailed analysis including 
+                        frame counts, behavior distributions, and format compliance.
                     </p>
 
                     <div className="mb-6">
                         <label htmlFor="file-upload" className="block text-sm font-medium text-gray-700 mb-2">
-                            Upload your dataset file:
+                            Upload your dataset JSON file:
                         </label>
                         <input
                             id="file-upload"
                             type="file"
+                            accept=".json"
                             onChange={handleFileChange}
-                            className="block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-gray-200 file:text-gray-700
-                                hover:file:bg-gray-300"
+                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300"
                         />
                         {file && (
                             <p className="mt-2 text-sm text-gray-600">Selected file: <span className="font-medium">{file.name}</span></p>
@@ -572,9 +1057,7 @@ pip install -e .`}</code></pre>
                     <button
                         onClick={validateDataset}
                         disabled={!file || isLoading}
-                        className={`bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md
-                            transition duration-300 ease-in-out transform hover:-translate-y-1
-                            ${(!file || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 ${(!file || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         {isLoading ? 'Validating...' : 'Validate Dataset'}
                     </button>
@@ -587,31 +1070,148 @@ pip install -e .`}</code></pre>
                     )}
 
                     {validationResult && (
-                        <div className={`mt-6 p-6 rounded-lg shadow-inner
-                            ${validationResult.status === 'success' ? 'bg-green-50 border-green-400' :
-                                validationResult.status === 'warning' ? 'bg-yellow-50 border-yellow-400' :
-                                validationResult.status === 'error' ? 'bg-red-50 border-red-400' :
-                                'bg-gray-50 border-gray-400'} border-l-4`}>
-                            <h3 className={`text-xl font-bold mb-2
-                                ${validationResult.status === 'success' ? 'text-green-700' :
-                                    validationResult.status === 'warning' ? 'text-yellow-700' :
-                                    validationResult.status === 'error' ? 'text-red-700' :
-                                    'text-gray-700'}`}>
-                                Validation {validationResult.status === 'success' ? 'Successful!' :
-                                             validationResult.status === 'warning' ? 'with Warnings' :
-                                             validationResult.status === 'error' ? 'Failed' :
-                                             'Information'}
-                            </h3>
-                            <p className="text-gray-800 mb-2">{validationResult.message}</p>
-                            {validationResult.details && <p className="text-gray-600 text-sm mb-2">{validationResult.details}</p>}
-                            {validationResult.issues && validationResult.issues.length > 0 && (
-                                <div className="mt-4">
-                                    <p className="font-semibold text-gray-700">Potential Issues:</p>
-                                    <ul className="list-disc list-inside text-gray-600 ml-4">
-                                        {validationResult.issues.map((issue, index) => (
-                                            <li key={index}>{issue}</li>
-                                        ))}
-                                    </ul>
+                        <div className="mt-6 space-y-6">
+                            {/* Main validation result */}
+                            <div className={`p-6 rounded-lg shadow-inner ${validationResult.status === 'success' ? 'bg-green-50 border-green-400' : validationResult.status === 'error' ? 'bg-red-50 border-red-400' : 'bg-gray-50 border-gray-400'} border-l-4`}>
+                                <h3 className={`text-xl font-bold mb-2 ${validationResult.status === 'success' ? 'text-green-700' : validationResult.status === 'error' ? 'text-red-700' : 'text-gray-700'}`}>
+                                    {validationResult.status === 'success' ? '✅ Validation Successful!' : 
+                                     validationResult.status === 'error' ? '❌ Validation Failed' : 'ℹ️ Information'}
+                                </h3>
+                                <p className="text-gray-800 mb-2">{validationResult.message}</p>
+                                {validationResult.details && <p className="text-gray-600 text-sm">{validationResult.details}</p>}
+                            </div>
+
+                            {/* Issues and Warnings */}
+                            {(validationResult.issues?.length > 0 || validationResult.warnings?.length > 0) && (
+                                <div className="space-y-4">
+                                    {validationResult.issues?.length > 0 && (
+                                        <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                                            <h4 className="font-semibold text-red-700 mb-2">❌ Issues Found:</h4>
+                                            <ul className="list-disc list-inside text-red-600 space-y-1">
+                                                {validationResult.issues.map((issue, index) => (
+                                                    <li key={index}>{issue}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                    
+                                    {validationResult.warnings?.length > 0 && (
+                                        <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                                            <h4 className="font-semibold text-yellow-700 mb-2">⚠️ Warnings:</h4>
+                                            <ul className="list-disc list-inside text-yellow-600 space-y-1">
+                                                {validationResult.warnings.map((warning, index) => (
+                                                    <li key={index}>{warning}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Dataset Metadata */}
+                            {validationResult.metadata && (
+                                <div className="space-y-6">
+                                    <h3 className="text-xl font-bold text-gray-900">📊 Dataset Analysis</h3>
+                                    
+                                    {/* Summary Statistics */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                            <h4 className="font-semibold text-blue-700">Total Videos</h4>
+                                            <p className="text-2xl font-bold text-blue-800">{validationResult.metadata.totalVideos}</p>
+                                        </div>
+                                        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                                            <h4 className="font-semibold text-green-700">Training Videos</h4>
+                                            <p className="text-2xl font-bold text-green-800">{validationResult.metadata.trainVideos}</p>
+                                        </div>
+                                        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                                            <h4 className="font-semibold text-purple-700">Validation Videos</h4>
+                                            <p className="text-2xl font-bold text-purple-800">{validationResult.metadata.valVideos}</p>
+                                        </div>
+                                        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                                            <h4 className="font-semibold text-orange-700">Total Frames</h4>
+                                            <p className="text-2xl font-bold text-orange-800">{validationResult.metadata.totalFrames.toLocaleString()}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Class Distribution */}
+                                    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                                        <h4 className="font-semibold text-gray-700 mb-4">🎯 Behavior Distribution</h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {Object.entries(validationResult.metadata.behaviorCounts).map(([behavior, count]) => (
+                                                <div key={behavior} className="flex justify-between items-center p-3 bg-white rounded border">
+                                                    <span className="font-medium text-gray-700 capitalize">{behavior}</span>
+                                                    <span className="text-lg font-bold text-gray-900">{count.toLocaleString()}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Per-Video Analysis */}
+                                    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                                        <h4 className="font-semibold text-gray-700 mb-4">📹 Per-Video Analysis</h4>
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full text-sm text-left text-gray-500 border border-gray-200">
+                                                <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                                                    <tr>
+                                                        <th className="px-4 py-2 border-b">Video File</th>
+                                                        <th className="px-4 py-2 border-b">Split</th>
+                                                        <th className="px-4 py-2 border-b">Frames</th>
+                                                        <th className="px-4 py-2 border-b">Behaviors</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {Object.entries(validationResult.metadata.videoMetadata).map(([videoFile, meta]) => (
+                                                        <tr key={videoFile} className="bg-white border-b hover:bg-gray-50">
+                                                            <td className="px-4 py-2 font-medium text-gray-900">{videoFile}</td>
+                                                            <td className="px-4 py-2">
+                                                                <span className={`px-2 py-1 text-xs rounded-full ${meta.split === 'train' ? 'bg-green-100 text-green-800' : meta.split === 'val' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
+                                                                    {meta.split}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-4 py-2">{meta.frameCount.toLocaleString()}</td>
+                                                            <td className="px-4 py-2">
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {Object.entries(meta.behaviorCounts)
+                                                                        .filter(([_, count]) => count > 0)
+                                                                        .map(([behavior, count]) => (
+                                                                            <span key={behavior} className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+                                                                                {behavior}: {count}
+                                                                            </span>
+                                                                        ))
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    {/* Dataset Health Score */}
+                                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
+                                        <h4 className="font-semibold text-gray-700 mb-4">🏥 Dataset Health Summary</h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div className="text-center">
+                                                <div className="text-2xl font-bold text-green-600">
+                                                    {validationResult.metadata.trainVideos > 0 && validationResult.metadata.valVideos > 0 ? '✅' : '❌'}
+                                                </div>
+                                                <p className="text-sm text-gray-600">Train/Val Split</p>
+                                            </div>
+                                            <div className="text-center">
+                                                <div className="text-2xl font-bold text-green-600">
+                                                    {Object.values(validationResult.metadata.behaviorCounts).every(count => count > 0) ? '✅' : '⚠️'}
+                                                </div>
+                                                <p className="text-sm text-gray-600">All Behaviors Present</p>
+                                            </div>
+                                            <div className="text-center">
+                                                <div className="text-2xl font-bold text-green-600">
+                                                    {validationResult.metadata.totalFrames > 1000 ? '✅' : '⚠️'}
+                                                </div>
+                                                <p className="text-sm text-gray-600">Sufficient Data</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -653,7 +1253,7 @@ pip install -e .`}</code></pre>
                     <details className="group border-b border-gray-200 pb-4">
                         <summary className="flex justify-between items-center cursor-pointer text-lg font-semibold text-gray-800">
                             How accurate is Feral AI?
-                            <svg className="h-5 w-5 text-gray-500 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg className="h-5 w-5 text-gray-500 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </summary>
@@ -666,7 +1266,7 @@ pip install -e .`}</code></pre>
                     <details className="group border-b border-gray-200 pb-4">
                         <summary className="flex justify-between items-center cursor-pointer text-lg font-semibold text-gray-800">
                             What video formats are supported?
-                            <svg className="h-5 w-5 text-gray-500 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <svg className="h-5 w-5 text-gray-500 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </summary>
@@ -679,9 +1279,8 @@ pip install -e .`}</code></pre>
             </section>
         );
 
-        // Render the App component
-        const container = document.getElementById('root');
-        ReactDOM.render(<App />, container);
+        // Render the App
+        ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
 </html>
