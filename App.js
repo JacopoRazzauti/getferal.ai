@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import FeralLogo from './assets/images/feral-logo.png'; // Adjust this path based on your actual logo location
 
 // Main App Component
 function App() {
@@ -9,31 +10,42 @@ function App() {
   const handleNavClick = (section) => {
     setActiveSection(section);
     setIsSidebarOpen(false); // Close sidebar on navigation click
+    // Optional: Scroll to top of the section for better UX
+    document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <div className="min-h-screen bg-gray-100 font-inter text-gray-800 antialiased flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm py-4 px-6 md:px-8 flex flex-col items-center justify-center sticky top-0 z-50">
-        <div className="flex items-center justify-center w-full mb-2 md:mb-0">
-          <h1 className="text-3xl font-bold text-gray-900"> FERAL</h1>
+      <header className="bg-white shadow-sm py-4 px-6 md:px-8 flex flex-col md:flex-row items-center justify-between sticky top-0 z-50">
+        {/* Logo and Title Container */}
+        <div className="flex items-center justify-center md:justify-start w-full md:w-auto relative mb-2 md:mb-0">
+          {/* Mobile menu button (positioned absolutely) */}
+          <button
+            className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 absolute left-0" // Adjusted for logo
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            aria-label="Toggle navigation"
+          >
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              {isSidebarOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+
+          {/* Logo */}
+          <img
+            src={FeralLogo} // Use the imported logo
+            alt="Feral AI Logo"
+            className="h-8 w-8 mr-2 ml-10 md:ml-0" // Small size, margin right, and left margin for mobile button space
+          />
+          <h1 className="text-3xl font-bold text-gray-900">FERAL</h1>
         </div>
-        {/* Mobile menu button */}
-        <button
-          className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 absolute top-4 left-4"
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          aria-label="Toggle navigation"
-        >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            {isSidebarOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
-        </button>
+
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-6 mt-4">
+        <nav className="hidden md:flex space-x-6 mt-4 md:mt-0">
           <NavLink section="home" current={activeSection} onClick={handleNavClick}>Home</NavLink>
           <NavLink section="getting-started" current={activeSection} onClick={handleNavClick}>Getting Started</NavLink>
           <NavLink section="api-reference" current={activeSection} onClick={handleNavClick}>API Reference</NavLink>
@@ -67,13 +79,13 @@ function App() {
 
         {/* Content Area */}
         <main className="flex-1 p-6 md:p-8 overflow-y-auto">
-          {activeSection === 'home' && <HomeSection />}
-          {activeSection === 'getting-started' && <GettingStartedSection />}
+          {activeSection === 'home' && <HomeSection handleNavClick={handleNavClick} />}
+          {activeSection === 'getting-started' && <GettingStartedSection handleNavClick={handleNavClick} />}
           {activeSection === 'installation' && <InstallationSection />}
           {activeSection === 'data-preparation' && <DataPreparationSection />}
-          {activeSection === 'running-feral' && <RunningFeralSection />}
+          {activeSection === 'running-feral' && <RunningFeralSection handleNavClick={handleNavClick} />}
           {activeSection === 'api-reference' && <ApiReferenceSection />}
-          {activeSection === 'interactive-tools' && <InteractiveToolsSection />}
+          {activeSection === 'interactive-tools' && <InteractiveToolsSection handleNavClick={handleNavClick} />}
           {activeSection === 'dataset-validator' && <DatasetValidatorSection />}
           {activeSection === 'examples' && <ExamplesSection />}
           {activeSection === 'faq' && <FAQSection />}
@@ -84,8 +96,8 @@ function App() {
       <footer className="bg-gray-900 text-white py-6 px-8 text-center text-sm">
         <p>&copy; {new Date().getFullYear()} Feral AI. All rights reserved.</p>
         <p className="mt-2">
-          <a href="#" className="text-gray-400 hover:underline mx-2">Privacy Policy</a> |
-          <a href="#" className="text-gray-400 hover:underline mx-2">Terms of Service</a>
+          <a href="/privacy-policy" className="text-gray-400 hover:underline mx-2">Privacy Policy</a> |
+          <a href="/terms-of-service" className="text-gray-400 hover:underline mx-2">Terms of Service</a>
         </p>
       </footer>
     </div>
@@ -122,8 +134,8 @@ const SidebarLink = ({ section, current, onClick, children }) => (
 
 // --- Content Sections (Placeholder Components) ---
 
-const HomeSection = () => (
-  <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+const HomeSection = ({ handleNavClick }) => (
+  <section id="home" className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Feral AI Documentation</h2>
     <p className="text-lg text-gray-700 leading-relaxed mb-4">
       Feral AI provides a cutting-edge solution for segmenting and analyzing animal behavior directly from video data.
@@ -135,18 +147,24 @@ const HomeSection = () => (
       Explore our interactive tools to ensure your datasets are perfectly structured for optimal performance.
     </p>
     <div className="mt-6 flex flex-wrap gap-4">
-      <button className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+      <button
+        className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
+        onClick={() => handleNavClick('getting-started')}
+      >
         Get Started
       </button>
-      <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1">
+      <button
+        className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
+        onClick={() => handleNavClick('examples')}
+      >
         View Examples
       </button>
     </div>
   </section>
 );
 
-const GettingStartedSection = () => (
-  <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+const GettingStartedSection = ({ handleNavClick }) => (
+  <section id="getting-started" className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Getting Started</h2>
     <p className="text-gray-700 leading-relaxed">
       This section will walk you through the initial steps to get Feral up and running.
@@ -160,30 +178,13 @@ const GettingStartedSection = () => (
     </ul>
     <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Installation</h3>
     <p className="text-gray-700 leading-relaxed">
-      Please refer to the <a href="#" onClick={() => window.alert('Navigating to Installation section')} className="text-gray-600 hover:underline">Installation</a> section for detailed instructions.
+      Please refer to the <a href="#" onClick={() => handleNavClick('installation')} className="text-gray-600 hover:underline">Installation</a> section for detailed instructions.
     </p>
   </section>
 );
 
 const InstallationSection = () => (
-  <section className="bg-white p-8 rounded-lg shadow-md mb-8">
-    <h2 className="text-3xl font-bold text-gray-900 mb-4">Installation</h2>
-    <p className="text-gray-700 leading-relaxed">
-      Feral AI can be installed via pip or from source. We recommend using a virtual environment.
-    </p>
-    <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Using pip</h3>
-    <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-      <pre><code>pip install feral-ai</code></pre>
-    </div>
-    <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">From source</h3>
-    <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-      <pre><code>git clone https://github.com/your-repo/feral-ai.git<br/>cd feral-ai<br/>pip install -e .</code></pre>
-    </div>
-  </section>
-);
-
-const InstallationSection = () => (
-  <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+  <section id="installation" className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Installation</h2>
     <p className="text-gray-700 leading-relaxed">
       Feral AI can be installed via pip or from source. We recommend using a virtual environment.
@@ -200,13 +201,13 @@ const InstallationSection = () => (
 );
 
 const DataPreparationSection = () => (
-  <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+  <section id="data-preparation" className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Data Preparation</h2>
     <p className="text-gray-700 leading-relaxed">
       Proper data preparation is crucial for Feral performance. This section details the expected
       directory structure and file formats for your video and annotation data.
     </p>
-    
+
     <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Directory Structure</h3>
     <p className="text-gray-700 leading-relaxed mb-2">
       Your project directory should generally follow this structure:
@@ -215,13 +216,13 @@ const DataPreparationSection = () => (
       <pre><code>
         my_project/<br/>
         ├── videos/<br/>
-        │   ├── video1.mp4<br/>
-        │   └── video2.avi<br/>
+        │   ├── video1.mp4<br/>
+        │   └── video2.avi<br/>
         └── annotations/<br/>
-            └── video_annotations.json
+            └── video_annotations.json
       </code></pre>
     </div>
-    
+
     <p className="text-gray-700 leading-relaxed mt-4">
       Ensure that your video files are in a supported format (e.g., MP4, AVI) and that your annotation files
       are structured correctly. Feral supports the following JSON structure for annotations:
@@ -231,13 +232,13 @@ const DataPreparationSection = () => (
     <p className="text-gray-700 leading-relaxed mb-4">
       Your dataset JSON file must contain four main sections that define a labeled video dataset for training:
     </p>
-    
+
     <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
       <pre><code>{`{
   "labels_are_mece": true,
   "class_names": {
     "0": "other",
-    "1": "contact", 
+    "1": "contact",
     "2": "attempt",
     "3": "flight",
     "4": "kicking",
@@ -262,7 +263,7 @@ const DataPreparationSection = () => (
     </div>
 
     <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Field Descriptions</h3>
-    
+
     <div className="space-y-4">
       <div>
         <h4 className="text-lg font-semibold text-gray-800 mb-2">labels_are_mece (boolean)</h4>
@@ -316,16 +317,16 @@ const DataPreparationSection = () => (
 
     <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
       <p className="text-blue-800 font-medium">
-        💡 <strong>Tip:</strong> The above structure allows the training system to load video files and their corresponding labels, 
-        map numeric labels to meaningful class names, split the dataset into training and validation sets, 
+        💡 <strong>Tip:</strong> The above structure allows the training system to load video files and their corresponding labels,
+        map numeric labels to meaningful class names, split the dataset into training and validation sets,
         and understand whether labels are mutually exclusive.
       </p>
     </div>
   </section>
 );
 
-const RunningFeralSection = () => (
-  <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+const RunningFeralSection = ({ handleNavClick }) => (
+  <section id="running-feral" className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Running Feral AI</h2>
     <p className="text-gray-700 leading-relaxed">
       Once your data is prepared, you can run the Feral AI algorithm using the command-line interface.
@@ -335,13 +336,13 @@ const RunningFeralSection = () => (
       <pre><code>feral-ai process --config config.yaml --output results/</code></pre>
     </div>
     <p className="text-gray-700 leading-relaxed mt-4">
-      Refer to the <a href="#" onClick={() => window.alert('Navigating to API Reference')} className="text-gray-600 hover:underline">API Reference</a> for all available command-line arguments and configuration options.
+      Refer to the <a href="#" onClick={() => handleNavClick('api-reference')} className="text-gray-600 hover:underline">API Reference</a> for all available command-line arguments and configuration options.
     </p>
   </section>
 );
 
 const ApiReferenceSection = () => (
-  <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+  <section id="api-reference" className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">API Reference</h2>
     <p className="text-gray-700 leading-relaxed">
       This section provides detailed documentation for all functions, classes, and command-line arguments
@@ -353,24 +354,24 @@ const ApiReferenceSection = () => (
     </p>
     <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
       <pre><code>
-        def process_video(video_path: str, config: dict) -&gt; dict:
-            """
-            Processes a video and returns behavioral segmentation data.
-
-            Args:
-                video_path (str): Path to the input video file.
-                config (dict): Configuration dictionary for the algorithm.
-
-            Returns:
-                dict: A dictionary containing segmentation results.
-            """
+        def process_video(video_path: str, config: dict) -&gt; dict:<br/>
+            """<br/>
+            Processes a video and returns behavioral segmentation data.<br/>
+        <br/>
+            Args:<br/>
+                video_path (str): Path to the input video file.<br/>
+                config (dict): Configuration dictionary for the algorithm.<br/>
+        <br/>
+            Returns:<br/>
+                dict: A dictionary containing segmentation results.<br/>
+            """
       </code></pre>
     </div>
   </section>
 );
 
-const InteractiveToolsSection = () => (
-  <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+const InteractiveToolsSection = ({ handleNavClick }) => (
+  <section id="interactive-tools" className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Interactive Tools</h2>
     <p className="text-gray-700 leading-relaxed mb-4">
       Our interactive tools help you prepare your data and understand Feral AI's requirements.
@@ -378,7 +379,7 @@ const InteractiveToolsSection = () => (
     </p>
     <button
       className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
-      onClick={() => window.alert('Navigating to Dataset Validator')}
+      onClick={() => handleNavClick('dataset-validator')}
     >
       Go to Dataset Validator
     </button>
@@ -422,20 +423,25 @@ const DatasetValidatorSection = () => {
         if (file.name.endsWith('.json')) {
           try {
             const data = JSON.parse(fileContent);
-            if (data.videos && Array.isArray(data.videos) && data.annotations) {
+            // Enhanced simulation for DataPreparationSection JSON structure
+            if (data.labels_are_mece !== undefined && data.class_names && data.labels && data.splits) {
               result = {
                 status: 'success',
-                message: `JSON file "${file.name}" seems to have a valid structure.`,
-                details: `Found ${data.videos.length} videos and annotations.`,
+                message: `JSON file "${file.name}" seems to have a valid Feral AI dataset structure.`,
+                details: `Found 'labels_are_mece', 'class_names', 'labels', and 'splits' keys.`,
                 issues: []
               };
             } else {
               result = {
                 status: 'warning',
-                message: `JSON file "${file.name}" might be missing expected keys.`,
-                details: `Expected 'videos' and 'annotations' keys.`,
-                issues: ['Missing "videos" array', 'Missing "annotations" object']
+                message: `JSON file "${file.name}" might be missing expected Feral AI dataset keys.`,
+                details: `Expected 'labels_are_mece', 'class_names', 'labels', and 'splits' keys.`,
+                issues: []
               };
+              if (data.labels_are_mece === undefined) result.issues.push('Missing "labels_are_mece" field');
+              if (!data.class_names) result.issues.push('Missing "class_names" object');
+              if (!data.labels) result.issues.push('Missing "labels" object');
+              if (!data.splits) result.issues.push('Missing "splits" object');
             }
           } catch (parseError) {
             result = {
@@ -481,7 +487,7 @@ const DatasetValidatorSection = () => {
   };
 
   return (
-    <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+    <section id="dataset-validator" className="bg-white p-8 rounded-lg shadow-md mb-8">
       <h2 className="text-3xl font-bold text-gray-900 mb-4">Dataset Validator</h2>
       <p className="text-gray-700 leading-relaxed mb-6">
         Use this tool to check if your dataset's structure is compatible with Feral AI.
@@ -529,14 +535,14 @@ const DatasetValidatorSection = () => {
         <div className={`mt-6 p-6 rounded-lg shadow-inner
           ${validationResult.status === 'success' ? 'bg-green-50 border-green-400' :
              validationResult.status === 'warning' ? 'bg-yellow-50 border-yellow-400' :
-             'bg-gray-50 border-gray-400'} border-l-4`}> {/* Changed info to gray */}
+             'bg-gray-50 border-gray-400'} border-l-4`}>
           <h3 className={`text-xl font-bold mb-2
             ${validationResult.status === 'success' ? 'text-green-700' :
                validationResult.status === 'warning' ? 'text-yellow-700' :
-               'text-gray-700'}`}> {/* Changed info to gray */}
+               'text-gray-700'}`}>
             Validation {validationResult.status === 'success' ? 'Successful!' :
-                        validationResult.status === 'warning' ? 'with Warnings' :
-                        'Information'}
+                         validationResult.status === 'warning' ? 'with Warnings' :
+                         'Information'}
           </h3>
           <p className="text-gray-800 mb-2">{validationResult.message}</p>
           {validationResult.details && <p className="text-gray-600 text-sm mb-2">{validationResult.details}</p>}
@@ -558,7 +564,7 @@ const DatasetValidatorSection = () => {
 
 
 const ExamplesSection = () => (
-  <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+  <section id="examples" className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Examples</h2>
     <p className="text-gray-700 leading-relaxed">
       Browse through various examples demonstrating how to use Feral AI for different
@@ -584,7 +590,7 @@ const ExamplesSection = () => (
 );
 
 const FAQSection = () => (
-  <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+  <section id="faq" className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
     <div className="space-y-4">
       <details className="group border-b border-gray-200 pb-4">
