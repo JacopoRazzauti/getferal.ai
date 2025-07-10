@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>getferal.ai Documentation</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -33,10 +31,8 @@
 <body class="min-h-screen bg-gray-100 font-inter text-gray-800 antialiased">
     <div id="root"></div>
 
-    <!-- React and ReactDOM CDNs -->
     <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-    <!-- Babel Standalone for JSX transpilation in the browser -->
     <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
 
     <script type="text/babel">
@@ -44,38 +40,49 @@
 
         // Main App Component
         function App() {
-            const [activeSection, setActiveSection] = useState('home');
-            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+            const [activeSection, setActiveSection] = useState('home'); // State to manage active section for navigation
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for mobile sidebar visibility
 
             // Function to handle navigation clicks
             const handleNavClick = (section) => {
                 setActiveSection(section);
-                setIsSidebarOpen(false);
+                setIsSidebarOpen(false); // Close sidebar on navigation click
+                // Optional: Scroll to top of the section for better UX
+                document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' });
             };
 
             return (
                 <div className="min-h-screen bg-gray-100 font-inter text-gray-800 antialiased flex flex-col">
                     {/* Header */}
-                    <header className="bg-white shadow-sm py-4 px-6 md:px-8 flex flex-col items-center justify-center sticky top-0 z-50">
-                        <div className="flex items-center justify-center w-full mb-2 md:mb-0">
-                            <h1 className="text-3xl font-bold text-gray-900">getferal.ai</h1>
+                    <header className="bg-white shadow-sm py-4 px-6 md:px-8 flex flex-col md:flex-row items-center justify-between sticky top-0 z-50">
+                        {/* Logo and Title Container */}
+                        <div className="flex items-center justify-center md:justify-start w-full md:w-auto relative mb-2 md:mb-0">
+                            {/* Mobile menu button (positioned absolutely) */}
+                            <button
+                                className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 absolute left-0"
+                                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                                aria-label="Toggle navigation"
+                            >
+                                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    {isSidebarOpen ? (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                    ) : (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                                    )}
+                                </svg>
+                            </button>
+
+                            {/* Logo: Adjust src path if your logo is in a subfolder like /images/feral-logo.png */}
+                            <img
+                                src="./src/images/feral-logo.png"
+                                alt="Feral AI Logo"
+                                className="h-8 w-8 mr-2 ml-10 md:ml-0" // Small size, margin right, and left margin for mobile button space
+                            />
+                            <h1 className="text-3xl font-bold text-gray-900">FERAL</h1>
                         </div>
-                        {/* Mobile menu button */}
-                        <button
-                            className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 absolute top-4 left-4"
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            aria-label="Toggle navigation"
-                        >
-                            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                {isSidebarOpen ? (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                ) : (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                                )}
-                            </svg>
-                        </button>
+
                         {/* Desktop Navigation */}
-                        <nav className="hidden md:flex space-x-6 mt-4">
+                        <nav className="hidden md:flex space-x-6 mt-4 md:mt-0">
                             <NavLink section="home" current={activeSection} onClick={handleNavClick}>Home</NavLink>
                             <NavLink section="getting-started" current={activeSection} onClick={handleNavClick}>Getting Started</NavLink>
                             <NavLink section="api-reference" current={activeSection} onClick={handleNavClick}>API Reference</NavLink>
@@ -109,13 +116,13 @@
 
                         {/* Content Area */}
                         <main className="flex-1 p-6 md:p-8 overflow-y-auto">
-                            {activeSection === 'home' && <HomeSection />}
-                            {activeSection === 'getting-started' && <GettingStartedSection />}
+                            {activeSection === 'home' && <HomeSection handleNavClick={handleNavClick} />}
+                            {activeSection === 'getting-started' && <GettingStartedSection handleNavClick={handleNavClick} />}
                             {activeSection === 'installation' && <InstallationSection />}
                             {activeSection === 'data-preparation' && <DataPreparationSection />}
-                            {activeSection === 'running-feral' && <RunningFeralSection />}
+                            {activeSection === 'running-feral' && <RunningFeralSection handleNavClick={handleNavClick} />}
                             {activeSection === 'api-reference' && <ApiReferenceSection />}
-                            {activeSection === 'interactive-tools' && <InteractiveToolsSection />}
+                            {activeSection === 'interactive-tools' && <InteractiveToolsSection handleNavClick={handleNavClick} />}
                             {activeSection === 'dataset-validator' && <DatasetValidatorSection />}
                             {activeSection === 'examples' && <ExamplesSection />}
                             {activeSection === 'faq' && <FAQSection />}
@@ -124,7 +131,7 @@
 
                     {/* Overlay for mobile sidebar */}
                     {isSidebarOpen && (
-                        <div 
+                        <div
                             className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
                             onClick={() => setIsSidebarOpen(false)}
                         ></div>
@@ -134,8 +141,8 @@
                     <footer className="bg-gray-900 text-white py-6 px-8 text-center text-sm">
                         <p>&copy; {new Date().getFullYear()} Feral AI. All rights reserved.</p>
                         <p className="mt-2">
-                            <a href="#" className="text-gray-400 hover:underline mx-2">Privacy Policy</a> |
-                            <a href="#" className="text-gray-400 hover:underline mx-2">Terms of Service</a>
+                            <a href="/privacy-policy" className="text-gray-400 hover:underline mx-2">Privacy Policy</a> |
+                            <a href="/terms-of-service" className="text-gray-400 hover:underline mx-2">Terms of Service</a>
                         </p>
                     </footer>
                 </div>
@@ -172,8 +179,8 @@
 
         // --- Content Sections ---
 
-        const HomeSection = () => (
-            <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+        const HomeSection = ({ handleNavClick }) => (
+            <section id="home" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Feral AI Documentation</h2>
                 <p className="text-lg text-gray-700 leading-relaxed mb-4">
                     Feral AI provides a cutting-edge solution for segmenting and analyzing animal behavior directly from video data.
@@ -185,13 +192,13 @@
                     Explore our interactive tools to ensure your datasets are perfectly structured for optimal performance.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-4">
-                    <button 
+                    <button
                         onClick={() => handleNavClick('getting-started')}
                         className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
                     >
                         Get Started
                     </button>
-                    <button 
+                    <button
                         onClick={() => handleNavClick('examples')}
                         className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
                     >
@@ -201,8 +208,8 @@
             </section>
         );
 
-        const GettingStartedSection = () => (
-            <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+        const GettingStartedSection = ({ handleNavClick }) => (
+            <section id="getting-started" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Getting Started</h2>
                 <p className="text-gray-700 leading-relaxed">
                     This section will walk you through the initial steps to get Feral AI up and running.
@@ -217,8 +224,8 @@
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Installation</h3>
                 <p className="text-gray-700 leading-relaxed">
                     Please refer to the{' '}
-                    <button 
-                        onClick={() => handleNavClick('installation')} 
+                    <button
+                        onClick={() => handleNavClick('installation')}
                         className="text-blue-600 hover:underline font-medium"
                     >
                         Installation
@@ -229,7 +236,7 @@
         );
 
         const InstallationSection = () => (
-            <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <section id="installation" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Installation</h2>
                 <p className="text-gray-700 leading-relaxed">
                     Feral AI can be installed via pip or from source. We recommend using a virtual environment.
@@ -248,40 +255,132 @@ pip install -e .`}</code></pre>
         );
 
         const DataPreparationSection = () => (
-            <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <section id="data-preparation" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Data Preparation</h2>
                 <p className="text-gray-700 leading-relaxed">
-                    Proper data preparation is crucial for Feral AI's performance. This section details the expected
+                    Proper data preparation is crucial for Feral performance. This section details the expected
                     directory structure and file formats for your video and annotation data.
                 </p>
+
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Directory Structure</h3>
                 <p className="text-gray-700 leading-relaxed mb-2">
                     Your project directory should generally follow this structure:
                 </p>
                 <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>{`my_project/
-├── videos/
-│   ├── video1.mp4
-│   └── video2.avi
-└── annotations/
-    ├── video1_annotations.csv
-    └── video2_annotations.json`}</code></pre>
+                    <pre><code>
+                        my_project/<br/>
+                        ├── videos/<br/>
+                        │   ├── video1.mp4<br/>
+                        │   └── video2.avi<br/>
+                        └── annotations/<br/>
+                            └── video_annotations.json
+                    </code></pre>
                 </div>
+
                 <p className="text-gray-700 leading-relaxed mt-4">
-                    For a detailed check of your dataset's compliance, please use the{' '}
-                    <button 
-                        onClick={() => handleNavClick('dataset-validator')} 
-                        className="text-blue-600 hover:underline font-medium"
-                    >
-                        Dataset Validator
-                    </button>{' '}
-                    tool.
+                    Ensure that your video files are in a supported format (e.g., MP4, AVI) and that your annotation files
+                    are structured correctly. Feral supports the following JSON structure for annotations:
                 </p>
+
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">JSON Structure</h3>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                    Your dataset JSON file must contain four main sections that define a labeled video dataset for training:
+                </p>
+
+                <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+                    <pre><code>{`{
+  "labels_are_mece": true,
+  "class_names": {
+    "0": "other",
+    "1": "contact",
+    "2": "attempt",
+    "3": "flight",
+    "4": "kicking",
+    "5": "genital_contact",
+    "6": "mating"
+  },
+  "labels": {
+    "video_file_1.mp4": [0, 0, 1, 1, 2, 0, 0, 3, 3, 0],
+    "video_file_2.mp4": [0, 0, 0, 4, 4, 5, 6, 6, 0, 0],
+    "video_file_3.mp4": [0, 1, 1, 0, 0, 0, 2, 2, 3, 0]
+  },
+  "splits": {
+    "train": [
+      "video_file_1.mp4",
+      "video_file_2.mp4"
+    ],
+    "val": [
+      "video_file_3.mp4"
+    ]
+  }
+}`}</code></pre>
+                </div>
+
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Field Descriptions</h3>
+
+                <div className="space-y-4">
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-2">labels_are_mece (boolean)</h4>
+                        <p className="text-gray-700 leading-relaxed">
+                            <strong>Required:</strong> Yes<br/>
+                            <strong>Description:</strong> Indicates whether labels follow MECE principles (Mutually Exclusive, Collectively Exhaustive). This is important for ensuring your behavioral categories are clearly defined and do not overlap, leading to more accurate model training.<br/>
+                            <strong>Value:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">true</code> or <code className="bg-gray-100 px-2 py-1 rounded text-sm">false</code>
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-2">class_names (object)</h4>
+                        <p className="text-gray-700 leading-relaxed">
+                            <strong>Required:</strong> Yes<br/>
+                            <strong>Description:</strong> Maps numeric class IDs to human-readable class names<br/>
+                            <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{"class_id": "class_name"}</code><br/>
+                            <strong>Note:</strong> Class IDs must be strings, even for numeric values (e.g., <code className="bg-gray-100 px-2 py-1 rounded text-sm">"0"</code>, <code className="bg-gray-100 px-2 py-1 rounded text-sm">"1"</code>)
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-2">labels (object)</h4>
+                        <p className="text-gray-700 leading-relaxed">
+                            <strong>Required:</strong> Yes<br/>
+                            <strong>Description:</strong> Contains frame-by-frame or time-segment labels for each video<br/>
+                            <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{"video_filename.mp4": [array_of_class_ids]}</code><br/>
+                            <strong>Note:</strong> Each integer in the array must correspond to a class ID defined in <code className="bg-gray-100 px-2 py-1 rounded text-sm">class_names</code>
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-2">splits (object)</h4>
+                        <p className="text-gray-700 leading-relaxed">
+                            <strong>Required:</strong> Yes<br/>
+                            <strong>Description:</strong> Defines dataset partitions for training and validation<br/>
+                            <strong>Fields:</strong><br/>
+                            • <code className="bg-gray-100 px-2 py-1 rounded text-sm">train</code>: Array of video filenames for training<br/>
+                            • <code className="bg-gray-100 px-2 py-1 rounded text-sm">val</code>: Array of video filenames for validation<br/>
+                            <strong>Note:</strong> All filenames must have corresponding entries in the <code className="bg-gray-100 px-2 py-1 rounded text-sm">labels</code> section
+                        </p>
+                    </div>
+                </div>
+
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Requirements</h3>
+                <ul className="text-gray-700 leading-relaxed space-y-2">
+                    <li><strong>Consistency:</strong> All video files referenced in <code className="bg-gray-100 px-2 py-1 rounded text-sm">splits</code> must have corresponding label data in <code className="bg-gray-100 px-2 py-1 rounded text-sm">labels</code></li>
+                    <li><strong>Valid Class IDs:</strong> All integers in label arrays must exist as keys in <code className="bg-gray-100 px-2 py-1 rounded text-sm">class_names</code></li>
+                    <li><strong>File Extensions:</strong> Video filenames should include the <code className="bg-gray-100 px-2 py-1 rounded text-sm">.mp4</code> extension</li>
+                    <li><strong>Array Length:</strong> Label arrays should match the temporal segmentation of their corresponding videos</li>
+                </ul>
+
+                <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
+                    <p className="text-blue-800 font-medium">
+                        💡 <strong>Tip:</strong> The above structure allows the training system to load video files and their corresponding labels,
+                        map numeric labels to meaningful class names, split the dataset into training and validation sets,
+                        and understand whether labels are mutually exclusive.
+                    </p>
+                </div>
             </section>
         );
 
-        const RunningFeralSection = () => (
-            <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+        const RunningFeralSection = ({ handleNavClick }) => (
+            <section id="running-feral" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Running Feral AI</h2>
                 <p className="text-gray-700 leading-relaxed">
                     Once your data is prepared, you can run the Feral AI algorithm using the command-line interface.
@@ -292,8 +391,8 @@ pip install -e .`}</code></pre>
                 </div>
                 <p className="text-gray-700 leading-relaxed mt-4">
                     Refer to the{' '}
-                    <button 
-                        onClick={() => handleNavClick('api-reference')} 
+                    <button
+                        onClick={() => handleNavClick('api-reference')}
                         className="text-blue-600 hover:underline font-medium"
                     >
                         API Reference
@@ -304,7 +403,7 @@ pip install -e .`}</code></pre>
         );
 
         const ApiReferenceSection = () => (
-            <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <section id="api-reference" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">API Reference</h2>
                 <p className="text-gray-700 leading-relaxed">
                     This section provides detailed documentation for all functions, classes, and command-line arguments
@@ -330,8 +429,8 @@ pip install -e .`}</code></pre>
             </section>
         );
 
-        const InteractiveToolsSection = () => (
-            <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+        const InteractiveToolsSection = ({ handleNavClick }) => (
+            <section id="interactive-tools" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Interactive Tools</h2>
                 <p className="text-gray-700 leading-relaxed mb-4">
                     Our interactive tools help you prepare your data and understand Feral AI's requirements.
@@ -379,20 +478,25 @@ pip install -e .`}</code></pre>
                         if (file.name.endsWith('.json')) {
                             try {
                                 const data = JSON.parse(fileContent);
-                                if (data.videos && Array.isArray(data.videos) && data.annotations) {
+                                // Enhanced simulation for DataPreparationSection JSON structure
+                                if (data.labels_are_mece !== undefined && data.class_names && data.labels && data.splits) {
                                     result = {
                                         status: 'success',
-                                        message: `JSON file "${file.name}" seems to have a valid structure.`,
-                                        details: `Found ${data.videos.length} videos and annotations.`,
+                                        message: `JSON file "${file.name}" seems to have a valid Feral AI dataset structure.`,
+                                        details: `Found 'labels_are_mece', 'class_names', 'labels', and 'splits' keys.`,
                                         issues: []
                                     };
                                 } else {
                                     result = {
                                         status: 'warning',
-                                        message: `JSON file "${file.name}" might be missing expected keys.`,
-                                        details: `Expected 'videos' and 'annotations' keys.`,
-                                        issues: ['Missing "videos" array', 'Missing "annotations" object']
+                                        message: `JSON file "${file.name}" might be missing expected Feral AI dataset keys.`,
+                                        details: `Expected 'labels_are_mece', 'class_names', 'labels', and 'splits' keys.`,
+                                        issues: []
                                     };
+                                    if (data.labels_are_mece === undefined) result.issues.push('Missing "labels_are_mece" field');
+                                    if (!data.class_names) result.issues.push('Missing "class_names" object');
+                                    if (!data.labels) result.issues.push('Missing "labels" object');
+                                    if (!data.splits) result.issues.push('Missing "splits" object');
                                 }
                             } catch (parseError) {
                                 result = {
@@ -438,7 +542,7 @@ pip install -e .`}</code></pre>
             };
 
             return (
-                <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+                <section id="dataset-validator" className="bg-white p-8 rounded-lg shadow-md mb-8">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Dataset Validator</h2>
                     <p className="text-gray-700 leading-relaxed mb-6">
                         Use this tool to check if your dataset's structure is compatible with Feral AI.
@@ -494,9 +598,9 @@ pip install -e .`}</code></pre>
                                     validationResult.status === 'error' ? 'text-red-700' :
                                     'text-gray-700'}`}>
                                 Validation {validationResult.status === 'success' ? 'Successful!' :
-                                            validationResult.status === 'warning' ? 'with Warnings' :
-                                            validationResult.status === 'error' ? 'Failed' :
-                                            'Information'}
+                                             validationResult.status === 'warning' ? 'with Warnings' :
+                                             validationResult.status === 'error' ? 'Failed' :
+                                             'Information'}
                             </h3>
                             <p className="text-gray-800 mb-2">{validationResult.message}</p>
                             {validationResult.details && <p className="text-gray-600 text-sm mb-2">{validationResult.details}</p>}
@@ -517,7 +621,7 @@ pip install -e .`}</code></pre>
         };
 
         const ExamplesSection = () => (
-            <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <section id="examples" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Examples</h2>
                 <p className="text-gray-700 leading-relaxed">
                     Browse through various examples demonstrating how to use Feral AI for different
@@ -543,7 +647,7 @@ pip install -e .`}</code></pre>
         );
 
         const FAQSection = () => (
-            <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <section id="faq" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
                 <div className="space-y-4">
                     <details className="group border-b border-gray-200 pb-4">
