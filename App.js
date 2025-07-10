@@ -16,7 +16,7 @@ function App() {
       {/* Header */}
       <header className="bg-white shadow-sm py-4 px-6 md:px-8 flex flex-col items-center justify-center sticky top-0 z-50">
         <div className="flex items-center justify-center w-full mb-2 md:mb-0">
-          <h1 className="text-3xl font-bold text-gray-900">getferal.ai</h1>
+          <h1 className="text-3xl font-bold text-gray-900"> FERAL</h1>
         </div>
         {/* Mobile menu button */}
         <button
@@ -127,11 +127,11 @@ const HomeSection = () => (
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Feral AI Documentation</h2>
     <p className="text-lg text-gray-700 leading-relaxed mb-4">
       Feral AI provides a cutting-edge solution for segmenting and analyzing animal behavior directly from video data.
-      Our algorithm leverages advanced machine learning techniques to automate the tedious process of behavioral annotation,
+      Our algorithm automates the tedious process of behavioral annotation,
       allowing researchers to focus on insights rather than manual data extraction.
     </p>
     <p className="text-gray-600 leading-relaxed">
-      This documentation will guide you through the installation, data preparation, usage, and advanced features of Feral AI.
+      This documentation will guide you through the installation, data preparation, usage, and advanced features of Feral.
       Explore our interactive tools to ensure your datasets are perfectly structured for optimal performance.
     </p>
     <div className="mt-6 flex flex-wrap gap-4">
@@ -149,7 +149,7 @@ const GettingStartedSection = () => (
   <section className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Getting Started</h2>
     <p className="text-gray-700 leading-relaxed">
-      This section will walk you through the initial steps to get Feral AI up and running.
+      This section will walk you through the initial steps to get Feral up and running.
       You'll learn about prerequisites, installation, and a basic workflow.
     </p>
     <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Prerequisites</h3>
@@ -182,13 +182,31 @@ const InstallationSection = () => (
   </section>
 );
 
+const InstallationSection = () => (
+  <section className="bg-white p-8 rounded-lg shadow-md mb-8">
+    <h2 className="text-3xl font-bold text-gray-900 mb-4">Installation</h2>
+    <p className="text-gray-700 leading-relaxed">
+      Feral AI can be installed via pip or from source. We recommend using a virtual environment.
+    </p>
+    <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Using pip</h3>
+    <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+      <pre><code>pip install feral-ai</code></pre>
+    </div>
+    <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">From source</h3>
+    <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+      <pre><code>git clone https://github.com/your-repo/feral-ai.git<br/>cd feral-ai<br/>pip install -e .</code></pre>
+    </div>
+  </section>
+);
+
 const DataPreparationSection = () => (
   <section className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Data Preparation</h2>
     <p className="text-gray-700 leading-relaxed">
-      Proper data preparation is crucial for Feral AI's performance. This section details the expected
+      Proper data preparation is crucial for Feral performance. This section details the expected
       directory structure and file formats for your video and annotation data.
     </p>
+    
     <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Directory Structure</h3>
     <p className="text-gray-700 leading-relaxed mb-2">
       Your project directory should generally follow this structure:
@@ -200,13 +218,109 @@ const DataPreparationSection = () => (
         │   ├── video1.mp4<br/>
         │   └── video2.avi<br/>
         └── annotations/<br/>
-            ├── video1_annotations.csv<br/>
-            └── video2_annotations.json
+            └── video_annotations.json
       </code></pre>
     </div>
+    
     <p className="text-gray-700 leading-relaxed mt-4">
-      For a detailed check of your dataset's compliance, please use the <a href="#" onClick={() => window.alert('Navigating to Dataset Validator')} className="text-gray-600 hover:underline">Dataset Validator</a> tool.
+      Ensure that your video files are in a supported format (e.g., MP4, AVI) and that your annotation files
+      are structured correctly. Feral supports the following JSON structure for annotations:
     </p>
+
+    <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">JSON Structure</h3>
+    <p className="text-gray-700 leading-relaxed mb-4">
+      Your dataset JSON file must contain four main sections that define a labeled video dataset for training:
+    </p>
+    
+    <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+      <pre><code>{`{
+  "labels_are_mece": true,
+  "class_names": {
+    "0": "other",
+    "1": "contact", 
+    "2": "attempt",
+    "3": "flight",
+    "4": "kicking",
+    "5": "genital_contact",
+    "6": "mating"
+  },
+  "labels": {
+    "video_file_1.mp4": [0, 0, 1, 1, 2, 0, 0, 3, 3, 0],
+    "video_file_2.mp4": [0, 0, 0, 4, 4, 5, 6, 6, 0, 0],
+    "video_file_3.mp4": [0, 1, 1, 0, 0, 0, 2, 2, 3, 0]
+  },
+  "splits": {
+    "train": [
+      "video_file_1.mp4",
+      "video_file_2.mp4"
+    ],
+    "val": [
+      "video_file_3.mp4"
+    ]
+  }
+}`}</code></pre>
+    </div>
+
+    <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Field Descriptions</h3>
+    
+    <div className="space-y-4">
+      <div>
+        <h4 className="text-lg font-semibold text-gray-800 mb-2">labels_are_mece (boolean)</h4>
+        <p className="text-gray-700 leading-relaxed">
+          <strong>Required:</strong> Yes<br/>
+          <strong>Description:</strong> Indicates whether labels follow MECE principles (Mutually Exclusive, Collectively Exhaustive)<br/>
+          <strong>Value:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">true</code> or <code className="bg-gray-100 px-2 py-1 rounded text-sm">false</code>
+        </p>
+      </div>
+
+      <div>
+        <h4 className="text-lg font-semibold text-gray-800 mb-2">class_names (object)</h4>
+        <p className="text-gray-700 leading-relaxed">
+          <strong>Required:</strong> Yes<br/>
+          <strong>Description:</strong> Maps numeric class IDs to human-readable class names<br/>
+          <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{"class_id": "class_name"}</code><br/>
+          <strong>Note:</strong> Class IDs must be strings, even for numeric values (e.g., <code className="bg-gray-100 px-2 py-1 rounded text-sm">"0"</code>, <code className="bg-gray-100 px-2 py-1 rounded text-sm">"1"</code>)
+        </p>
+      </div>
+
+      <div>
+        <h4 className="text-lg font-semibold text-gray-800 mb-2">labels (object)</h4>
+        <p className="text-gray-700 leading-relaxed">
+          <strong>Required:</strong> Yes<br/>
+          <strong>Description:</strong> Contains frame-by-frame or time-segment labels for each video<br/>
+          <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{"video_filename.mp4": [array_of_class_ids]}</code><br/>
+          <strong>Note:</strong> Each integer in the array must correspond to a class ID defined in <code className="bg-gray-100 px-2 py-1 rounded text-sm">class_names</code>
+        </p>
+      </div>
+
+      <div>
+        <h4 className="text-lg font-semibold text-gray-800 mb-2">splits (object)</h4>
+        <p className="text-gray-700 leading-relaxed">
+          <strong>Required:</strong> Yes<br/>
+          <strong>Description:</strong> Defines dataset partitions for training and validation<br/>
+          <strong>Fields:</strong><br/>
+          • <code className="bg-gray-100 px-2 py-1 rounded text-sm">train</code>: Array of video filenames for training<br/>
+          • <code className="bg-gray-100 px-2 py-1 rounded text-sm">val</code>: Array of video filenames for validation<br/>
+          <strong>Note:</strong> All filenames must have corresponding entries in the <code className="bg-gray-100 px-2 py-1 rounded text-sm">labels</code> section
+        </p>
+      </div>
+    </div>
+
+    <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Requirements</h3>
+    <ul className="text-gray-700 leading-relaxed space-y-2">
+      <li><strong>Consistency:</strong> All video files referenced in <code className="bg-gray-100 px-2 py-1 rounded text-sm">splits</code> must have corresponding label data in <code className="bg-gray-100 px-2 py-1 rounded text-sm">labels</code></li>
+      <li><strong>Valid Class IDs:</strong> All integers in label arrays must exist as keys in <code className="bg-gray-100 px-2 py-1 rounded text-sm">class_names</code></li>
+      <li><strong>File Extensions:</strong> Video filenames should include the <code className="bg-gray-100 px-2 py-1 rounded text-sm">.mp4</code> extension</li>
+      <li><strong>Array Length:</strong> Label arrays should match the temporal segmentation of their corresponding videos</li>
+    </ul>
+
+    <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
+      <p className="text-blue-800 font-medium">
+        💡 <strong>Tip:</strong> The above structure allows the training system to load video files and their corresponding labels, 
+        map numeric labels to meaningful class names, split the dataset into training and validation sets, 
+        and understand whether labels are mutually exclusive.
+      </p>
+    </div>
   </section>
 );
 
