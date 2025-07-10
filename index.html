@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>getferal.ai Documentation</title>
+    <title>FERAL Documentation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -77,9 +77,10 @@
                         <nav className="hidden md:flex space-x-6 mt-4 md:mt-0">
                             <NavLink section="home" current={activeSection} onClick={handleNavClick}>Home</NavLink>
                             <NavLink section="getting-started" current={activeSection} onClick={handleNavClick}>Getting Started</NavLink>
-                            <NavLink section="api-reference" current={activeSection} onClick={handleNavClick}>API Reference</NavLink>
-                            <NavLink section="interactive-tools" current={activeSection} onClick={handleNavClick}>Interactive Tools</NavLink>
+                            <NavLink section="data-preparation" current={activeSection} onClick={handleNavClick}>Data Preparation</NavLink>
+                            <NavLink section="dataset-validator" current={activeSection} onClick={handleNavClick}>Dataset Validator</NavLink>
                             <NavLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</NavLink>
+                            <NavLink section="contact" current={activeSection} onClick={handleNavClick}>Contact</NavLink>
                         </nav>
                     </header>
 
@@ -91,13 +92,11 @@
                             <nav className="space-y-2">
                                 <SidebarLink section="home" current={activeSection} onClick={handleNavClick}>Introduction</SidebarLink>
                                 <SidebarLink section="getting-started" current={activeSection} onClick={handleNavClick}>Getting Started</SidebarLink>
-                                <SidebarLink section="installation" current={activeSection} onClick={handleNavClick}>Installation</SidebarLink>
                                 <SidebarLink section="data-preparation" current={activeSection} onClick={handleNavClick}>Data Preparation</SidebarLink>
                                 <SidebarLink section="running-feral" current={activeSection} onClick={handleNavClick}>Running Feral</SidebarLink>
-                                <SidebarLink section="api-reference" current={activeSection} onClick={handleNavClick}>API Reference</SidebarLink>
-                                <SidebarLink section="interactive-tools" current={activeSection} onClick={handleNavClick}>Interactive Tools</SidebarLink>
                                 <SidebarLink section="dataset-validator" current={activeSection} onClick={handleNavClick}>Dataset Validator</SidebarLink>
                                 <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</SidebarLink>
+                                <SidebarLink section="contact" current={activeSection} onClick={handleNavClick}>Contact Us</SidebarLink>
                                 <SidebarLink section="faq" current={activeSection} onClick={handleNavClick}>FAQ</SidebarLink>
                             </nav>
                         </aside>
@@ -106,13 +105,11 @@
                         <main className="flex-1 p-6 md:p-8 overflow-y-auto">
                             {activeSection === 'home' && <HomeSection handleNavClick={handleNavClick} />}
                             {activeSection === 'getting-started' && <GettingStartedSection handleNavClick={handleNavClick} />}
-                            {activeSection === 'installation' && <InstallationSection />}
                             {activeSection === 'data-preparation' && <DataPreparationSection />}
                             {activeSection === 'running-feral' && <RunningFeralSection handleNavClick={handleNavClick} />}
-                            {activeSection === 'api-reference' && <ApiReferenceSection />}
-                            {activeSection === 'interactive-tools' && <InteractiveToolsSection handleNavClick={handleNavClick} />}
                             {activeSection === 'dataset-validator' && <DatasetValidatorSection />}
                             {activeSection === 'examples' && <ExamplesSection />}
+                            {activeSection === 'contact' && <ContactSection />}
                             {activeSection === 'faq' && <FAQSection />}
                         </main>
                     </div>
@@ -156,16 +153,66 @@
         // Content Sections
         const HomeSection = ({ handleNavClick }) => (
             <section id="home" className="bg-white p-8 rounded-lg shadow-md mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Feral AI Documentation</h2>
-                <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                    Feral AI provides a cutting-edge solution for segmenting and analyzing animal behavior directly from video data.
-                    Our algorithm leverages advanced machine learning techniques to automate the tedious process of behavioral annotation,
-                    allowing researchers to focus on insights rather than manual data extraction.
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to FERAL Documentation</h2>
+                
+                <p className="text-gray-700 leading-relaxed mb-4">
+                    <strong>FERAL (Feature Extraction for Recognition of Animal Locomotion) is an open-source solution for precise animal behavior segmentation and analysis directly from video data, without the need for tracking and pose estimation.</strong>
                 </p>
-                <p className="text-gray-600 leading-relaxed">
-                    This documentation will guide you through the installation, data preparation, usage, and advanced features of Feral AI.
-                    Explore our interactive tools to ensure your datasets are perfectly structured for optimal performance.
+                
+                <p className="text-gray-700 leading-relaxed mb-4">
+                    <strong>The idea behind FERAL is simple: leveraging advanced video understanding models to automate the annotations, 
+                    detection and analysis of discrete behaviors directly from videos.</strong> We believe there is life beyond labelling. For this, we want FERAL to be a user-friendly, ready-to-use 
+                    tool for researchers and we welcome contributions from the community to make it even better!
                 </p>
+
+                <p className="text-gray-700 leading-relaxed mb-6">
+                    We hope that this comprehensive documentation will seamlessly guide you through the installation process, data preparation best 
+                    practices, intuitive usage, and use of our algorithm. <strong>We suggest to start from the Getting Started section.</strong> Should you have
+                    any questions or need assistance, feel free to reach out to us via the Contact section.
+                </p>
+
+                {/* Acknowledgment Section */}
+                <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-4">👨‍🔬 Acknowledgments</h3>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        FERAL was developed at The Rockefeller University by:
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="bg-white p-4 rounded-lg border border-gray-100">
+                            <div className="flex items-center mb-2">
+                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                    <span className="text-green-600 font-semibold text-sm">PS</span>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-gray-900">Petr Skovorodnikov</h4>
+                                    <p className="text-sm text-gray-600">Researcher & Lead Developer</p>
+                                </div>
+                            </div>
+                            <p className="text-sm text-gray-700">
+                                <a href="mailto:pskovorodnikov@rockefeller.edu" className="text-blue-600 hover:underline">
+                                    pskovorodnikov@rockefeller.edu
+                                </a>
+                            </p>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg border border-gray-100">
+                            <div className="flex items-center mb-2">
+                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <span className="text-blue-600 font-semibold text-sm">JR</span>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-gray-900">Jacopo Razzauti</h4>
+                                    <p className="text-sm text-gray-600">Co-Developer & Researcher</p>
+                                </div>
+                            </div>
+                            <p className="text-sm text-gray-700">
+                                <a href="mailto:jrazzauti@rockefeller.edu" className="text-blue-600 hover:underline">
+                                    jrazzauti@rockefeller.edu
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="mt-6 flex flex-wrap gap-4">
                     <button
                         onClick={() => handleNavClick('getting-started')}
@@ -271,158 +318,6 @@
                     </div>
                 </div>
 
-                {/* Detailed Instructions */}
-                <div className="space-y-8">
-                    {/* Local Installation Details */}
-                    <div className="border border-blue-200 rounded-lg p-6">
-                        <h3 className="text-2xl font-semibold text-blue-900 mb-4">🖥️ Option 1: Local Installation</h3>
-                        
-                        <div className="bg-blue-50 p-4 rounded-lg mb-4">
-                            <h4 className="font-semibold text-blue-800 mb-2">Prerequisites</h4>
-                            <ul className="list-disc list-inside text-blue-700 space-y-1 text-sm">
-                                <li>NVIDIA GPU with CUDA support (GTX 1060 or better recommended)</li>
-                                <li>CUDA 11.8 or higher installed</li>
-                                <li>Python 3.8-3.11</li>
-                                <li>Anaconda or Miniconda</li>
-                                <li>At least 8GB RAM (16GB recommended)</li>
-                            </ul>
-                        </div>
-
-                        <h4 className="font-semibold text-gray-800 mb-3">Installation Steps</h4>
-                        <div className="space-y-3">
-                            <div className="bg-gray-100 p-3 rounded-md">
-                                <p className="font-mono text-sm text-gray-700 mb-1"># Create conda environment</p>
-                                <code className="text-sm">conda create -n feral python=3.10</code>
-                            </div>
-                            <div className="bg-gray-100 p-3 rounded-md">
-                                <p className="font-mono text-sm text-gray-700 mb-1"># Activate environment</p>
-                                <code className="text-sm">conda activate feral</code>
-                            </div>
-                            <div className="bg-gray-100 p-3 rounded-md">
-                                <p className="font-mono text-sm text-gray-700 mb-1"># Install PyTorch with CUDA</p>
-                                <code className="text-sm">pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118</code>
-                            </div>
-                            <div className="bg-gray-100 p-3 rounded-md">
-                                <p className="font-mono text-sm text-gray-700 mb-1"># Install FERAL</p>
-                                <code className="text-sm">pip install feral-ai</code>
-                            </div>
-                            <div className="bg-gray-100 p-3 rounded-md">
-                                <p className="font-mono text-sm text-gray-700 mb-1"># Run training</p>
-                                <code className="text-sm">feral train --config your_config.yaml --data your_data.json</code>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Google Colab Details */}
-                    <div className="border border-orange-200 rounded-lg p-6">
-                        <h3 className="text-2xl font-semibold text-orange-900 mb-4">☁️ Option 2: Google Colab</h3>
-                        
-                        <div className="bg-orange-50 p-4 rounded-lg mb-4">
-                            <h4 className="font-semibold text-orange-800 mb-2">What you'll need</h4>
-                            <ul className="list-disc list-inside text-orange-700 space-y-1 text-sm">
-                                <li>Google account with Google Drive access</li>
-                                <li>Your video files and JSON dataset</li>
-                                <li>Internet connection for uploading data</li>
-                            </ul>
-                        </div>
-
-                        <h4 className="font-semibold text-gray-800 mb-3">Setup Steps</h4>
-                        <div className="space-y-3">
-                            <div className="flex items-start">
-                                <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">1</div>
-                                <div>
-                                    <p className="font-medium text-gray-800">Upload your data to Google Drive</p>
-                                    <p className="text-gray-600 text-sm">Create a folder in Google Drive and upload your videos and JSON dataset file.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start">
-                                <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">2</div>
-                                <div>
-                                    <p className="font-medium text-gray-800">Open our FERAL Colab notebook</p>
-                                    <p className="text-gray-600 text-sm">Click the link to access our pre-configured Jupyter notebook.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start">
-                                <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">3</div>
-                                <div>
-                                    <p className="font-medium text-gray-800">Mount Google Drive and import your data</p>
-                                    <p className="text-gray-600 text-sm">Run the provided code cells to connect to your Drive and load your dataset.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start">
-                                <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">4</div>
-                                <div>
-                                    <p className="font-medium text-gray-800">Run the training cells</p>
-                                    <p className="text-gray-600 text-sm">Execute the notebook cells to start training your FERAL model.</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div className="mt-4 p-4 bg-orange-100 rounded-lg">
-                            <p className="text-orange-800 text-sm">
-                                <strong>Note:</strong> Google Colab has session limits (12 hours) and may disconnect. 
-                                For longer training jobs, consider using Colab Pro or switching to RunPod.
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* RunPod Details */}
-                    <div className="border border-green-200 rounded-lg p-6">
-                        <h3 className="text-2xl font-semibold text-green-900 mb-4">🚀 Option 3: RunPod (Recommended)</h3>
-                        
-                        <div className="bg-green-50 p-4 rounded-lg mb-4">
-                            <h4 className="font-semibold text-green-800 mb-2">Why RunPod?</h4>
-                            <ul className="list-disc list-inside text-green-700 space-y-1 text-sm">
-                                <li>Professional-grade GPUs (RTX 4090, A100, H100)</li>
-                                <li>Persistent storage - your work is saved between sessions</li>
-                                <li>No session timeouts - run training for days if needed</li>
-                                <li>Pre-configured FERAL environment</li>
-                                <li>Pay-per-use pricing - only pay for what you use</li>
-                            </ul>
-                        </div>
-
-                        <h4 className="font-semibold text-gray-800 mb-3">Setup Steps</h4>
-                        <div className="space-y-3">
-                            <div className="flex items-start">
-                                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">1</div>
-                                <div>
-                                    <p className="font-medium text-gray-800">Create RunPod account</p>
-                                    <p className="text-gray-600 text-sm">Sign up at runpod.io and add credits to your account.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start">
-                                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">2</div>
-                                <div>
-                                    <p className="font-medium text-gray-800">Deploy FERAL template</p>
-                                    <p className="text-gray-600 text-sm">Search for "FERAL" in RunPod templates and deploy an instance.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start">
-                                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">3</div>
-                                <div>
-                                    <p className="font-medium text-gray-800">Upload your data</p>
-                                    <p className="text-gray-600 text-sm">Use the Jupyter interface to upload your videos and JSON dataset.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start">
-                                <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-1">4</div>
-                                <div>
-                                    <p className="font-medium text-gray-800">Run training</p>
-                                    <p className="text-gray-600 text-sm">Open the provided FERAL notebook and start training with your data.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-4 p-4 bg-green-100 rounded-lg">
-                            <p className="text-green-800 text-sm">
-                                <strong>Estimated costs:</strong> $0.50-2.00 per hour depending on GPU type. 
-                                Most training jobs complete within 2-8 hours.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Next Steps */}
                 <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mt-8">
                     <h3 className="text-xl font-semibold text-gray-900 mb-4">🎯 Next Steps</h3>
                     <p className="text-gray-700 mb-4">
@@ -452,29 +347,10 @@
             </section>
         );
 
-        const InstallationSection = () => (
-            <section id="installation" className="bg-white p-8 rounded-lg shadow-md mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">Installation</h2>
-                <p className="text-gray-700 leading-relaxed">
-                    Feral AI can be installed via pip or from source. We recommend using a virtual environment.
-                </p>
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Using pip</h3>
-                <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>pip install feral-ai</code></pre>
-                </div>
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">From source</h3>
-                <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>{`git clone https://github.com/your-repo/feral-ai.git
-cd feral-ai
-pip install -e .`}</code></pre>
-                </div>
-            </section>
-        );
-
         const DataPreparationSection = () => (
             <section id="data-preparation" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Data Preparation</h2>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-gray-700 leading-relaxed mb-4">
                     Proper data preparation is crucial for Feral performance. This section details the expected
                     directory structure and file formats for your video and annotation data.
                 </p>
@@ -600,9 +476,6 @@ pip install -e .`}</code></pre>
                     <li><strong>BORIS</strong> (Behavioral Observation Research Interactive Software) - Free and open-source event logging software</li>
                     <li><strong>EthoVision XT</strong> (Noldus) - Commercial video tracking software for animal behavior</li>
                     <li><strong>The Observer XT</strong> (Noldus) - Professional software for behavioral research</li>
-                    <li><strong>JAABA</strong> (Janelia Automatic Animal Behavior Annotator) - Machine learning-based annotation tool</li>
-                    <li><strong>DeepLabCut</strong> - Deep learning-based pose estimation and tracking</li>
-                    <li><strong>ToxTrac</strong> - Fast and robust tracking software</li>
                 </ul>
 
                 <p className="text-gray-700 leading-relaxed mb-4">
@@ -710,13 +583,13 @@ def convert_tsv_to_json(tsv_folder_path):
                 <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
                     <p className="text-yellow-800 font-medium">
                         ⚠️ <strong>Note:</strong> This script assumes your BORIS TSV files contain columns for 'Media duration (s)', 'FPS', 'Behavior', 'Behavior type', and 'Time'. 
-                        You may need to adjust the column names and behavioral mappings based on your specific annotation setup.
+                        Make sure the files contain these columns.
                     </p>
                 </div>
 
                 <p className="text-gray-700 leading-relaxed mt-4">
                     Similar conversion scripts are available for other popular annotation tools. If you're using a different annotation software, 
-                    please contact our support team or check our GitHub repository for additional conversion utilities.
+                    please contact us or check our GitHub repository for additional conversion utilities.
                 </p>
             </section>
         );
@@ -731,59 +604,6 @@ def convert_tsv_to_json(tsv_folder_path):
                 <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
                     <pre><code>feral-ai process --config config.yaml --output results/</code></pre>
                 </div>
-                <p className="text-gray-700 leading-relaxed mt-4">
-                    Refer to the{' '}
-                    <button
-                        onClick={() => handleNavClick('api-reference')}
-                        className="text-blue-600 hover:underline font-medium"
-                    >
-                        API Reference
-                    </button>{' '}
-                    for all available command-line arguments and configuration options.
-                </p>
-            </section>
-        );
-
-        const ApiReferenceSection = () => (
-            <section id="api-reference" className="bg-white p-8 rounded-lg shadow-md mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">API Reference</h2>
-                <p className="text-gray-700 leading-relaxed">
-                    This section provides detailed documentation for all functions, classes, and command-line arguments
-                    available in the Feral AI library.
-                </p>
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">feral_ai.core.process_video</h3>
-                <p className="text-gray-700 leading-relaxed mb-2">
-                    Processes a single video file to extract behavioral segments.
-                </p>
-                <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>{`def process_video(video_path: str, config: dict) -> dict:
-    """
-    Processes a video and returns behavioral segmentation data.
-
-    Args:
-        video_path (str): Path to the input video file.
-        config (dict): Configuration dictionary for the algorithm.
-
-    Returns:
-        dict: A dictionary containing segmentation results.
-    """`}</code></pre>
-                </div>
-            </section>
-        );
-
-        const InteractiveToolsSection = ({ handleNavClick }) => (
-            <section id="interactive-tools" className="bg-white p-8 rounded-lg shadow-md mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">Interactive Tools</h2>
-                <p className="text-gray-700 leading-relaxed mb-4">
-                    Our interactive tools help you prepare your data and understand Feral AI's requirements.
-                    Use the Dataset Validator to ensure your files are correctly structured before running the algorithm.
-                </p>
-                <button
-                    className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
-                    onClick={() => handleNavClick('dataset-validator')}
-                >
-                    Go to Dataset Validator
-                </button>
             </section>
         );
 
@@ -1246,6 +1066,189 @@ def convert_tsv_to_json(tsv_folder_path):
             </section>
         );
 
+        const ContactSection = () => {
+            const [formData, setFormData] = useState({
+                name: '',
+                email: '',
+                subject: '',
+                message: ''
+            });
+
+            const handleInputChange = (e) => {
+                const { name, value } = e.target;
+                setFormData(prev => ({
+                    ...prev,
+                    [name]: value
+                }));
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                
+                // Create mailto link with both recipients
+                const recipients = 'jrazzauti@rockefeller.edu,pskovorodnikov@rockefeller.edu';
+                const subject = encodeURIComponent(formData.subject || 'FERAL AI Inquiry');
+                const body = encodeURIComponent(
+                    `Name: ${formData.name}\n` +
+                    `Email: ${formData.email}\n\n` +
+                    `Message:\n${formData.message}`
+                );
+                
+                const mailtoLink = `mailto:${recipients}?subject=${subject}&body=${body}`;
+                window.location.href = mailtoLink;
+            };
+
+            const sendDirectEmail = (email, name) => {
+                const subject = encodeURIComponent('FERAL AI Inquiry');
+                const body = encodeURIComponent(`Hello ${name},\n\nI have a question about FERAL AI:\n\n`);
+                const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+                window.location.href = mailtoLink;
+            };
+
+            return (
+                <section id="contact" className="bg-white p-8 rounded-lg shadow-md mb-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Contact Us</h2>
+                    <p className="text-gray-700 leading-relaxed mb-8">
+                        Have questions about FERAL? Need help with your research or implementation? 
+                        We're here to help! Reach out to our team for support, collaborations, or any inquiries.
+                    </p>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/* Contact Form */}
+                        <div>
+                            <h3 className="text-2xl font-semibold text-gray-900 mb-6">📧 Send us a Message</h3>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div>
+                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Your Name *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        name="name"
+                                        required
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        placeholder="Enter your full name"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Your Email *
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        required
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        placeholder="your.email@institution.edu"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Subject
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="subject"
+                                        name="subject"
+                                        value={formData.subject}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        placeholder="Brief description of your inquiry"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                                        Message *
+                                    </label>
+                                    <textarea
+                                        id="message"
+                                        name="message"
+                                        required
+                                        rows="6"
+                                        value={formData.message}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
+                                        placeholder="Tell us about your project, questions, or how we can help..."
+                                    ></textarea>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="w-full bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
+                                >
+                                    📧 Send Message
+                                </button>
+                            </form>
+
+                            <p className="text-sm text-gray-600 mt-4">
+                                * This will open your default email client to send the message
+                            </p>
+                        </div>
+
+                        {/* Direct Contact & Team Info */}
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-2xl font-semibold text-gray-900 mb-6">👥 Our Team</h3>
+                                
+                                {/* Team Member 1 */}
+                                <div className="bg-blue-50 p-6 rounded-lg border border-blue-200 mb-4">
+                                    <h4 className="text-lg font-semibold text-blue-900 mb-2">
+                                        🧬 Jacopo Razzauti
+                                    </h4>
+                                    <p className="text-sm text-blue-700 mb-3">
+                                        Lead Developer & Researcher
+                                    </p>
+                                    <button
+                                        onClick={() => sendDirectEmail('jrazzauti@rockefeller.edu', 'Jacopo')}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 text-sm"
+                                    >
+                                        ✉️ jrazzauti@rockefeller.edu
+                                    </button>
+                                </div>
+
+                                {/* Team Member 2 */}
+                                <div className="bg-green-50 p-6 rounded-lg border border-green-200">
+                                    <h4 className="text-lg font-semibold text-green-900 mb-2">
+                                        🤖 Petr Skovorodnikov
+                                    </h4>
+                                    <p className="text-sm text-green-700 mb-3">
+                                        AI Researcher & Co-Developer
+                                    </p>
+                                    <button
+                                        onClick={() => sendDirectEmail('pskovorodnikov@rockefeller.edu', 'Petr')}
+                                        className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 text-sm"
+                                    >
+                                        ✉️ pskovorodnikov@rockefeller.edu
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Institution Info */}
+                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                <div className="flex items-center mb-2">
+                                    <span className="mr-2">🏛️</span>
+                                    <span className="font-semibold text-blue-900">The Rockefeller University</span>
+                                </div>
+                                <p className="text-sm text-blue-700">
+                                    Laboratory of Neurogenetics and Behavior<br/>
+                                    1230 York Avenue, New York, NY 10065
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
         const FAQSection = () => (
             <section id="faq" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
@@ -1258,7 +1261,7 @@ def convert_tsv_to_json(tsv_folder_path):
                             </svg>
                         </summary>
                         <p className="mt-2 text-gray-600">
-                            Feral AI leverages state-of-the-art deep learning models, achieving high accuracy comparable to,
+                            Feral leverages state-of-the-art deep learning models, achieving high accuracy comparable to,
                             and often exceeding, manual annotation for a wide range of behaviors. Accuracy can vary based on
                             video quality and specific behavioral complexity.
                         </p>

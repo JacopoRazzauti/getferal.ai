@@ -138,9 +138,9 @@ const HomeSection = ({ handleNavClick }) => (
   <section id="home" className="bg-white p-8 rounded-lg shadow-md mb-8">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Feral AI Documentation</h2>
     <p className="text-lg text-gray-700 leading-relaxed mb-4">
-      Feral AI provides a cutting-edge solution for segmenting and analyzing animal behavior directly from video data.
-      Our algorithm automates the tedious process of behavioral annotation,
-      allowing researchers to focus on insights rather than manual data extraction.
+    FERAL is your cutting-edge, open-source solution for precise animal behavior segmentation and analysis directly from video data. Developed with a commitment to advancing scientific discovery, our powerful algorithm leverages advanced machine learning techniques to automate the traditionally time-consuming process of behavioral annotation. This liberates researchers like you to delve deeper into insights, rather than being bogged down by manual data extraction.
+    Born from rigorous research at The Rockefeller University, FERAL was meticulously crafted by Petr Skovordnikov and Jacopo Razzauti. It is specifically intended for academic purposes, providing a robust and reliable tool for the scientific community to accelerate breakthroughs in ethology, neuroscience, and beyond.
+    This comprehensive documentation will seamlessly guide you through the installation process, data preparation best practices, intuitive usage, and unlock the advanced features of FERAL. Dive into our interactive tools to ensure your datasets are impeccably structured for optimal performance and unlock the full potential of your behavioral research.
     </p>
     <p className="text-gray-600 leading-relaxed">
       This documentation will guide you through the installation, data preparation, usage, and advanced features of Feral.
