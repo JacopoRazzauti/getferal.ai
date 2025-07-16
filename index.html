@@ -781,62 +781,12 @@ if __name__ == "__main__":
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
                 Label Preparation
             </h2>
-        
-            <p className="text-gray-700 leading-relaxed mb-4">
-                {/* Placeholder: explain why well-formatted labels matter */}
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                ultricies, felis nec pulvinar rhoncus, nibh sapien dignissim magna, vel
-                hendrerit justo lectus quis urna.
-            </p>
-        
-            <p className="text-gray-700 leading-relaxed mb-4">
-                {/* Placeholder: outline the steps users must follow */}
-                Integer vitae lacus et enim cursus vestibulum. Donec rutrum, nunc sed
-                tincidunt egestas, purus elit fermentum augue, sed gravida lorem odio
-                in odio.
-            </p>
-        
-            <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>Step 1: Placeholder instruction.</li>
-                <li>Step 2: Placeholder instruction.</li>
-                <li>Step 3: Placeholder instruction.</li>
-            </ul>
-
-            <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">📁 Directory Structure</h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                    After re-encoding your videos, organize your project directory following this structure:
-                </p>
-                <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>{`my_project/
-├── videos/                    # Re-encoded videos (512x512, H.264)
-│   ├── video1.mp4
-│   ├── video2.mp4
-│   └── video3.mp4
-└── annotations/
-    └── behavioral_labels.json  # Annotation file in FERAL format`}</code></pre>
-                </div>
-
-                <div className="mt-4 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
-                    <p className="text-blue-800 font-medium">
-                        📋 <strong>Important:</strong> All video files must be in the re-encoded format (512x512 resolution, H.264 codec) 
-                        as described in the section above. Mixed formats or non-standard resolutions may cause processing errors.
-                    </p>
-                </div>
-
-                <p className="text-gray-700 leading-relaxed mt-6 mb-4">
-                    Your annotation files must be structured correctly in JSON format. FERAL uses a specific schema 
-                    that defines behavioral classes, frame-by-frame labels, and dataset splits for training and validation.
-                </p>
-
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">📝 Annotation JSON Structure</h3>
-                <p className="text-gray-700 leading-relaxed mb-4">
-                    Your dataset JSON file must contain four main sections that define a labeled video dataset for training. 
-                    This structure allows FERAL to understand your behavioral classes, load corresponding labels, and split data appropriately.
+                    You need to structure your labels as a JSON file with a specific format. Here is an example of such file
                 </p>
 
                 <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
                     <pre><code>{`{
-  "labels_are_mece": true,
   "class_names": {
     "0": "other",
     "1": "contact",
@@ -866,50 +816,45 @@ if __name__ == "__main__":
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Field Descriptions</h3>
                 <div className="space-y-4">
                     <div>
-                        <h4 className="text-lg font-semibold text-gray-800 mb-2">labels_are_mece (boolean)</h4>
-                        <p className="text-gray-700 leading-relaxed">
-                            <strong>Required:</strong> Yes<br/>
-                            <strong>Description:</strong> Indicates whether labels follow MECE principles (Mutually Exclusive, Collectively Exhaustive). This is important for ensuring your behavioral categories are clearly defined and do not overlap, leading to more accurate model training.<br/>
-                            <strong>Value:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">true</code> or <code className="bg-gray-100 px-2 py-1 rounded text-sm">false</code>
-                        </p>
-                    </div>
-
-                    <div>
-                        <h4 className="text-lg font-semibold text-gray-800 mb-2">class_names (object)</h4>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-2">class_names</h4>
                         <p className="text-gray-700 leading-relaxed">
                             <strong>Required:</strong> Yes<br/>
                             <strong>Description:</strong> Maps numeric class IDs to human-readable class names<br/>
                             <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{'{'}"class_id": "class_name"{'}'}</code><br/>
-                            <strong>Note:</strong> Class IDs must be strings, even for numeric values (e.g., <code className="bg-gray-100 px-2 py-1 rounded text-sm">"0"</code>, <code className="bg-gray-100 px-2 py-1 rounded text-sm">"1"</code>)
+                            <strong>Note:</strong> Class IDs must be strings, even for numeric values (e.g., <code className="bg-gray-100 px-2 py-1 rounded text-sm">"0"</code>, <code className="bg-gray-100 px-2 py-1 rounded text-sm">"1"</code>). 
+                            Class ids have to be consecutive integers from 0 to number_of_classes - 1. 
+                            If you have a background class, that's assigned when none of meaningfull classes apply, call it "other", then it will be excluded in calculations of metrics that averrage things across classess. 
                         </p>
                     </div>
 
                     <div>
-                        <h4 className="text-lg font-semibold text-gray-800 mb-2">labels (object)</h4>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-2">labels</h4>
                         <p className="text-gray-700 leading-relaxed">
                             <strong>Required:</strong> Yes<br/>
-                            <strong>Description:</strong> Contains frame-by-frame or time-segment labels for each video<br/>
+                            <strong>Description:</strong> Contains frame-by-frame behavior labels for each video<br/>
                             <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{'{'}"video_filename.mp4": [array_of_class_ids]{'}'}</code><br/>
-                            <strong>Note:</strong> Each integer in the array must correspond to a class ID defined in <code className="bg-gray-100 px-2 py-1 rounded text-sm">class_names</code>
+                            <strong>Note:</strong> Each key should be a filename of the video (with extention). Each value in the dictionary is an integer array 
+                            of the same length as number of frames in teh corresponding video. Each value in the array must correspond to a class ID defined in <code className="bg-gray-100 px-2 py-1 rounded text-sm">class_names</code>
                         </p>
                     </div>
 
                     <div>
-                        <h4 className="text-lg font-semibold text-gray-800 mb-2">splits (object)</h4>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-2">splits</h4>
                         <p className="text-gray-700 leading-relaxed">
                             <strong>Required:</strong> Yes<br/>
                             <strong>Description:</strong> Defines dataset partitions for training and validation<br/>
                             <strong>Fields:</strong><br/>
                             • <code className="bg-gray-100 px-2 py-1 rounded text-sm">train</code>: Array of video filenames for training<br/>
                             • <code className="bg-gray-100 px-2 py-1 rounded text-sm">val</code>: Array of video filenames for validation<br/>
-                            <strong>Note:</strong> All filenames must have corresponding entries in the <code className="bg-gray-100 px-2 py-1 rounded text-sm">labels</code> section
+                            • <code className="bg-gray-100 px-2 py-1 rounded text-sm">inference</code>: Array of video filenames for inference of the trained model<br/>
+                            <strong>Note:</strong> Train and val filenames must have corresponding entries in the <code className="bg-gray-100 px-2 py-1 rounded text-sm">labels</code> section
                         </p>
                     </div>
                 </div>
 
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Requirements</h3>
                 <ul className="text-gray-700 leading-relaxed space-y-2">
-                    <li><strong>Consistency:</strong> All video files referenced in <code className="bg-gray-100 px-2 py-1 rounded text-sm">splits</code> must have corresponding label data in <code className="bg-gray-100 px-2 py-1 rounded text-sm">labels</code></li>
+                    <li><strong>Consistency:</strong> All video files referenced in train and val splits must have corresponding label data in <code className="bg-gray-100 px-2 py-1 rounded text-sm">labels</code></li>
                     <li><strong>Valid Class IDs:</strong> All integers in label arrays must exist as keys in <code className="bg-gray-100 px-2 py-1 rounded text-sm">class_names</code></li>
                     <li><strong>File Extensions:</strong> Video filenames should include the <code className="bg-gray-100 px-2 py-1 rounded text-sm">.mp4</code> extension</li>
                     <li><strong>Array Length:</strong> Label arrays should match the temporal segmentation of their corresponding videos</li>
@@ -918,40 +863,20 @@ if __name__ == "__main__":
                 <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
                     <p className="text-blue-800 font-medium">
                         💡 <strong>Tip:</strong> The above structure allows the training system to load video files and their corresponding labels,
-                        map numeric labels to meaningful class names, split the dataset into training and validation sets,
-                        and understand whether labels are mutually exclusive.
+                        map numeric labels to meaningful class names, split the dataset into training and validation sets.
                     </p>
                 </div>
 
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">🔄 Converting Existing Annotations to FERAL Format</h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                    FERAL doesn't provide a native annotation tool, but integrates seamlessly with existing behavioral annotation software. 
-                    Many researchers already use excellent tools for behavioral annotation, and we provide conversion scripts to transform 
-                    their outputs into FERAL's JSON format.
+                    FERAL doesn’t come with a built-in annotation interface. Instead, it integrates directly with the BORIS behavioral-annotation software. 
+                    If you use another tool, let us know and we’ll add support for it.
                 </p>
-                
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
-                    <h4 className="text-lg font-semibold text-gray-800 mb-3">Popular Annotation Tools Supported:</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-white p-3 rounded border">
-                            <h5 className="font-semibold text-gray-700">BORIS</h5>
-                            <p className="text-sm text-gray-600">Free, open-source event logging software</p>
-                        </div>
-                        <div className="bg-white p-3 rounded border">
-                            <h5 className="font-semibold text-gray-700">EthoVision XT</h5>
-                            <p className="text-sm text-gray-600">Commercial video tracking (Noldus)</p>
-                        </div>
-                        <div className="bg-white p-3 rounded border">
-                            <h5 className="font-semibold text-gray-700">The Observer XT</h5>
-                            <p className="text-sm text-gray-600">Professional behavioral research (Noldus)</p>
-                        </div>
-                    </div>
-                </div>
 
                 <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-4">
                     <p className="text-yellow-800 font-medium">
                         ⚠️ <strong>Important:</strong> When converting annotations, ensure that video filenames in your annotation data 
-                        match the re-encoded video files (with .mp4 extensions) rather than the original raw video files.
+                        match the re-encoded video files (with .mp4 extensions) rather than the original raw video file names.
                     </p>
                 </div>
 
@@ -1059,11 +984,6 @@ def convert_tsv_to_json(tsv_folder_path):
                         Make sure the files contain these columns.
                     </p>
                 </div>
-
-                <p className="text-gray-700 leading-relaxed mt-4">
-                    Similar conversion scripts are available for other popular annotation tools. If you're using a different annotation software, 
-                    please contact us or check our GitHub repository for additional conversion utilities.
-                </p>
 
             </section>
         );
