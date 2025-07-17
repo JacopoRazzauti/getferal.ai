@@ -1002,14 +1002,73 @@ def convert_tsv_to_json(tsv_folder_path):
         const RunningFeralSection = ({ handleNavClick }) => (
             <section id="running-feral" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Running Feral AI</h2>
+              
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Locally</h3>
                 <p className="text-gray-700 leading-relaxed">
-                    Once your data is prepared, you can run the Feral AI algorithm using the command-line interface.
+                  0. Make sure that you have installed:<br />
+                  &nbsp;&nbsp;- Python&nbsp;3.10<br />
+                  &nbsp;&nbsp;- PyTorch&nbsp;2.4.0<br />
+                  &nbsp;&nbsp;- CUDA&nbsp;12.4<br />
+                  You can try running with newer/older versions, maybe it will work.<br /><br />
+                  1. Clone the repo:&nbsp;
+                  <code className="font-mono break-all">git clone https://github.com/Skovorp/feral.git</code><br />
+                  2. <code className="font-mono">cd feral</code><br />
+                  3. <code className="font-mono">pip install -r requirements.txt</code><br />
+                  4. Now you can run Feral!<br />
+                  &nbsp;&nbsp;<code className="font-mono">
+                    python run.py path_to_folder_with_reencoded_videos&nbsp;path_to_labels_json
+                  </code><br /><br />
+                  To track the logs of your run, we use <strong>wandb</strong>. After you start your run, you can either
+                  use the shared <em>feral</em> workspace or paste your personal wandb API key. You can copy it after you
+                  sign up at&nbsp;
+                  <a href="https://wandb.ai/authorize" className="text-blue-600 hover:underline" rel="noopener noreferrer">
+                    https://wandb.ai/authorize
+                  </a>.
                 </p>
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Basic Usage</h3>
-                <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>feral-ai process --config config.yaml --output results/</code></pre>
-                </div>
-            </section>
+              
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">RunPod</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  1. Get your own RunPod account with about&nbsp;$10 on it, or contact us and we'll give you an account with some credit.<br />
+                  2. Go to&nbsp;
+                  <a
+                    href="https://console.runpod.io/deploy?gpu=H100%20SXM&count=1&template=runpod-torch-v240"
+                    className="text-blue-600 hover:underline"
+                    rel="noopener noreferrer"
+                  >
+                    this RunPod deploy link
+                  </a>
+                  . Make sure <em>SSH Terminal Access</em> and <em>Start Jupyter Notebook</em> are selected. Depending on the size of your data, you might want to increase disk size in <em>Edit&nbsp;Template&nbsp;&rarr;&nbsp;Volume&nbsp;Disk</em>.<br />
+                  3. Then go to “My&nbsp;Pods” (https://console.runpod.io/pods) and wait a little bit. Once the server is set up, click <em>Connect</em> and open the <em>Jupyter&nbsp;Lab</em> → :8888 button.<br />
+                  4. This should open a Jupyter Lab interface on your remote server. If it doesn't work, turn on a VPN.<br />
+                  5. At the bottom, in the “Other” section, click <em>Terminal</em>.<br />
+                  6. Run the following commands:<br />
+                  &nbsp;&nbsp;<code className="font-mono">
+                    git clone https://github.com/Skovorp/feral.git<br />
+                    cd feral<br />
+                    pip install -r requirements.txt
+                  </code><br />
+                  7. While it’s running, create a folder for the videos, then drag and drop your videos into it.<br />
+                  8. Also copy your config for the labels.<br />
+                  9. Run:&nbsp;
+                  <code className="font-mono">
+                    python run.py path_to_folder_with_reencoded_videos&nbsp;path_to_labels_json
+                  </code>
+                </p>
+              
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">What metrics to look at</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  - Check that loss is decreasing (per-batch loss can be noisy).<br />
+                  - Check average precision for different classes; see which classes are difficult for the model.<br />
+                  - frame-level mAP and overall mAP.<br />
+                  - EMA
+                </p>
+              
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Final results</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  In the end you'll get an&nbsp;<code className="font-mono">output_your_datetime.json</code> file
+                  with predictions for your inference and validation videos.
+                </p>
+              </section>
         );
 
         const DatasetValidatorSection = () => {
