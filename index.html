@@ -90,7 +90,7 @@
                             <NavLink section="video-preparation" current={activeSection} onClick={handleNavClick}>Video Preparation</NavLink>
                             <NavLink section="label-preparation" current={activeSection} onClick={handleNavClick}>Label Preparation</NavLink>
                             <NavLink section="dataset-validator" current={activeSection} onClick={handleNavClick}>Dataset Validator</NavLink>
-                            <NavLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</NavLink>
+                            <NavLink section="running-feral" current={activeSection} onClick={handleNavClick}>Running Feral</NavLink>
                             <NavLink section="contact" current={activeSection} onClick={handleNavClick}>Contact</NavLink>
                         </nav>
                     </header>
@@ -107,9 +107,9 @@
                                 <SidebarLink section="label-preparation" current={activeSection} onClick={handleNavClick}>Label Preparation</SidebarLink>
                                 <SidebarLink section="dataset-validator" current={activeSection} onClick={handleNavClick}>Dataset Validator</SidebarLink>
                                 <SidebarLink section="running-feral" current={activeSection} onClick={handleNavClick}>Running Feral</SidebarLink>
-                                <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</SidebarLink>
+                                
                                 <SidebarLink section="contact" current={activeSection} onClick={handleNavClick}>Contact Us</SidebarLink>
-                                <SidebarLink section="faq" current={activeSection} onClick={handleNavClick}>FAQ</SidebarLink>
+                                
                             </nav>
                         </aside>
 
@@ -121,9 +121,7 @@
                             {activeSection === 'label-preparation' && <LabelPreparationSection />}
                             {activeSection === 'running-feral' && <RunningFeralSection handleNavClick={handleNavClick} />}
                             {activeSection === 'dataset-validator' && <DatasetValidatorSection />}
-                            {activeSection === 'examples' && <ExamplesSection />}
                             {activeSection === 'contact' && <ContactSection />}
-                            {activeSection === 'faq' && <FAQSection />}
                         </main>
                     </div>
 
@@ -196,7 +194,7 @@
                                     <span className="text-green-600 font-semibold text-sm">PS</span>
                                 </div>
                                 <div>
-                                    <h4 className="font-semibold text-gray-900">Petr Skovorodnikov</h4>
+                                    <h4 className="font-semibold text-gray-900">Peter Skovorodnikov</h4>
                                     <p className="text-sm text-gray-600">Researcher & Lead Developer</p>
                                 </div>
                             </div>
@@ -819,6 +817,11 @@ if __name__ == "__main__":
     "val": [
       "video_file_3.mp4"
     ]
+    "inference": [
+      "video_file_4.mp4",
+      "video_file_5.mp4",
+      "video_file_6.mp4",
+    ]
   }
 }`}</code></pre>
                 </div>
@@ -866,16 +869,25 @@ if __name__ == "__main__":
                 <ul className="text-gray-700 leading-relaxed space-y-2">
                     <li><strong>Consistency:</strong> All video files referenced in train and val splits must have corresponding label data in <code className="bg-gray-100 px-2 py-1 rounded text-sm">labels</code></li>
                     <li><strong>Valid Class IDs:</strong> All integers in label arrays must exist as keys in <code className="bg-gray-100 px-2 py-1 rounded text-sm">class_names</code></li>
-                    <li><strong>File Extensions:</strong> Video filenames should include the <code className="bg-gray-100 px-2 py-1 rounded text-sm">.mp4</code> extension</li>
-                    <li><strong>Array Length:</strong> Label arrays should match the temporal segmentation of their corresponding videos</li>
+                    <li><strong>File Extensions:</strong> Video filenames should include the extension (e.g. .mp4)</li>
+                    <li><strong>Array Length:</strong> Each label array must be the same length as the frame count of its video </li>
                 </ul>
 
-                <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
-                    <p className="text-blue-800 font-medium">
-                        💡 <strong>Tip:</strong> The above structure allows the training system to load video files and their corresponding labels,
-                        map numeric labels to meaningful class names, split the dataset into training and validation sets.
+                <div className="mt-6 rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/70 p-4">
+                    <p className="text-blue-900 text-sm leading-relaxed">
+                      <span className="mr-1" role="img" aria-label="Light bulb">💡</span>
+                      <strong className="font-semibold">Tip:</strong>
+                      {" "}
+                      Not sure your JSON is valid? Try uploading it to our{" "}
+                      <button
+                        type="button"
+                        onClick={() => handleNavClick("dataset-validator")}
+                        className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-blue-700 bg-white/70 hover:bg-white shadow-sm ring-1 ring-inset ring-blue-300 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                      >
+                        Label Validation Tool
+                      </button>
                     </p>
-                </div>
+                  </div>
 
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">🔄 Converting Existing Annotations to FERAL Format</h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
@@ -914,7 +926,6 @@ def convert_tsv_to_json(tsv_folder_path):
     
     # Initialize the output structure
     out = {
-        "labels_are_mece": True,
         "class_names": {
             "0": "other",
             "1": "contact",
@@ -1089,7 +1100,7 @@ def convert_tsv_to_json(tsv_folder_path):
                 let isValid = true;
 
                 // Check required top-level keys
-                const requiredKeys = ['labels_are_mece', 'class_names', 'labels', 'splits'];
+                const requiredKeys = ['class_names', 'labels', 'splits'];
                 for (const key of requiredKeys) {
                     if (!(key in data)) {
                         issues.push(`Missing required key: "${key}"`);
@@ -1101,11 +1112,6 @@ def convert_tsv_to_json(tsv_folder_path):
                     return { isValid: false, issues, warnings, metadata: null };
                 }
 
-                // Validate labels_are_mece
-                if (typeof data.labels_are_mece !== 'boolean') {
-                    issues.push('labels_are_mece must be a boolean value');
-                    isValid = false;
-                }
 
                 // Validate class_names
                 if (typeof data.class_names !== 'object' || Array.isArray(data.class_names)) {
@@ -1681,7 +1687,7 @@ def convert_tsv_to_json(tsv_folder_path):
                                         Researcher & Lead Developer
                                     </p>
                                     <button
-                                        onClick={() => sendDirectEmail('pskovorodnikov@rockefeller.edu', 'Petr')}
+                                        onClick={() => sendDirectEmail('pskovorodnikov@rockefeller.edu', 'Peter')}
                                         className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 text-sm"
                                     >
                                         ✉️ pskovorodnikov@rockefeller.edu
@@ -1696,6 +1702,7 @@ def convert_tsv_to_json(tsv_folder_path):
                                     <span className="font-semibold text-blue-900">The Rockefeller University</span>
                                 </div>
                                 <p className="text-sm text-blue-700">
+                                    Data Science Platform <br/>
                                     Laboratory of Neurogenetics and Behavior<br/>
                                     1230 York Avenue, New York, NY 10065
                                 </p>
