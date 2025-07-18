@@ -1076,8 +1076,8 @@ def convert_tsv_to_json(tsv_folder_path):
               
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Final results</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  In the end you'll get an&nbsp;<code className="font-mono">output_your_datetime.json</code> file
-                  with predictions for your inference and validation videos.
+                  In the end you'll get an&nbsp;<code className="font-mono">_inference_&#123;run_name&#125;_&#123;%Y-%m-%d_%H-%M-%S&#125;.json</code> file inside your "answers" folder
+                  with predictions for your inference videos.
                 </p>
               </section>
         );
