@@ -1066,14 +1066,6 @@ def convert_tsv_to_json(tsv_folder_path):
                   </code>
                 </p>
               
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">What metrics to look at</h3>
-                <p className="text-gray-700 leading-relaxed">
-                  - Check that loss is decreasing (per-batch loss can be noisy).<br />
-                  - Check average precision for different classes; see which classes are difficult for the model.<br />
-                  - frame-level mAP and overall mAP.<br />
-                  - EMA
-                </p>
-              
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Final results</h3>
                 <p className="text-gray-700 leading-relaxed">
                   In the end you'll get an&nbsp;<code className="font-mono">_inference_&#123;run_name&#125;_&#123;%Y-%m-%d_%H-%M-%S&#125;.json</code> file inside your "answers" folder
