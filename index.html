@@ -395,7 +395,6 @@ import platform
 import urllib.request
 import zipfile
 import tarfile
-import shutil
 from multiprocessing import Pool
 import mimetypes
 from pathlib import Path
@@ -478,12 +477,7 @@ def setup_ffmpeg():
     os.makedirs(ffmpeg_dir, exist_ok=True)
     
     # Check if we already have a portable version
-    existing_ffmpeg = None
-    if platform_name == 'Windows':
-        existing_ffmpeg = os.path.join(ffmpeg_dir, 'ffmpeg.exe')
-    else:
-        existing_ffmpeg = os.path.join(ffmpeg_dir, 'ffmpeg')
-    
+    existing_ffmpeg = find_ffmpeg_binary(ffmpeg_dir, platform_name)
     if existing_ffmpeg and os.path.exists(existing_ffmpeg):
         print("✅ Using existing portable FFmpeg installation!")
         return existing_ffmpeg
@@ -527,7 +521,7 @@ def is_video_file(filepath):
 
 def process_file(args):
     """Process a single video file with ffmpeg."""
-    input_path, output_dir, ffmpeg_binary, preset = args
+    input_path, output_dir, ffmpeg_binary = args
     
     # Verify it's a video file
     if not is_video_file(input_path):
@@ -546,11 +540,11 @@ def process_file(args):
     # FFmpeg command for FERAL-compatible encoding
     cmd = [
         ffmpeg_binary, "-i", input_path,
-        "-vf", "scale=512:512:flags=lanczos",  # Resize to 512x512 with high-quality scaling
+        "-vf", "scale=256:256:flags=lanczos",  # Resize to 256x256 with high-quality scaling
         "-c:v", "libx264",                      # H.264 video codec
         "-pix_fmt", "yuv420p",                  # Standard pixel format
         "-crf", "25",                           # Constant rate factor (quality)
-        "-preset", preset,                      # Encoding speed/quality balance
+        "-preset", "superfast",                 # Encoding speed/quality balance
         "-an",                                  # Remove audio
         "-y",                                   # Overwrite output files
         output_path
@@ -571,9 +565,6 @@ def main():
     parser.add_argument("output_dir", help="Directory for re-encoded videos")
     parser.add_argument("--processes", "-p", type=int, default=4, 
                        help="Number of parallel processes (default: 4)")
-    parser.add_argument("--preset", default="medium",
-                       choices=["ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow"],
-                       help="FFmpeg encoding preset (default: medium)")
     
     args = parser.parse_args()
     
@@ -596,7 +587,7 @@ def main():
     for filename in os.listdir(args.input_dir):
         filepath = os.path.join(args.input_dir, filename)
         if os.path.isfile(filepath) and is_video_file(filepath):
-            input_files.append((filepath, args.output_dir, ffmpeg_binary, args.preset))
+            input_files.append((filepath, args.output_dir, ffmpeg_binary))
     
     if not input_files:
         print("❌ No video files found in input directory.")
@@ -605,7 +596,6 @@ def main():
     print(f"📁 Found {len(input_files)} video files to process")
     print(f"⚙️  Using {args.processes} parallel processes")
     print(f"💾 Output directory: {args.output_dir}")
-    print(f"🔧 FFmpeg preset: {args.preset}")
     print("-" * 50)
     
     # Process files in parallel
