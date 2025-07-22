@@ -402,16 +402,18 @@ from pathlib import Path
 # FFmpeg download URLs for different platforms
 FFMPEG_URLS = {
     'Windows': 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip',
-    'Darwin': 'https://evermeet.cx/ffmpeg/ffmpeg-6.0.zip',  # macOS
+    'Darwin-x86_64': 'https://evermeet.cx/ffmpeg/ffmpeg-6.0.zip',  # Intel mac
+    'Darwin-arm64': 'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-macos11-arm64-lgpl-shared.tar.xz',
     'Linux': 'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz'
 }
 
-def get_platform():
-    """Get the current platform name."""
-    system = platform.system()
-    if system == 'Darwin':
-        return 'Darwin'  # macOS
-    elif system == 'Windows':
+def get_platform_key():
+    import platform
+    sysname = platform.system()
+    if sysname == 'Darwin':
+        arch = platform.machine().lower()
+        return f'Darwin-{"arm64" if "arm" in arch else "x86_64"}'
+    elif sysname == 'Windows':
         return 'Windows'
     else:
         return 'Linux'
