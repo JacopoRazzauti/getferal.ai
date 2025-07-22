@@ -407,7 +407,7 @@ FFMPEG_URLS = {
     'Linux': 'https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz'
 }
 
-def get_platform_key():
+def get_platform():
     import platform
     sysname = platform.system()
     if sysname == 'Darwin':
