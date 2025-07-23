@@ -525,11 +525,6 @@ def process_file(args):
     """Process a single video file with ffmpeg."""
     input_path, output_dir, ffmpeg_binary = args
     
-    # Verify it's a video file
-    if not is_video_file(input_path):
-        print(f"Skipping non-video file: {input_path}")
-        return False
-    
     # Create output filename with .mp4 extension
     input_name = Path(input_path).stem
     output_path = os.path.join(output_dir, f"{input_name}.mp4")
@@ -566,7 +561,7 @@ def main():
     parser.add_argument("input_dir", help="Directory containing input videos")
     parser.add_argument("output_dir", help="Directory for re-encoded videos")
     parser.add_argument("--processes", "-p", type=int, default=4, 
-                       help="Number of parallel processes (default: 4)")
+                        help="Number of parallel processes (default: 4)")
     
     args = parser.parse_args()
     
@@ -577,6 +572,18 @@ def main():
     if not os.path.isdir(args.input_dir):
         print(f"❌ Error: Input directory does not exist: {args.input_dir}")
         sys.exit(1)
+    video_paths = []
+    for filename in os.listdir(args.input_dir):
+        filepath = os.path.join(args.input_dir, filename)
+        if os.path.isfile(filepath) and is_video_file(filepath):
+            video_paths.append(filepath)
+        else:
+            print(f"Input directory must only have videos. Found not video: {filepath}")
+            sys.exit(1)
+    if not video_paths:
+        print("❌ No video files found in input directory.")
+        sys.exit(1)
+    print(f"📁 Found {len(video_paths)} video files to process")
     
     # Create output directory
     out_dir = Path(args.output_dir)
@@ -589,21 +596,11 @@ def main():
     
     # Setup FFmpeg (download if needed)
     ffmpeg_binary = setup_ffmpeg()
+    input_files = [(x, args.output_dir, ffmpeg_binary) for x in video_paths]
     
-    # Get all video files in input directory
-    input_files = []
-    for filename in os.listdir(args.input_dir):
-        filepath = os.path.join(args.input_dir, filename)
-        if os.path.isfile(filepath) and is_video_file(filepath):
-            input_files.append((filepath, args.output_dir, ffmpeg_binary))
-    
-    if not input_files:
-        print("❌ No video files found in input directory.")
-        sys.exit(1)
-    
-    print(f"📁 Found {len(input_files)} video files to process")
-    print(f"⚙️  Using {args.processes} parallel processes")
-    print(f"💾 Output directory: {args.output_dir}")
+    print(f"Using this ffmpeg path: {ffmpeg_binary}")
+    print(f"Using {args.processes} parallel processes")
+    print(f"Output directory: {args.output_dir}")
     print("-" * 50)
     
     # Process files in parallel
