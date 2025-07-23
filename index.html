@@ -172,9 +172,10 @@
                 
                 <p className="text-gray-700 leading-relaxed mb-4">
                     FERAL (Feature Extraction for Recognition of Animal Locomotion) is an open-source solution that segments animal behavior directly 
-                    from raw videos: <strong> no tracking, no pose estimation required </strong>. FERAL uses cutting‑edge opensource video‑understanding models. 
-                    That lets it analyze behavior in complex lab and field recordings that were once out of reach. 
-                    And on existing benchmarks, it beats the previous state of the art by a wide margin.
+                    from raw videos: <strong> no tracking, no pose estimation required </strong>. FERAL uses cutting‑edge opensource video‑understanding 
+                    models in a pipeline tailored for behavior segmentation. 
+                    This enables automated behavior analysis in complex lab and field recordings where earlier methods struggled. 
+                    On existing benchmarks, it beats the previous state of the art by a wide margin (more info coming soon!).
                 </p>
 
                 <p className="text-gray-700 leading-relaxed mb-4">
@@ -329,7 +330,7 @@
                     <h4 className="text-lg font-semibold text-green-900">RunPod</h4>
                 </div>
                 <p className="text-sm text-green-800 mb-4">
-                    Launch a GPU server in&nbsp;5 minutes. Pay-as-you-go.
+                    Launch a cloud GPU server in&nbsp;5 minutes. Pay-as-you-go.
                 </p>
                 <ul className="text-green-700 text-sm space-y-1">
                     <li>🚀 High-performance GPUs</li>
@@ -655,8 +656,9 @@ if __name__ == "__main__":
                 
                     <li>
                       Verify you have <strong>Python 3</strong> installed. Run&nbsp;
-                      <code className="bg-gray-100 px-1 py-0.5 rounded">python --version</code>;
-                      it should print something like&nbsp;
+                      <code className="bg-gray-100 px-1 py-0.5 rounded">python --version</code> or 
+                      <code className="bg-gray-100 px-1 py-0.5 rounded">python3 --version</code>.
+                      It should print something like&nbsp;
                       <code className="bg-gray-100 px-1 py-0.5 rounded">Python&nbsp;3.9.10</code>.
                     </li>
                 
@@ -749,7 +751,7 @@ if __name__ == "__main__":
                 
                   <p className="text-gray-700 leading-relaxed mb-6">
                     During training, FERAL samples frames from anywhere in a video, so video encoding 
-                    should support reading frames from the middle of the video.
+                    should support reading frames from the middle of the file.
                     Otherwise dataloading will throttle the GPU.
                     Unfortunately, many video encodings can’t do that efficiently. This script
                     re-encodes your footage with an encoding that supports this operation efficiently.
@@ -827,7 +829,7 @@ if __name__ == "__main__":
                             <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{'{'}"class_id": "class_name"{'}'}</code><br/>
                             <strong>Note:</strong> Class IDs must be strings, even for numeric values (e.g., <code className="bg-gray-100 px-2 py-1 rounded text-sm">"0"</code>, <code className="bg-gray-100 px-2 py-1 rounded text-sm">"1"</code>). 
                             Class ids have to be consecutive integers from 0 to number_of_classes - 1. 
-                            If you have a background class, that's assigned when none of meaningfull classes apply, call it "other", then it will be excluded in calculations of metrics that averrage things across classess. 
+                            If your labels have a background class, assigned when no other meaningful class fits, call it "other", then metrics that average over classes will exclude it.
                         </p>
                     </div>
 
