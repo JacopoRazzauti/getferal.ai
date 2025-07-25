@@ -1322,6 +1322,31 @@ def convert_tsv_to_json(tsv_folder_path):
                     if (classIds.length === 0) {
                         issues.push('class_names cannot be empty');
                         isValid = false;
+                    } else {
+                        const expectedKeys = new Set();
+                        for (let i = 0; i < classIds.length; i++) {
+                            expectedKeys.add(String(i));
+                        }
+                
+                        const actualKeys = new Set(classIds);
+                        for (const key of expectedKeys) {
+                            if (!actualKeys.has(key)) {
+                                issues.push(`class_names must have consecutive numeric keys as strings starting from "0". Missing key: "${key}"`);
+                                isValid = false;
+                                break;
+                            }
+                        }
+                
+                        const values = Object.values(data.class_names);
+                        const uniqueValues = new Set(values);
+                        if (values.length !== uniqueValues.size) {
+                            issues.push('class_names values must be unique');
+                            isValid = false;
+                        }
+
+                        if (!Object.values(data.class_names).includes('other')) {
+                            warnings.push(`Class "other" isn't present in class names. Performance metrics will be averaged across all classes`);
+                        }
                     }
                 }
 
@@ -1342,6 +1367,13 @@ def convert_tsv_to_json(tsv_folder_path):
                     issues.push('splits must be an object');
                     isValid = false;
                 } else {
+                    const allowedKeys = new Set(['train', 'val', 'inference']);
+                    for (const key in data.splits) {
+                        if (!allowedKeys.has(key)) {
+                            issues.push(`splits must have keys "train", "val" and maybe "inference". Found unexpected: ${key}`);
+                            isValid = false;
+                        }
+                    }
                     if (!Array.isArray(data.splits.train)) {
                         issues.push('splits.train must be an array');
                         isValid = false;
@@ -1350,6 +1382,10 @@ def convert_tsv_to_json(tsv_folder_path):
                         issues.push('splits.val must be an array');
                         isValid = false;
                     }
+                    if ('inference' in data.splits && !Array.isArray(data.splits.inference)) {
+                        issues.push('splits.inference must be an array');
+                        isValid = false;
+                    }                    
                 }
 
                 if (!isValid) {
@@ -1361,6 +1397,7 @@ def convert_tsv_to_json(tsv_folder_path):
                 const videoFiles = Object.keys(data.labels);
                 const trainFiles = data.splits.train || [];
                 const valFiles = data.splits.val || [];
+                const inferenceFiles = data.splits.inference || [];
                 const allSplitFiles = [...trainFiles, ...valFiles];
 
                 // Check consistency between labels and splits
@@ -1372,6 +1409,29 @@ def convert_tsv_to_json(tsv_folder_path):
                 }
                 if (missingInSplits.length > 0) {
                     warnings.push(`Files in labels but missing in splits: ${missingInSplits.join(', ')}`);
+                }
+
+                // Helper to find duplicates
+                function findDuplicates(arr) {
+                    const seen = new Set();
+                    const duplicates = new Set();
+                    for (const item of arr) {
+                        if (seen.has(item)) {
+                            duplicates.add(item);
+                        }
+                        seen.add(item);
+                    }
+                    return [...duplicates];
+                }
+
+                const dupInSplits = findDuplicates(allSplitFiles);
+                if (dupInSplits.length > 0) {
+                    issues.push(`Duplicate files found in train/val splits: ${dupInSplits.join(', ')}`);
+                }
+
+                const dupInInference = findDuplicates(inferenceFiles);
+                if (dupInInference.length > 0) {
+                    issues.push(`Duplicate files found in inference split: ${dupInInference.join(', ')}`);
                 }
 
                 // Check for duplicate files in splits
@@ -1437,10 +1497,19 @@ def convert_tsv_to_json(tsv_folder_path):
                     };
                 }
 
+                const totalClassFrames = Object.values(behaviorCounts).reduce((sum, count) => sum + count, 0);
+
+                for (const [className, count] of Object.entries(behaviorCounts)) {
+                    const percent = (count / totalClassFrames) * 100;
+                    if (percent < 0.5) {
+                        warnings.push(`Class "${className}" is rare (${percent.toFixed(2)}% of frames). Consider adding more labels for this class or joining it with a similar class`);
+                    }
+                }
+
                 const metadata = {
-                    totalVideos: videoFiles.length,
                     trainVideos: trainFiles.length,
                     valVideos: valFiles.length,
+                    inferenceVideos: inferenceFiles.length,
                     totalClasses: classIds.length,
                     classNames: data.class_names,
                     totalFrames: Object.values(videoMetadata).reduce((sum, meta) => sum + meta.frameCount, 0),
@@ -1599,16 +1668,12 @@ def convert_tsv_to_json(tsv_folder_path):
                             )}
 
                             {/* Dataset Metadata */}
-                            {validationResult.metadata && (
+                            {validationResult.metadata && validationResult.status === 'success' && (
                                 <div className="space-y-6">
                                     <h3 className="text-xl font-bold text-gray-900">📊 Dataset Analysis</h3>
                                     
                                     {/* Summary Statistics */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                                            <h4 className="font-semibold text-blue-700">Total Videos</h4>
-                                            <p className="text-2xl font-bold text-blue-800">{validationResult.metadata.totalVideos}</p>
-                                        </div>
                                         <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                                             <h4 className="font-semibold text-green-700">Training Videos</h4>
                                             <p className="text-2xl font-bold text-green-800">{validationResult.metadata.trainVideos}</p>
@@ -1617,8 +1682,12 @@ def convert_tsv_to_json(tsv_folder_path):
                                             <h4 className="font-semibold text-purple-700">Validation Videos</h4>
                                             <p className="text-2xl font-bold text-purple-800">{validationResult.metadata.valVideos}</p>
                                         </div>
+                                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                            <h4 className="font-semibold text-blue-700">Inference Videos</h4>
+                                            <p className="text-2xl font-bold text-blue-800">{validationResult.metadata.inferenceVideos}</p>
+                                        </div>
                                         <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                                            <h4 className="font-semibold text-orange-700">Total Frames</h4>
+                                            <h4 className="font-semibold text-orange-700">Total Labeled Frames</h4>
                                             <p className="text-2xl font-bold text-orange-800">{validationResult.metadata.totalFrames.toLocaleString()}</p>
                                         </div>
                                     </div>
@@ -1675,31 +1744,6 @@ def convert_tsv_to_json(tsv_folder_path):
                                                     ))}
                                                 </tbody>
                                             </table>
-                                        </div>
-                                    </div>
-
-                                    {/* Dataset Health Score */}
-                                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
-                                        <h4 className="font-semibold text-gray-700 mb-4">🏥 Dataset Health Summary</h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            <div className="text-center">
-                                                <div className="text-2xl font-bold text-green-600">
-                                                    {validationResult.metadata.trainVideos > 0 && validationResult.metadata.valVideos > 0 ? '✅' : '❌'}
-                                                </div>
-                                                <p className="text-sm text-gray-600">Train/Val Split</p>
-                                            </div>
-                                            <div className="text-center">
-                                                <div className="text-2xl font-bold text-green-600">
-                                                    {Object.values(validationResult.metadata.behaviorCounts).every(count => count > 0) ? '✅' : '⚠️'}
-                                                </div>
-                                                <p className="text-sm text-gray-600">All Behaviors Present</p>
-                                            </div>
-                                            <div className="text-center">
-                                                <div className="text-2xl font-bold text-green-600">
-                                                    {validationResult.metadata.totalFrames > 1000 ? '✅' : '⚠️'}
-                                                </div>
-                                                <p className="text-sm text-gray-600">Sufficient Data</p>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
