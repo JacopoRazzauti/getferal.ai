@@ -305,7 +305,7 @@
                 <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
                 <div className="flex items-center mb-3">
                     <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
-                    1
+                    A
                     </div>
                     <h4 className="text-lg font-semibold text-blue-900">
                     Local Installation
@@ -325,7 +325,7 @@
                 <div className="bg-green-50 border border-green-200 p-6 rounded-lg relative">
                 <div className="flex items-center mb-3">
                     <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
-                    2
+                    B
                     </div>
                     <h4 className="text-lg font-semibold text-green-900">RunPod</h4>
                 </div>
@@ -346,13 +346,13 @@
                 onClick={() => handleNavClick("video-preparation")}
                 className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition duration-200"
                 >
-                📽️ Video Prep Guide
+                📽️ Video Prep
                 </button>
                 <button
                 onClick={() => handleNavClick("label-preparation")}
                 className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition duration-200"
                 >
-                🏷️ Label Prep Guide
+                🏷️ Label Prep
                 </button>
                 <button
                 onClick={() => handleNavClick("running-feral")}
@@ -644,7 +644,7 @@ if __name__ == "__main__":
             return (
             <section id="video-preparation" className="bg-white p-8 rounded-lg shadow-md mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                    Video Preparation&nbsp;Guide
+                    Video Preparation
                   </h2>
                 
                   {/* Quick-start checklist */}
@@ -1003,37 +1003,23 @@ def convert_tsv_to_json(tsv_folder_path):
         );
   
 
-        const RunningFeralSection = ({ handleNavClick }) => (
+        const RunningFeralSection = ({ handleNavClick }) => {
+            const [isTransferExpanded, setIsTransferExpanded] = React.useState(false);
+
+            return (
             <section id="running-feral" className="bg-white p-8 rounded-lg shadow-md mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">Running Feral AI</h2>
-              
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Locally</h3>
-                <p className="text-gray-700 leading-relaxed">
-                  0. Make sure that you have installed:<br />
-                  &nbsp;&nbsp;- Python&nbsp;3.10<br />
-                  &nbsp;&nbsp;- PyTorch&nbsp;2.4.0<br />
-                  &nbsp;&nbsp;- CUDA&nbsp;12.4<br />
-                  You can try running with newer/older versions, maybe it will work.<br /><br />
-                  1. Clone the repo:&nbsp;
-                  <code className="font-mono break-all">git clone https://github.com/Skovorp/feral.git</code><br />
-                  2. <code className="font-mono">cd feral</code><br />
-                  3. <code className="font-mono">pip install -r requirements.txt</code><br />
-                  4. Now you can run Feral!<br />
-                  &nbsp;&nbsp;<code className="font-mono">
-                    python run.py path_to_folder_with_reencoded_videos&nbsp;path_to_labels_json
-                  </code><br /><br />
-                  To track the logs of your run, we use <strong>wandb</strong>. After you start your run, you can either
-                  use the shared <em>feral</em> workspace or paste your personal wandb API key. You can copy it after you
-                  sign up at&nbsp;
-                  <a href="https://wandb.ai/authorize" className="text-blue-600 hover:underline" rel="noopener noreferrer">
-                    https://wandb.ai/authorize
-                  </a>.
-                </p>
-              
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">RunPod</h3>
-                <p className="text-gray-700 leading-relaxed">
-                  1. Get your own RunPod account with about&nbsp;$10 on it, or contact us and we'll give you an account with some credit.<br />
-                  2. Go to&nbsp;
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">1. Setup your environment</h3>
+                <h4 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Option A: Local</h4>
+                Make sure that you have installed:<br />
+                &nbsp;&nbsp;- Python&nbsp;3.10<br />
+                &nbsp;&nbsp;- PyTorch&nbsp;2.4.0<br />
+                &nbsp;&nbsp;- CUDA&nbsp;12.4<br />
+                You can try running with newer/older versions, but we don't guarantee that it will work. <br />
+                Ensure that you can access your video folder and the JSON file containing the labels.
+
+                <h4 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Option B: Cloud server on RunPod</h4>
+                1. Get a RunPod account with about&nbsp;$10 on it, or contact us and we'll give you an account with some credit.<br />
+                2. Go to&nbsp;
                   <a
                     href="https://console.runpod.io/deploy?gpu=H100%20SXM&count=1&template=runpod-torch-v240"
                     className="text-blue-600 hover:underline"
@@ -1042,30 +1028,260 @@ def convert_tsv_to_json(tsv_folder_path):
                     this RunPod deploy link
                   </a>
                   . Make sure <em>SSH Terminal Access</em> and <em>Start Jupyter Notebook</em> are selected. Depending on the size of your data, you might want to increase disk size in <em>Edit&nbsp;Template&nbsp;&rarr;&nbsp;Volume&nbsp;Disk</em>.<br />
-                  3. Then go to “My&nbsp;Pods” (https://console.runpod.io/pods) and wait a little bit. Once the server is set up, click <em>Connect</em> and open the <em>Jupyter&nbsp;Lab</em> → :8888 button.<br />
-                  4. This should open a Jupyter Lab interface on your remote server. If it doesn't work, turn on a VPN.<br />
-                  5. At the bottom, in the “Other” section, click <em>Terminal</em>.<br />
-                  6. Run the following commands:<br />
-                  &nbsp;&nbsp;<code className="font-mono">
-                    git clone https://github.com/Skovorp/feral.git<br />
-                    cd feral<br />
-                    pip install -r requirements.txt
+                3. Go to&nbsp;
+                  <a
+                    href="https://console.runpod.io/pods"
+                    className="text-blue-600 hover:underline"
+                    rel="noopener noreferrer"
+                  >
+                  My&nbsp;Pods
+                  </a>
+                  
+                  
+                  &nbsp;and wait for your pod to start. Once the server is set up, click <em>Connect</em>. 
+                4. Find a button <em>Jupyter&nbsp;Lab → :8888</em>. Wait untill it has a green light that says Ready, then click it.<br />
+                5. This should open a Jupyter Lab interface on your remote server. If it doesn't work, try a different WiFI or turn on a VPN. <br />
+                6. At the bottom, in the “Other” section, click <em>Terminal</em><br />
+                7. Run: <code className="bg-gray-200 px-1 rounded">
+                    apt update && apt install -y unzip
                   </code><br />
-                  7. While it’s running, create a folder for the videos, then drag and drop your videos into it.<br />
-                  8. Also copy your config for the labels.<br />
-                  9. Run:&nbsp;
-                  <code className="font-mono">
-                    python run.py path_to_folder_with_reencoded_videos&nbsp;path_to_labels_json
-                  </code>
-                </p>
-              
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Final results</h3>
+                8. Transfer your videos and labels. You can just drag and drop your json file with labels to a panel on the left 
+                from your terminal. Transfering videos is harder, pick the option below that works best for you<br/>
+                <br/>
+                
+                <button
+                onClick={() => setIsTransferExpanded(!isTransferExpanded)}
+                className="w-full flex items-center justify-between p-4 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg transition-colors duration-200"
+                >
+                <span className="font-medium text-gray-800">
+                    {isTransferExpanded
+                        ? '🔽 Hide Video Transfer Options'
+                        : '📤 Show Video Transfer Options'}
+                </span>
+                <svg
+                    className={`w-5 h-5 transform transition-transform duration-200 ${isTransferExpanded ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+                </button>
+
+                {isTransferExpanded && (
+                <div className="mt-4 border border-gray-300 rounded-lg overflow-hidden p-4">
+                    <div className="space-y-4 text-gray-700">
+
+                        {/* Intro */}
+                        <p>
+                          We advise you to first compress the folder with your videos into a <code>.zip</code> archive. 
+                          You can do that by selecting your file in Finder/File explorer and clicking “compress”.
+                          Transfer the archive to the remote server and unzip it there:
+                          <code className="bg-gray-200 px-1 rounded ml-1">unzip&nbsp;path_to_archive.zip</code>.
+                          SSH (below) is the only method that can skip zipping. 
+
+                          Below are the options 
+                        </p>
+                      
+                        {/* Drag & drop */}
+                        <h3 className="text-xl font-semibold text-gray-800 mt-4">Very slow but simple: drag and drop</h3>
+                        <p>
+                          Drag the archive into JupyterLab, or click the upload icon (<span className="font-semibold">↑</span>)
+                          and choose the file. A blue progress bar will appear at the bottom, keep the window open until it finishes.
+                          Then run <code className="bg-gray-200 px-1 rounded">ls -lh path_to_archive</code> and check that the file size matches the size 
+                          on your local machine. Sometimes the upload quietly fails, 
+                          in that case you'll have to delete the partial file and start again.
+                        </p>
+                      
+                        {/* SSH */}
+                        <h3 className="text-xl font-semibold text-gray-800 mt-4">Fast but more complicated: set up SSH</h3>
+                        <p>
+                            You can set up a way to connect to the server directly from your local machine without a web interface, that would also 
+                            allow an efficient file transfer. First, generate an SSH key and add it to RunPod&nbsp;
+                          <a
+                            href="https://docs.runpod.io/pods/configuration/use-ssh#generate-an-ssh-key-and-add-it-to-your-runpod-account"
+                            className="text-blue-600 underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            (tutorial)
+                          </a>. <strong>Make sure you create the pod after adding the key!</strong> Then you can run the following command on your local machine
+                        </p>
+                      
+                        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+                          <code>scp -P &lt;PORT&gt; -r path_to_your_video_folder root@&lt;IP_ADDRESS&gt;:/workspace</code>
+                        </pre>
+                      
+                        <p>
+                          For an archive, drop the <code>-r</code> flag:
+                        </p>
+                      
+                        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+                          <code>scp -P &lt;PORT&gt; path_to_your_archive.zip root@&lt;IP_ADDRESS&gt;:/workspace</code>
+                        </pre>
+
+                        <p>
+                            To get the PORT and IP_ADDRESS, go to&nbsp;
+
+                            <a
+                                href="https://console.runpod.io/pods"
+                                className="text-blue-600 hover:underline"
+                                rel="noopener noreferrer"
+                            >
+                            My&nbsp;Pods page&nbsp;
+                            </a>
+                        
+
+                            click "Connect", select "SSH" tab. Then copy the "SSH over exposed TCP" command. It should look like this 
+                        </p>
+                        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+                            <code>ssh root@213.173.98.106 -p 19235 -i ~/.ssh/id_ed25519</code>
+                        </pre>
+                        <p>
+                            in this case your IP_ADDRESS would be 213.173.98.106 and PORT 19235 
+                            
+                        </p>  
+                      
+                        {/* Drive / Dropbox */}
+                        <h3 className="text-xl font-semibold text-gray-800 mt-4">Simple, paid: Google Drive / Dropbox</h3>
+                        <p>
+                          Upload the archive to the cloud provider of your choice, then on the server to download the file run:
+                        </p>
+                      
+                        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+                          <code>
+                      pip install gdown<br/>
+                      python -m gdown --fuzzy 'sharing_link_to_your_file'
+                          </code>
+                        </pre>
+                      
+                        <p className="mt-2">
+                          Dropbox (force direct download with <code>?dl=1</code>):
+                        </p>
+                      
+                        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+                          <code>wget -O myfile.zip "https://www.dropbox.com/s/abcd1234efg/myfile.zip?dl=1"</code>
+                        </pre>
+                      
+                        {/* bashupload */}
+                        <h3 className="text-xl font-semibold text-gray-800 mt-4">Simple, fast: bashupload.com</h3>
+                        <p>
+                          Go to <a className="text-blue-600 underline" href="https://bashupload.com" target="_blank" rel="noopener noreferrer">bashupload.com</a>,
+                          click <code>choose file(s)</code>, choose your archive, wait for the upload, then copy the link it returns. On the server:
+                          <code className="bg-gray-200 px-1 rounded ml-1">wget&nbsp;&lt;link&gt;</code>
+                        </p>
+
+                        <p className="mt-2">
+                            To ensure no one can access your file, we recommend encrypting it locally, transferring it, and 
+                            then decrypting it on the server. Confirm that <code>gpg</code> is installed on both machines. Encrypt 
+                            with <code className="bg-gray-200 px-1 rounded">gpg --symmetric --cipher-algo AES256 folder.zip</code> and 
+                            decrypt with <code className="bg-gray-200 px-1 rounded">gpg -o folder.zip -d folder.zip.gpg</code>. You’ll be 
+                            prompted for the same password during both steps.
+                        </p>
+                      </div>
+                           
+                </div>
+                )}
+
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">2. Start training</h3>
+                <div className="space-y-4">
+
+                
+
+                    <p>
+                    First, clone the repository and install python libraries:
+                    </p>
+
+                    <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+                        git clone https://github.com/Skovorp/feral.git<br />
+                        cd feral<br />
+                        pip install -r requirements.txt
+                    </pre>
+
+                    <p>To start your training run:</p>
+
+                    <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+                        python run.py path_to_folder_with_reencoded_videos&nbsp;path_to_labels_json
+                    </pre>
+
+                    <p>
+                        We use Weights &amp; Biases to track training performance. When you start a run, you’ll be prompted to choose where to log it:  
+                        <br />
+                        - <strong>Your private project</strong>: requires your&nbsp;
+                                    <a
+                                href="https://wandb.ai/authorize"
+                                className="text-blue-600 hover:underline"
+                                rel="noopener noreferrer"
+                            >wandb API key
+                                </a> and project URL.<br />
+                        - <strong>FERAL’s shared project</strong>: public and ready to use; no additional setup needed.
+                      </p>
+                      
+                </div>
+                
+
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">3. Track performance</h3>
+                
                 <p className="text-gray-700 leading-relaxed">
-                  In the end you'll get an&nbsp;<code className="font-mono">_inference_&#123;run_name&#125;_&#123;%Y-%m-%d_%H-%M-%S&#125;.json</code> file inside your "answers" folder
-                  with predictions for your inference videos.
+                    We collect many metrics, but in a good run you’ll only need to track a couple key ones, the rest are for debugging. 
+                    Here they are, ranked by importance:<br/>
+
+                    1. <strong>val_raster_plot, ema_val_raster_plot</strong> - raster plot with predictions of the model. It's drawn 
+                    with plots for each validation video concatenated. <br/>
+                    2. <strong>ema_val_frame_level_map, val_frame_level_map </strong> - get all frames in the validation dataset and predict a label for each of them (averaging predictions between overlapping chunks). 
+                    Then compare predictions against ground truth labels, calculate Average Precision for each class (except for other) independently, 
+                    then average across classes. This is the most comprehensive metric. If it's &lt;0.5 performance is bad, if it's &gt;0.9 performance is pretty good. <br/>
+
+                    3. <strong>ema_val_map, val_map, train_map </strong> - same as frame_level metrics, but calculated without ensembling. For each batch 
+                    look at predictions and labels, calculate Averge Precision over all batches, then average across classes (without other). Usually slighlty
+                    worse then frame_level_map. See how ground truth for train metrics is calculated below<br/>
+
+                    4. <strong> val_ap_classname, train_ap_classname </strong> - average precisions from 2. Can help you identify hard classes for the model<br />
+                    
+                    5. <strong>train loss, val loss</strong>: average loss averaged over the epoch. Should be smoothly going down every epoch. If train loss is decreasing, but val loss is going up - model is overfitting. <br/>
+                    6. <strong>batch_loss</strong>: loss for each bacth, step level. Very noisy. Make sure that its going down on average. If it goes up and stays there, something is wrong.<br />
+                <br/>
+                </p>
+
+                
+                <h4 className="text-lg font-semibold text-gray-800 mb-2">What's EMA?</h4>
+                
+                Sometimes if instead of the real finetuned weights you use their EMA (exponential moving average) you can get better performance. 
+                In practice, this means that you're training 2 models at the same time - original model and a ema model. So for a lot of metrics you 
+                can see some_metric and ema_some_metric, which is the same metric, but calculated for the EMA model. 
+                <br/>
+                At the end of training, feral saves labels both for the original and for EMA model, so you can chose the version you like.
+                <br/><br/>
+                
+                <h4 className="text-lg font-semibold text-gray-800 mb-2">Ground truth for train </h4>
+
+
+                We're using data augmentation technique for training called MixUp. To do that, for each item in training batch, you add 
+                a little bit of some other video from the batch, and change the label of the original video with the same weight.&nbsp; 
+                
+                <a
+                href="https://miro.medium.com/v2/resize:fit:1400/0*JYE5MTpwJ4vddslv.PNG"
+                className="text-blue-600 hover:underline"
+                rel="noopener noreferrer"
+            >
+                Example
+                </a>. 
+
+                So during training all of our samples have labels like 90% class A + 10% class B. To calculate metrics, we 
+                set ground truth to be class with the biggest weight. This is another way we make train 
+                dataset harder (also dropout and other augmentations).
+                
+
+  
+            
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">4. Get final results</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  In the end you'll get an&nbsp;<code className="font-mono">_inference_&#123;run_name&#125;_&#123;%Y-%m-%d_%H-%M-%S&#125;.json</code> file inside your 
+                  "answers" folder with predictions for your inference videos.
                 </p>
               </section>
-        );
+            );
+        };
 
         const DatasetValidatorSection = () => {
             const [file, setFile] = useState(null);
