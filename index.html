@@ -162,40 +162,47 @@
 
         // Content Sections
         const HomeSection = ({ handleNavClick }) => (
-            <section id="home" className="bg-white p-8 rounded-lg shadow-md mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">About FERAL</h2>
-                
-                <p className="text-gray-700 leading-relaxed mb-4">
-                    AI is advancing at lightning speed: new models arrive every month, and their quality is improving exponentially. To put that power in the hands of biologists, we created FERAL.
-                </p>
-                
-                <p className="text-gray-700 leading-relaxed mb-4">
-                    FERAL (Feature Extraction for Recognition of Animal Locomotion) is an open-source solution that segments animal behavior directly 
-                    from raw videos: <strong> no tracking, no pose estimation required </strong>. FERAL uses cutting‑edge opensource video‑understanding 
-                    models in a pipeline tailored for behavior segmentation. 
-                    This enables automated behavior analysis in complex lab and field recordings where earlier methods struggled. 
-                    On existing benchmarks, it beats the previous state of the art by a wide margin (more info coming soon!).
-                </p>
+            <section id="home" className="bg-white rounded-lg shadow-md pb-8">
+                <div className="p-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">About FERAL</h2>
+                    
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        AI is advancing at lightning speed: new models arrive every month, and their quality is improving exponentially. To put that power in the hands of biologists, we created FERAL.
+                    </p>
+                    
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        FERAL (Feature Extraction for Recognition of Animal Locomotion) is an open-source solution that segments animal behavior directly 
+                        from raw videos: <strong> no tracking, no pose estimation required </strong>. FERAL uses cutting‑edge opensource video‑understanding 
+                        models in a pipeline tailored for behavior segmentation. 
+                        This enables automated behavior analysis in complex lab and field recordings where earlier methods struggled. 
+                        On existing benchmarks, it beats the previous state of the art by a wide margin (more info coming soon!).
+                    </p>
 
-                <p className="text-gray-700 leading-relaxed mb-4">
-                    You don’t need key-point tracking, just raw videos and labels. Set everything up in the cloud in 
-                    under five minutes and run it with a single command. If you encounter any issues, please reach out 
-                    through the “Contact” section. We’ll be happy to assist with anything you need.
-                </p>
+                    <p className="text-gray-700 leading-relaxed mb-4">
+                        You don’t need key-point tracking, just raw videos and labels. Set everything up in the cloud in 
+                        under five minutes and run it with a single command. If you encounter any issues, please reach out 
+                        through the “Contact” section. We’ll be happy to assist with anything you need.
+                    </p>
 
-                <p className="text-gray-700 leading-relaxed mb-6">
-                    To get started, we suggest that you see the “Getting Started” section.
-                </p>
+                    <div className="mt-6 flex flex-wrap gap-4">
+                        <button
+                            onClick={() => handleNavClick('getting-started')}
+                            className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
+                        >
+                            Get Started
+                        </button>
+                    </div>
+                </div>    
 
                 {/* Acknowledgment Section */}
-                <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6">
+                <div className="sm:mx-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
                     <h3 className="text-xl font-semibold text-gray-900 mb-4">👨‍🔬 Acknowledgments</h3>
                     <p className="text-gray-700 leading-relaxed mb-4">
                         FERAL was developed at <strong>The Rockefeller University</strong> by:
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Peter’s tile */}
-                        <div className="bg-white p-4 rounded-lg border border-gray-100 relative pr-32">
+                        <div className="bg-white p-4 rounded-lg border border-gray-100 relative pr-16 md:pr-32">
                             {/* LEFT content */}
                             <div className="flex items-center mb-2">
                             <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
@@ -232,7 +239,7 @@
                         </div>
                         
                         {/* Jacopo’s tile */}
-                        <div className="bg-white p-4 rounded-lg border border-gray-100 relative pr-32">
+                        <div className="bg-white p-4 rounded-lg border border-gray-100 relative pr-16 md:pr-32">
                             <div className="flex items-center mb-2">
                             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
                                 <span className="text-blue-600 font-semibold text-sm">JR</span>
@@ -267,22 +274,13 @@
                         </div>
                     </div>
                 </div>                                
-
-                <div className="mt-6 flex flex-wrap gap-4">
-                    <button
-                        onClick={() => handleNavClick('getting-started')}
-                        className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
-                    >
-                        Get Started
-                    </button>
-                </div>
             </section>
         );
 
         const GettingStartedSection = ({ handleNavClick }) => (
             <section
             id="getting-started"
-            className="bg-white p-8 rounded-lg shadow-md mb-8"
+            className="bg-white p-8 rounded-lg shadow-md"
             >
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Getting Started</h2>
         
@@ -680,7 +678,7 @@ if __name__ == "__main__":
             };
 
             return (
-            <section id="video-preparation" className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <section id="video-preparation" className="bg-white p-8 rounded-lg shadow-md">
                 <h2 className="text-3xl font-bold text-gray-900 mb-6">
                     Video Preparation
                   </h2>
@@ -815,7 +813,7 @@ if __name__ == "__main__":
         const LabelPreparationSection = () => (
             <section
             id="label-preparation"
-            className="bg-white p-8 rounded-lg shadow-md mb-8"
+            className="bg-white p-8 rounded-lg shadow-md"
             >
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
                 Label Preparation
@@ -1045,7 +1043,7 @@ def convert_tsv_to_json(tsv_folder_path):
             const [isTransferExpanded, setIsTransferExpanded] = React.useState(false);
 
             return (
-            <section id="running-feral" className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <section id="running-feral" className="bg-white p-8 rounded-lg shadow-md">
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">1. Setup your environment</h3>
                 <h4 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Option A: Local</h4>
                 Make sure that you have installed:<br />
@@ -1626,7 +1624,7 @@ def convert_tsv_to_json(tsv_folder_path):
             };
 
             return (
-                <section id="dataset-validator" className="bg-white p-8 rounded-lg shadow-md mb-8">
+                <section id="dataset-validator" className="bg-white p-8 rounded-lg shadow-md">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Dataset Validator</h2>
                     <p className="text-gray-700 leading-relaxed mb-6">
                         Upload your FERAL dataset JSON file to validate its structure and get detailed analysis including 
@@ -1791,7 +1789,7 @@ def convert_tsv_to_json(tsv_folder_path):
         };
 
         const ExamplesSection = () => (
-            <section id="examples" className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <section id="examples" className="bg-white p-8 rounded-lg shadow-md">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Examples</h2>
                 <p className="text-gray-700 leading-relaxed">
                     Browse through various examples demonstrating how to use Feral AI for different
@@ -1848,9 +1846,9 @@ def convert_tsv_to_json(tsv_folder_path):
             };
 
             return (
-                <section id="contact" className="bg-white p-8 rounded-lg shadow-md mb-8">
+                <section id="contact" className="bg-white p-8 rounded-lg shadow-md">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Contact Us</h2>
-                    <p className="text-gray-700 leading-relaxed mb-8">
+                    <p className="text-gray-700 leading-relaxed">
                         Have questions about FERAL? Need help with your research or implementation? 
                         We're here to help! Reach out to us for support, collaborations, or any inquiries.
                     </p>
@@ -1993,7 +1991,7 @@ def convert_tsv_to_json(tsv_folder_path):
         };
 
         const FAQSection = () => (
-            <section id="faq" className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <section id="faq" className="bg-white p-8 rounded-lg shadow-md">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
                 <div className="space-y-4">
                     <details className="group border-b border-gray-200 pb-4">
