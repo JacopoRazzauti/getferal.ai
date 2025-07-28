@@ -191,43 +191,82 @@
                 <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6">
                     <h3 className="text-xl font-semibold text-gray-900 mb-4">👨‍🔬 Acknowledgments</h3>
                     <p className="text-gray-700 leading-relaxed mb-4">
-                        FERAL was developed at The Rockefeller University by:
+                        FERAL was developed at <strong>The Rockefeller University</strong> by:
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="bg-white p-4 rounded-lg border border-gray-100">
+                        {/* Peter’s tile */}
+                        <div className="bg-white p-4 rounded-lg border border-gray-100 relative pr-32">
+                            {/* LEFT content */}
                             <div className="flex items-center mb-2">
-                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                                    <span className="text-green-600 font-semibold text-sm">PS</span>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-gray-900">Peter Skovorodnikov</h4>
-                                    <p className="text-sm text-gray-600">Researcher & Lead Developer</p>
-                                </div>
+                            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                <span className="text-green-600 font-semibold text-sm">PS</span>
                             </div>
-                            <p className="text-sm text-gray-700">
-                                <a href="mailto:pskovorodnikov@rockefeller.edu" className="text-blue-600 hover:underline">
-                                    pskovorodnikov@rockefeller.edu
-                                </a>
+                            <div>
+                                <h4 className="font-semibold text-gray-900">Peter Skovorodnikov</h4>
+                                <p className="text-sm text-gray-600">Researcher &amp; Lead Developer</p>
+                            </div>
+                            </div>
+                        
+                            <p className="text-sm text-gray-700 mb-1">
+                            <a href="mailto:pskovorodnikov@rockefeller.edu" className="text-blue-600 hover:underline">
+                                pskovorodnikov@rockefeller.edu
+                            </a>
                             </p>
+                            <p className="text-sm text-gray-600">
+                            <a href="https://aiml.rockefeller.edu/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">
+                                Data Science Platform
+                            </a>
+                            </p>
+                        
+                            {/* LOGO */}
+                            <img
+                                src="src/images/rockefeller_logo.png"
+                                alt="Rockefeller University Logo"
+                                className="
+                                absolute right-4 bottom-4        /* mobile / narrow default */
+                                sm:top-1/2 sm:-translate-y-1/2   /* ≥640 px : move to center */
+                                sm:bottom-auto
+                                h-16 sm:h-20 opacity-80          /* slightly smaller on mobile */
+                                "
+                            />
                         </div>
-                        <div className="bg-white p-4 rounded-lg border border-gray-100">
+                        
+                        {/* Jacopo’s tile */}
+                        <div className="bg-white p-4 rounded-lg border border-gray-100 relative pr-32">
                             <div className="flex items-center mb-2">
-                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                    <span className="text-blue-600 font-semibold text-sm">JR</span>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-gray-900">Jacopo Razzauti</h4>
-                                    <p className="text-sm text-gray-600">Co-Developer & Researcher</p>
-                                </div>
+                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <span className="text-blue-600 font-semibold text-sm">JR</span>
                             </div>
-                            <p className="text-sm text-gray-700">
-                                <a href="mailto:jrazzauti@rockefeller.edu" className="text-blue-600 hover:underline">
-                                    jrazzauti@rockefeller.edu
-                                </a>
+                            <div>
+                                <h4 className="font-semibold text-gray-900">Jacopo Razzauti</h4>
+                                <p className="text-sm text-gray-600">Co‑Developer &amp; Researcher</p>
+                            </div>
+                            </div>
+                        
+                            <p className="text-sm text-gray-700 mb-1">
+                            <a href="mailto:jrazzauti@rockefeller.edu" className="text-blue-600 hover:underline">
+                                jrazzauti@rockefeller.edu
+                            </a>
                             </p>
+                            <p className="text-sm text-gray-600">
+                            <a href="https://www.rockefeller.edu/research/2355-vosshall-laboratory/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">
+                                Laboratory of Neurogenetics and Behavior
+                            </a>
+                            </p>
+                        
+                            <img
+                                src="src/images/rockefeller_logo.png"
+                                alt="Rockefeller University Logo"
+                                className="
+                                absolute right-4 bottom-4        /* mobile / narrow default */
+                                sm:top-1/2 sm:-translate-y-1/2   /* ≥640 px : move to center */
+                                sm:bottom-auto
+                                h-16 sm:h-20 opacity-80          /* slightly smaller on mobile */
+                                "
+                            />
                         </div>
                     </div>
-                </div>
+                </div>                                
 
                 <div className="mt-6 flex flex-wrap gap-4">
                     <button
@@ -1037,9 +1076,9 @@ def convert_tsv_to_json(tsv_folder_path):
                   </a>
                   
                   
-                  &nbsp;and wait for your pod to start. Once the server is set up, click <em>Connect</em>. 
+                  &nbsp;and wait for your pod to start. Once the server is set up, click <em>Connect</em>.<br />
                 4. Find a button <em>Jupyter&nbsp;Lab → :8888</em>. Wait untill it has a green light that says Ready, then click it.<br />
-                5. This should open a Jupyter Lab interface on your remote server. If it doesn't work, try a different WiFI or turn on a VPN. <br />
+                5. This should open a Jupyter Lab interface on your remote server. If it doesn't work, try a different WiFi or turn on a VPN. <br />
                 6. At the bottom, in the “Other” section, click <em>Terminal</em><br />
                 7. Run: <code className="bg-gray-200 px-1 rounded">
                     apt update && apt install -y unzip
@@ -1077,9 +1116,7 @@ def convert_tsv_to_json(tsv_folder_path):
                           You can do that by selecting your file in Finder/File explorer and clicking “compress”.
                           Transfer the archive to the remote server and unzip it there:
                           <code className="bg-gray-200 px-1 rounded ml-1">unzip&nbsp;path_to_archive.zip</code>.
-                          SSH (below) is the only method that can skip zipping. 
-
-                          Below are the options 
+                          SSH (below) is the only method that can skip zipping.
                         </p>
                       
                         {/* Drag & drop */}
@@ -1096,7 +1133,7 @@ def convert_tsv_to_json(tsv_folder_path):
                         <h3 className="text-xl font-semibold text-gray-800 mt-4">Fast but more complicated: set up SSH</h3>
                         <p>
                             You can set up a way to connect to the server directly from your local machine without a web interface, that would also 
-                            allow an efficient file transfer. First, generate an SSH key and add it to RunPod&nbsp;
+                            allow an efficient file transfer (~10x faster then drag and drop in JupyterLab). First, generate an SSH key and add it to RunPod&nbsp;
                           <a
                             href="https://docs.runpod.io/pods/configuration/use-ssh#generate-an-ssh-key-and-add-it-to-your-runpod-account"
                             className="text-blue-600 underline"
@@ -1112,7 +1149,7 @@ def convert_tsv_to_json(tsv_folder_path):
                         </pre>
                       
                         <p>
-                          For an archive, drop the <code>-r</code> flag:
+                          For an archive, skip the <code>-r</code> flag:
                         </p>
                       
                         <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
@@ -1144,7 +1181,8 @@ def convert_tsv_to_json(tsv_folder_path):
                         {/* Drive / Dropbox */}
                         <h3 className="text-xl font-semibold text-gray-800 mt-4">Simple, paid: Google Drive / Dropbox</h3>
                         <p>
-                          Upload the archive to the cloud provider of your choice, then on the server to download the file run:
+                          Upload the archive to the cloud provider of your choice, then download the file on the server. <br/>
+                          Google drive:
                         </p>
                       
                         <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
@@ -1222,41 +1260,41 @@ def convert_tsv_to_json(tsv_folder_path):
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">3. Track performance</h3>
                 
                 <p className="text-gray-700 leading-relaxed">
-                    We collect many metrics, but in a good run you’ll only need to track a couple key ones, the rest are for debugging. 
+                    We log many metrics, but in a good run you’ll only need to track a couple key ones, the rest are for debugging. 
                     Here they are, ranked by importance:<br/>
 
-                    1. <strong>val_raster_plot, ema_val_raster_plot</strong> - raster plot with predictions of the model. It's drawn 
-                    with plots for each validation video concatenated. <br/>
-                    2. <strong>ema_val_frame_level_map, val_frame_level_map </strong> - get all frames in the validation dataset and predict a label for each of them (averaging predictions between overlapping chunks). 
-                    Then compare predictions against ground truth labels, calculate Average Precision for each class (except for other) independently, 
-                    then average across classes. This is the most comprehensive metric. If it's &lt;0.5 performance is bad, if it's &gt;0.9 performance is pretty good. <br/>
+                    1. <strong>val_raster_plot, ema_val_raster_plot</strong> - raster plot with predictions of the model. All validation videos are concatenated along the x axis. <br/>
 
-                    3. <strong>ema_val_map, val_map, train_map </strong> - same as frame_level metrics, but calculated without ensembling. For each batch 
-                    look at predictions and labels, calculate Averge Precision over all batches, then average across classes (without other). Usually slighlty
-                    worse then frame_level_map. See how ground truth for train metrics is calculated below<br/>
+                    2. <strong>ema_val_frame_level_map, val_frame_level_map </strong> - predict labels for all validation frames (averaging across overlapping chunks).
+                    Compare with ground truth to compute Average Precision per class (excluding "other"), then average across classes. This is the main metric: &lt;0.5 is bad, &gt;0.9 is pretty good. <br/>
 
-                    4. <strong> val_ap_classname, train_ap_classname </strong> - average precisions from 2. Can help you identify hard classes for the model<br />
+                    3. <strong>ema_val_map, val_map, train_map </strong> - same as frame_level metrics but without ensembling. 
+                    Compute predictions and labels per batch, calculate Average Precision across all batches, then average over classes (excluding "other"). 
+                    Typically slightly worse than frame-level mAP. See below for how ground truth is computed for training metrics.<br/>
+
+                    4. <strong> val_ap_classname, train_ap_classname </strong> - average precisions from 3. Can help you identify hard classes for the model<br />
                     
-                    5. <strong>train loss, val loss</strong>: average loss averaged over the epoch. Should be smoothly going down every epoch. If train loss is decreasing, but val loss is going up - model is overfitting. <br/>
-                    6. <strong>batch_loss</strong>: loss for each bacth, step level. Very noisy. Make sure that its going down on average. If it goes up and stays there, something is wrong.<br />
+                    5. <strong>train loss, val loss</strong>: average loss over the epoch. Should decrease steadily each epoch. If training loss drops but validation loss rises, the model is overfitting<br/>
+
+                    6. <strong>batch_loss</strong>: loss for each bacth, step level. Very noisy, check that it trends downward overall. If it spikes and stays high, something is likely wrong<br />
                 <br/>
                 </p>
 
                 
                 <h4 className="text-lg font-semibold text-gray-800 mb-2">What's EMA?</h4>
                 
-                Sometimes if instead of the real finetuned weights you use their EMA (exponential moving average) you can get better performance. 
-                In practice, this means that you're training 2 models at the same time - original model and a ema model. So for a lot of metrics you 
-                can see some_metric and ema_some_metric, which is the same metric, but calculated for the EMA model. 
-                <br/>
-                At the end of training, feral saves labels both for the original and for EMA model, so you can chose the version you like.
+                Sometimes using EMA (Exponential Moving Average) of the weights instead of the original model gives better results. 
+                At each step, EMA weights are updated as: <code>ema_weight = 0.999 * ema_weight + 0.001 * orig_weight</code>.
+                This means you're effectively training two models: the main one and its EMA version.
+                That’s why many validation metrics appear twice, e.g. <code>some_metric</code> and <code>ema_some_metric</code>.
+                At the end of training, FERAL saves outputs from both models so you can choose the one you prefer.
                 <br/><br/>
                 
                 <h4 className="text-lg font-semibold text-gray-800 mb-2">Ground truth for train </h4>
 
 
-                We're using data augmentation technique for training called MixUp. To do that, for each item in training batch, you add 
-                a little bit of some other video from the batch, and change the label of the original video with the same weight.&nbsp; 
+                We use a data augmentation technique called MixUp during training.
+                For each sample in a batch, we blend in a small portion of another video and adjust the label in the same proportion.&nbsp; 
                 
                 <a
                 href="https://miro.medium.com/v2/resize:fit:1400/0*JYE5MTpwJ4vddslv.PNG"
@@ -1267,12 +1305,10 @@ def convert_tsv_to_json(tsv_folder_path):
                 </a>. 
 
                 So during training all of our samples have labels like 90% class A + 10% class B. To calculate metrics, we 
-                set ground truth to be class with the biggest weight. This is another way we make train 
-                dataset harder (also dropout and other augmentations).
+                set ground truth to be class with the biggest weight. Although this makes the training metrics less fair, 
+                it allows for comparison with validation metrics. Due to MixUp and other regularization techniques (like dropout and video augmentations), validation metrics 
+                usually show better performance than train metrics.
                 
-
-  
-            
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">4. Get final results</h3>
                 <p className="text-gray-700 leading-relaxed">
                   In the end you'll get an&nbsp;<code className="font-mono">_inference_&#123;run_name&#125;_&#123;%Y-%m-%d_%H-%M-%S&#125;.json</code> file inside your 
