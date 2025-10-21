@@ -105,6 +105,8 @@
                                 <SidebarLink section="label-preparation" current={activeSection} onClick={handleNavClick}>Label Preparation</SidebarLink>
                                 <SidebarLink section="dataset-validator" current={activeSection} onClick={handleNavClick}>Dataset Validator</SidebarLink>
                                 <SidebarLink section="running-feral" current={activeSection} onClick={handleNavClick}>Running Feral</SidebarLink>
+                                <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</SidebarLink>
+
                                 
                                 <SidebarLink section="contact" current={activeSection} onClick={handleNavClick}>Contact Us</SidebarLink>
                                 
@@ -119,6 +121,7 @@
                             {activeSection === 'label-preparation' && <LabelPreparationSection />}
                             {activeSection === 'running-feral' && <RunningFeralSection handleNavClick={handleNavClick} />}
                             {activeSection === 'dataset-validator' && <DatasetValidatorSection />}
+                            {activeSection === 'examples' && <ExamplesSection />}
                             {activeSection === 'contact' && <ContactSection />}
                         </main>
                     </div>
@@ -1788,22 +1791,69 @@ def convert_tsv_to_json(tsv_folder_path):
         };
 
         const ExamplesSection = () => (
-            <section id="examples" className="bg-white p-8 rounded-lg shadow-md">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">Examples</h2>
-                <p className="text-gray-700 leading-relaxed">
-                    Browse through various examples demonstrating how to use Feral AI for different
-                    behavioral analysis tasks.
-                </p>
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-2">Rodent Locomotion</h3>
-                        <p className="text-gray-600 text-sm">
-                            Example demonstrating tracking and segmenting locomotion patterns in rodents.
-                        </p>
-                    </div>
-                </div>
-            </section>
-        );
+  <section id="examples" className="bg-white p-8 rounded-lg shadow-md">
+    <h2 className="text-3xl font-bold text-gray-900 mb-6">Example Datasets</h2>
+    <p className="text-gray-700 leading-relaxed mb-8">
+      Below are examples of how FERAL was applied to diverse datasets spanning 
+      single-animal, dyadic, and collective behaviors. Each example includes a brief 
+      description of the dataset and analysis procedure.
+    </p>
+
+    {/* Worms Section */}
+    <div className="mb-12">
+      <h3 className="text-2xl font-semibold text-gray-900 mb-4">🪱 Worms (C. elegans)</h3>
+      <p className="text-gray-700 leading-relaxed mb-4">
+        Recordings of freely moving <em>C. elegans</em> performing four canonical locomotor behaviors: 
+        forward crawling, reverse crawling, turning, and pausing. The animal was kept centered 
+        within the field of view, and FERAL was used to directly segment these behaviors from raw video. 
+        Because forward and reverse crawling appear nearly identical in single frames, temporal 
+        context was essential—FERAL leveraged overlapping chunk inference to correctly 
+        disambiguate directionality and produce smooth behavioral ethograms.
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <video controls className="w-full rounded-lg shadow-md">
+          <source src="src\videos\worms_example1.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <img src="src/images/worms_figure.png" alt="FERAL segmentation on C. elegans" className="w-full mt-4 rounded-lg shadow-md" />
+    </div>
+
+    {/* Ants Section */}
+    <div className="mb-12">
+      <h3 className="text-2xl font-semibold text-gray-900 mb-4">🐜 Ants (O. biroi)</h3>
+      <p className="text-gray-700 leading-relaxed mb-4">
+        This dataset captured adult–larva interactions in the clonal raider ant <em>Ooceraea biroi</em>. 
+        Videos were recorded from the side at 10 frames per second, with behaviors such as self-grooming 
+        and allogrooming manually annotated as ground truth. These tasks are challenging for 
+        traditional pose-based pipelines due to occlusion and side-view geometry. 
+        FERAL identified both grooming types directly from raw video, without explicit tracking 
+        or pose estimation, showing its ability to capture socially contingent behaviors.
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <video controls className="w-full rounded-lg shadow-md">
+          <source src="src\videos\ants_example1.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <img src="src/images/ants_figure.png" alt="FERAL segmentation on O. biroi interactions" className="w-full mt-4 rounded-lg shadow-md" />
+    </div>
+
+    {/* Collective Behavior Section */}
+    <div className="mb-4">
+      <h3 className="text-2xl font-semibold text-gray-900 mb-4">Collective Behavior</h3>
+      <p className="text-gray-700 leading-relaxed mb-4">
+        Recordings of <em>O. biroi</em> colonies filmed continuously over several days to study 
+        emergent group raiding behavior. FERAL accurately detected the onset and duration of 
+        collective raids directly from raw frames, even in dense colonies where individuals 
+        overlapped and occluded each other. This demonstrates FERAL’s ability to identify 
+        colony-level states without explicit multi-animal tracking.
+      </p>
+      <img src="src/images/collective_figure.png" alt="FERAL detection of collective raids" className="w-full rounded-lg shadow-md" />
+    </div>
+  </section>
+);
+
 
         const ContactSection = () => {
             const [formData, setFormData] = useState({
@@ -1989,6 +2039,8 @@ def convert_tsv_to_json(tsv_folder_path):
             );
         };
 
+        
+
         const FAQSection = () => (
             <section id="faq" className="bg-white p-8 rounded-lg shadow-md">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
@@ -2026,3 +2078,4 @@ def convert_tsv_to_json(tsv_folder_path):
         ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
+
