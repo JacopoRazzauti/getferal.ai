@@ -15,6 +15,7 @@
     <title>FERAL Documentation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -82,6 +83,22 @@
                                 className="h-8 w-8 mr-2 ml-10 md:ml-0"
                             />
                             <h1 className="text-3xl font-bold text-gray-900">FERAL</h1>
+                            <a
+  href="https://github.com/Skovorp/feral"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="ml-4 text-gray-700 hover:text-gray-900"
+  title="View on GitHub"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className="w-7 h-7"
+  >
+    <path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.438 9.8 8.205 11.39.6.113.82-.26.82-.577v-2.173c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.746.083-.73.083-.73 1.205.085 1.84 1.238 1.84 1.238 1.07 1.835 2.808 1.305 3.495.998.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.333-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.125-.303-.54-1.523.115-3.176 0 0 1.005-.323 3.3 1.23a11.49 11.49 0 0 1 3-.403c1.02.005 2.045.137 3 .403 2.295-1.553 3.3-1.23 3.3-1.23.655 1.653.24 2.873.12 3.176.77.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.37.81 1.1.81 2.22v3.293c0 .32.22.694.825.576C20.565 22.295 24 17.795 24 12.5 24 5.87 18.63.5 12 .5z" />
+  </svg>
+</a>
                         </div>
                         <nav className="hidden md:flex space-x-6 mt-4 md:mt-0">
                             <NavLink section="home" current={activeSection} onClick={handleNavClick}>Home</NavLink>
@@ -109,7 +126,24 @@
 
                                 
                                 <SidebarLink section="contact" current={activeSection} onClick={handleNavClick}>Contact Us</SidebarLink>
-                                
+                                <div className="mt-6 flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className="w-5 h-5"
+  >
+    <path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.438 9.8 8.205 11.39.6.113.82-.26.82-.577v-2.173c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.746.083-.73.083-.73 1.205.085 1.84 1.238 1.84 1.238 1.07 1.835 2.808 1.305 3.495.998.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.333-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.125-.303-.54-1.523.115-3.176 0 0 1.005-.323 3.3 1.23a11.49 11.49 0 0 1 3-.403c1.02.005 2.045.137 3 .403 2.295-1.553 3.3-1.23 3.3-1.23.655 1.653.24 2.873.12 3.176.77.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.37.81 1.1.81 2.22v3.293c0 .32.22.694.825.576C20.565 22.295 24 17.795 24 12.5 24 5.87 18.63.5 12 .5z" />
+  </svg>
+  <a
+    href="https://github.com/Skovorp/feral"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-sm font-medium hover:underline"
+  >
+    View on GitHub
+  </a>
+</div>
                             </nav>
                         </aside>
 
@@ -161,14 +195,53 @@
                 {children}
             </button>
         );
+        
+        // ===== Hero Mosaic (GIFs) =====
+const HeroMosaic = () => (
+  <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+    {/* Main tile – bird */}
+    <figure className="col-span-2 md:col-span-2 md:row-span-2 overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+      <img
+        src="./src/videos/bird_example.gif"
+        alt="Bird example behavior"
+        loading="lazy"
+        className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+      />
+      <figcaption className="sr-only">Bird example</figcaption>
+    </figure>
+
+    {/* Side tiles – replace filenames with your two other GIFs */}
+    <figure className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+      <img
+        src="src\videos\ants_example.gif"  /* ← change if different */
+        alt="Ants example behavior"
+        loading="lazy"
+        className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+      />
+      <figcaption className="sr-only">Ants example</figcaption>
+    </figure>
+
+    <figure className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+      <img
+        src="src\videos\worms_example.gif" /* ← change if different */
+        alt="Worms example behavior"
+        loading="lazy"
+        className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+      />
+      <figcaption className="sr-only">Worms example</figcaption>
+    </figure>
+  </div>
+);
+
 
         // Content Sections
         const HomeSection = ({ handleNavClick }) => (
-            <section id="home" className="bg-white rounded-lg shadow-md pb-8">
-                <div className="p-8">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">About FERAL</h2>
-                    
+  <section id="home" className="bg-white rounded-lg shadow-md pb-8">
+    <div className="p-8">
+      <h2 className="text-3xl font-bold text-gray-900 mb-4">About FERAL</h2>
+                    <HeroMosaic />
                     <p className="text-gray-700 leading-relaxed mb-4">
+                        
                         AI is advancing at lightning speed: new models arrive every month, and their quality is improving exponentially. To put that power in the hands of biologists, we created FERAL.
                     </p>
                     
@@ -192,6 +265,8 @@
                             className="bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
                         >
                             Get Started
+
+                        
                         </button>
                     </div>
                 </div>    
@@ -1808,13 +1883,13 @@ def convert_tsv_to_json(tsv_folder_path):
         within the field of view, and FERAL was used to directly segment these behaviors from raw video. 
         Because forward and reverse crawling appear nearly identical in single frames, temporal 
         context was essential—FERAL leveraged overlapping chunk inference to correctly 
-        disambiguate directionality and produce smooth behavioral ethograms.
+        disambiguate directionality and produce smooth behavioral ethograms. Credits: Friedericke Buck
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <video controls className="w-full rounded-lg shadow-md">
-          <source src="src\videos\worms_example1.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        <img src="src\videos\worms_example.gif"
+            alt="worms example"
+            className="w-full rounded-lg shadow-md"
+/       >
       </div>
       <img src="src/images/worms_figure.png" alt="FERAL segmentation on C. elegans" className="w-full mt-4 rounded-lg shadow-md" />
     </div>
@@ -1828,13 +1903,14 @@ def convert_tsv_to_json(tsv_folder_path):
         and allogrooming manually annotated as ground truth. These tasks are challenging for 
         traditional pose-based pipelines due to occlusion and side-view geometry. 
         FERAL identified both grooming types directly from raw video, without explicit tracking 
-        or pose estimation, showing its ability to capture socially contingent behaviors.
+        or pose estimation, showing its ability to capture socially contingent behaviors. Credits: Janet Zhao and Dominic Frank
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <video controls className="w-full rounded-lg shadow-md">
-          <source src="src\videos\ants_example1.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        <img
+  src="src\videos\ants_example.gif"
+  alt="Ants example"
+  className="w-full rounded-lg shadow-md"
+/>
       </div>
       <img src="src/images/ants_figure.png" alt="FERAL segmentation on O. biroi interactions" className="w-full mt-4 rounded-lg shadow-md" />
     </div>
@@ -1847,7 +1923,7 @@ def convert_tsv_to_json(tsv_folder_path):
         emergent group raiding behavior. FERAL accurately detected the onset and duration of 
         collective raids directly from raw frames, even in dense colonies where individuals 
         overlapped and occluded each other. This demonstrates FERAL’s ability to identify 
-        colony-level states without explicit multi-animal tracking.
+        colony-level states without explicit multi-animal tracking. Credits: Tomas Kay
       </p>
       <img src="src/images/collective_figure.png" alt="FERAL detection of collective raids" className="w-full rounded-lg shadow-md" />
     </div>
