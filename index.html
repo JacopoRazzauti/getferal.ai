@@ -1015,95 +1015,255 @@ if __name__ == "__main__":
                 </p>
 
                 <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>{`import pandas as pd
-import json
-import re
+                    <pre><code>{`# BORIS TSV -> FERAL JSON
+# - Works with a single TSV path or a folder containing *.tsv
+# - START/STOP rows create half-open frame intervals [START, STOP)
+# - class_names are derived from the union of behaviors found across all TSVs
+# - Video name is taken from "Media file path" (fallback: <tsv_stem>.mp4)
+# - Saves "feral_behavioral_labels.json" in the input folder (or next to the TSV if single file)
+
+import json, re, math
 from pathlib import Path
 
-def convert_tsv_to_json(tsv_folder_path):
-    # Define the behavioral mapping
-    behavior_to_class = {
-        "contact": 1,
-        "attempt": 2,
-        "flight": 3,
-        "kicking": 4,
-        "genital contact": 5,
-        "mating": 6
-    }
-    
-    # Initialize the output structure
-    out = {
-        "class_names": {
-            "0": "other",
-            "1": "contact",
-            "2": "attempt",
-            "3": "flight",
-            "4": "kicking",
-            "5": "genital_contact",
-            "6": "mating"
-        },
-        "labels": {},
-        "splits": {
-            "train": [],
-            "val": []
-        }
-    }
-    
-    # Process each TSV file
-    for tsv_file in Path(tsv_folder_path).glob("*.tsv"):
-        df = pd.read_csv(tsv_file, sep='\\t')
-        video_name = re.sub(r'_(Virgin|Mated)$', '', tsv_file.stem) + '.mp4'
-        
-        # Extract video properties
-        duration = df['Media duration (s)'].iloc[0]
-        fps = df['FPS'].iloc[0]
-        total_frames = round(duration * fps)
-        frame_labels = [0] * total_frames
-        active_behaviors = {}
-        
-        # Process each row in the TSV
-        for _, row in df.iterrows():
-            behavior = row['Behavior']
-            behavior_type = row['Behavior type']
-            time_sec = row['Time']
-            
-            if pd.isna(behavior) or behavior == 'start' or behavior_type == 'POINT':
-                continue
-                
-            frame_num = int(time_sec * fps)
-            
-            if behavior_type == 'START':
-                active_behaviors[behavior] = frame_num
-            elif behavior_type == 'STOP' and behavior in active_behaviors:
-                start_frame = active_behaviors[behavior]
-                end_frame = frame_num
-                behavior_class = behavior_to_class.get(behavior, 0)
-                
-                # Label frames between start and end
-                for frame in range(start_frame, min(end_frame + 1, total_frames)):
-                    if frame_labels[frame] == 0 or behavior_class > frame_labels[frame]:
-                        frame_labels[frame] = behavior_class
-                        
-                del active_behaviors[behavior]
-        
-        # Add to output structure
-        out["labels"][video_name] = frame_labels
-        
-        # Assign to train/val split (alternating for simplicity)
-        if len(out["splits"]["train"]) <= len(out["splits"]["val"]):
-            out["splits"]["train"].append(video_name)
-        else:
-            out["splits"]["val"].append(video_name)
-    
-    # Save the output
-    output_path = Path(tsv_folder_path) / "feral_behavioral_labels.json"
-    with open(output_path, 'w') as f:
-        json.dump(out, f, indent=2)
-    
-    return out
+# ---------------------- settings ----------------------
+INPUT_PATH = "/mnt/data/ob088-track-9.tsv"  # file OR folder
+DEFAULT_FPS = 30.0
+SPLIT_STRATEGY = "roundrobin"               # "roundrobin" | "all_train"
+ROUNDROBIN_RATIO = 0.8                      # 80% train / 20% val when using roundrobin
+# ------------------------------------------------------
 
-# Usage example:
-# convert_tsv_to_json("/path/to/your/tsv/files")`}</code></pre>
+def _norm_name(s: str) -> str:
+    return re.sub(r"\s+", "_", str(s).strip().lower())
+
+def _safe_float(x, default=None):
+    try:
+        return float(x)
+    except Exception:
+        return default
+
+def _read_boris_records(tsv_path: str):
+    """Return (header_cols, records[list of dicts]). Robust to spacer lines."""
+    p = Path(tsv_path)
+    with open(p, "r", encoding="utf-8", errors="ignore") as f:
+        lines = f.readlines()
+
+    header_idx, header_cols = None, None
+    for i, raw in enumerate(lines):
+        s = raw.replace("\u00A0", " ").strip("\r\n")
+        if not s:
+            continue
+        parts = s.split("\t")
+        joined_lower = "\t".join([x.strip().lower() for x in parts])
+        if (joined_lower.startswith("time")
+            and "media file path" in joined_lower
+            and "total length" in joined_lower
+            and "fps" in joined_lower
+            and "status" in joined_lower):
+            header_idx = i
+            header_cols = [c.strip() for c in parts]
+            break
+
+    if header_idx is not None:
+        rows = []
+        for raw in lines[header_idx+1:]:
+            if not raw.strip():
+                continue
+            parts = [c.strip() for c in raw.strip("\r\n").split("\t")]
+            if len(parts) < len(header_cols):
+                parts += [""] * (len(header_cols) - len(parts))
+            elif len(parts) > len(header_cols):
+                parts = parts[:len(header_cols)]
+            rows.append(parts)
+        return header_cols, [dict(zip(header_cols, r)) for r in rows]
+
+    # headerless fallback: assume standard BORIS order
+    fallback = ["Time","Media file path","Total length","FPS","Subject","Behavior","Behavioral category","Comment","Status"]
+    rows = []
+    for raw in lines:
+        if not raw.strip():
+            continue
+        parts = [c.strip() for c in raw.strip("\r\n").split("\t")]
+        t = _safe_float(parts[0] if parts else None, None)
+        if t is None:
+            continue
+        if len(parts) < len(fallback):
+            parts += [""] * (len(fallback) - len(parts))
+        elif len(parts) > len(fallback):
+            parts = parts[:len(fallback)]
+        rows.append(parts)
+    return fallback, [dict(zip(fallback, r)) for r in rows]
+
+def _find_col(header_cols, name):
+    name_l = name.strip().lower()
+    for c in header_cols:
+        if c.strip().lower() == name_l:
+            return c
+    for c in header_cols:
+        if name_l in c.strip().lower():
+            return c
+    return None
+
+def _video_name(records, col_path, fallback):
+    # Prefer basename of media path; otherwise <tsv_stem>.mp4; ensure extension present
+    media_path = None
+    for rec in records:
+        mp = rec.get(col_path, "").strip() if col_path else ""
+        if mp:
+            media_path = mp
+            break
+    if media_path:
+        name = Path(media_path).name
+    else:
+        name = f"{fallback}.mp4"
+    if "." not in Path(name).name:
+        name = f"{name}.mp4"
+    return name
+
+def _fps_and_duration(records, col_fps, col_total_len, col_time):
+    fps = None
+    total_len = None
+    for rec in records:
+        if fps is None:
+            fps = _safe_float(rec.get(col_fps), None) if col_fps else None
+        if total_len is None:
+            total_len = _safe_float(rec.get(col_total_len), None) if col_total_len else None
+        if fps is not None and total_len is not None:
+            break
+    if fps is None or not math.isfinite(fps) or fps <= 0:
+        fps = DEFAULT_FPS
+    if total_len is None or not math.isfinite(total_len) or total_len <= 0:
+        # fallback to max of time
+        mx = 0.0
+        for rec in records:
+            t = _safe_float(rec.get(col_time), None) if col_time else None
+            if t is not None and t > mx:
+                mx = t
+        total_len = mx
+    return fps, total_len
+
+def _labels_from_records(records, fps, total_frames, col_time, col_beh, col_status, beh_to_id):
+    labels = [0] * total_frames
+    active = {}
+    def to_frame(t):
+        if t is None:
+            return None
+        f = int(round(t * fps))
+        return max(0, min(f, total_frames))
+
+    for rec in records:
+        t = _safe_float(rec.get(col_time), None)
+        beh_raw = str(rec.get(col_beh, "")).strip() if col_beh else ""
+        status = str(rec.get(col_status, "")).strip().upper() if col_status else ""
+        if not beh_raw or t is None:
+            continue
+
+        beh = _norm_name(beh_raw)
+        cid = beh_to_id.get(beh, 0)
+        f = to_frame(t)
+        if f is None:
+            continue
+
+        if status == "START":
+            active[beh] = f
+        elif status == "STOP":
+            if beh in active:
+                s = active.pop(beh)
+                a, b = min(s, f), max(s, f)
+                for ff in range(a, min(b, total_frames)):
+                    labels[ff] = cid
+        else:
+            # treat unknown/POINT as single-frame
+            ff = min(max(0, f), max(0, total_frames - 1))
+            if 0 <= ff < total_frames:
+                labels[ff] = cid
+    return labels
+
+def _collect_all_behaviors(tsv_paths):
+    beh = set()
+    for tsv in tsv_paths:
+        header, recs = _read_boris_records(tsv)
+        col_beh = _find_col(header, "Behavior")
+        if not col_beh:
+            continue
+        for r in recs:
+            b = str(r.get(col_beh, "")).strip()
+            if b:
+                beh.add(_norm_name(b))
+    return sorted(beh)
+
+def convert_path_to_feral(input_path):
+    p = Path(input_path)
+    if p.is_dir():
+        tsvs = sorted(p.glob("*.tsv"))
+        out_json_path = p / "feral_behavioral_labels.json"
+    else:
+        tsvs = [p]
+        out_json_path = p.with_name("feral_behavioral_labels.json")
+
+    if not tsvs:
+        raise FileNotFoundError("No TSV files found.")
+
+    # Build class set from union of behaviors across all TSVs
+    observed = _collect_all_behaviors(tsvs)
+    beh_to_id = {"other": 0}
+    next_id = 1
+    for b in observed:
+        if b not in beh_to_id:
+            beh_to_id[b] = next_id
+            next_id += 1
+    class_names = {str(v): k for k, v in beh_to_id.items()}
+
+    labels = {}
+    video_files = []
+
+    for tsv in tsvs:
+        header, recs = _read_boris_records(str(tsv))
+
+        col_time   = _find_col(header, "Time")
+        col_path   = _find_col(header, "Media file path")
+        col_tlen   = _find_col(header, "Total length")
+        col_fps    = _find_col(header, "FPS")
+        col_beh    = _find_col(header, "Behavior")
+        col_status = _find_col(header, "Status")
+
+        missing = [n for n,c in {
+            "Time": col_time, "Media file path": col_path, "Total length": col_tlen,
+            "FPS": col_fps, "Behavior": col_beh, "Status": col_status
+        }.items() if c is None]
+        if missing:
+            raise KeyError(f"{tsv.name}: missing columns: {missing} (found: {header})")
+
+        fps, total_len = _fps_and_duration(recs, col_fps, col_tlen, col_time)
+        total_frames = int(max(0, round(total_len * fps)))
+        vname = _video_name(recs, col_path, tsv.stem)
+        video_files.append(vname)
+
+        labels[vname] = _labels_from_records(
+            recs, fps, total_frames, col_time, col_beh, col_status, beh_to_id
+        )
+
+    # Splits
+    splits = {"train": [], "val": [], "inference": []}
+    if SPLIT_STRATEGY == "all_train":
+        splits["train"] = video_files
+    else:
+        # simple round-robin 80/20
+        cutoff = max(1, int(round(len(video_files) * ROUNDROBIN_RATIO)))
+        splits["train"] = video_files[:cutoff]
+        splits["val"] = video_files[cutoff:]
+
+    out = {"class_names": class_names, "labels": labels, "splits": splits}
+
+    with open(out_json_path, "w", encoding="utf-8") as f:
+        json.dump(out, f, indent=2)
+
+    print(f"Saved: {out_json_path}")
+    print(f"Videos: {len(video_files)} | Classes (incl. 'other'): {len(class_names)}")
+    return out_json_path, out
+
+# Run:
+# convert_path_to_feral(INPUT_PATH)
+`}</code></pre>
                 </div>
 
                 <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
