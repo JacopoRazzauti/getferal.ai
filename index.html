@@ -107,6 +107,8 @@
                             <NavLink section="label-preparation" current={activeSection} onClick={handleNavClick}>Label Preparation</NavLink>
                             <NavLink section="dataset-validator" current={activeSection} onClick={handleNavClick}>Dataset Validator</NavLink>
                             <NavLink section="running-feral" current={activeSection} onClick={handleNavClick}>Running Feral</NavLink>
+                            <NavLink section="colab" current={activeSection} onClick={handleNavClick}>Google Colab</NavLink>
+                            <NavLink section="runpod" current={activeSection} onClick={handleNavClick}>RunPod</NavLink>
                             <NavLink section="contact" current={activeSection} onClick={handleNavClick}>Contact</NavLink>
                         </nav>
                     </header>
@@ -122,6 +124,8 @@
                                 <SidebarLink section="label-preparation" current={activeSection} onClick={handleNavClick}>Label Preparation</SidebarLink>
                                 <SidebarLink section="dataset-validator" current={activeSection} onClick={handleNavClick}>Dataset Validator</SidebarLink>
                                 <SidebarLink section="running-feral" current={activeSection} onClick={handleNavClick}>Running Feral</SidebarLink>
+                                <SidebarLink section="colab" current={activeSection} onClick={handleNavClick}>Google Colab</SidebarLink>
+                                <SidebarLink section="runpod" current={activeSection} onClick={handleNavClick}>RunPod</SidebarLink>
                                 <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</SidebarLink>
 
                                 
@@ -154,6 +158,8 @@
                             {activeSection === 'video-preparation' && <VideoPreparationSection />}
                             {activeSection === 'label-preparation' && <LabelPreparationSection />}
                             {activeSection === 'running-feral' && <RunningFeralSection handleNavClick={handleNavClick} />}
+                            {activeSection === 'colab' && <ColabSection />}
+                            {activeSection === 'runpod' && <RunPodSection />}
                             {activeSection === 'dataset-validator' && <DatasetValidatorSection />}
                             {activeSection === 'examples' && <ExamplesSection />}
                             {activeSection === 'contact' && <ContactSection />}
@@ -355,128 +361,185 @@ const HeroMosaic = () => (
             </section>
         );
 
-        const GettingStartedSection = ({ handleNavClick }) => (
-            <section
-            id="getting-started"
-            className="bg-white p-8 rounded-lg shadow-md"
-            >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Getting Started</h2>
-        
-            {/* High-level intro */}
-            <p className="text-gray-700 leading-relaxed mb-6">
-                To use FERAL you need to have (1) videos and (2) discrete behaviors labels for some of these videos. 
-                Then FERAL trains a deep learning model using labels you provided, evaluates quality, and 
-                predicts labels for unannotated videos. 
-            </p>
+const GettingStartedSection = ({ handleNavClick }) => (
+  <section
+    id="getting-started"
+    className="bg-white p-8 rounded-lg shadow-md"
+  >
+    <h2 className="text-3xl font-bold text-gray-900 mb-4">Getting Started</h2>
 
-            <p className="text-gray-700 leading-relaxed mb-6">
-                FERAL workflow has <strong>3 stages</strong>:
-            </p>
-        
-            {/* Pipeline list */}
-            <ol className="space-y-6 md:space-y-4 list-decimal list-inside">
-                <li>
-                <span className="font-semibold text-gray-900">Prepare your videos.</span>{" "}
-                FERAL needs seek-able video files (quickly load frames from the middle of the video)
-                <button
-                    onClick={() => handleNavClick("video-preparation")}
-                    className="ml-2 text-blue-600 hover:underline text-sm"
-                >
-                    (see Video&nbsp;Preparation)
-                </button>
-                </li>
-        
-                <li>
-                <span className="font-semibold text-gray-900">Prepare your labels.</span>{" "}
-                Convert annotations into the JSON schema FERAL expects
-                <button
-                    onClick={() => handleNavClick("label-preparation")}
-                    className="ml-2 text-blue-600 hover:underline text-sm"
-                >
-                    (see Label&nbsp;Preparation)
-                </button>
-                </li>
-        
-                <li>
-                <span className="font-semibold text-gray-900">Run FERAL.</span> Train a
-                model on your dataset and generate labels for unannotated videos.
-                <button
-                    onClick={() => handleNavClick("running-feral")}
-                    className="ml-2 text-blue-600 hover:underline text-sm"
-                >
-                    (how to run)
-                </button>
-                </li>
-            </ol>
-        
-            {/* Two-option install cards */}
-            <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">
-                Choose how to run FERAL
-            </h3>
-        
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Local install */}
-                <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
-                <div className="flex items-center mb-3">
-                    <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
-                    A
-                    </div>
-                    <h4 className="text-lg font-semibold text-blue-900">
-                    Local Installation
-                    </h4>
-                </div>
-                <p className="text-sm text-blue-800 mb-4">
-                    Best for users with their own GPUs and command-line experience.
-                </p>
-                <ul className="text-blue-700 text-sm space-y-1">
-                    <li>💻&nbsp;Install CUDA + PyTorch yourself</li>
-                    <li>🔒&nbsp;Data never leaves your machine</li>
-                    <li>💸&nbsp;Completely free</li>
-                </ul>
-                </div>
-        
-                {/* RunPod */}
-                <div className="bg-green-50 border border-green-200 p-6 rounded-lg relative">
-                <div className="flex items-center mb-3">
-                    <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
-                    B
-                    </div>
-                    <h4 className="text-lg font-semibold text-green-900">RunPod</h4>
-                </div>
-                <p className="text-sm text-green-800 mb-4">
-                    Launch a cloud GPU server in&nbsp;5 minutes. Pay-as-you-go.
-                </p>
-                <ul className="text-green-700 text-sm space-y-1">
-                    <li>🚀 High-performance GPUs</li>
-                    <li>🏎️ Few-click setup</li>
-                    <li>💸 No long-term commitment</li>
-                </ul>
-                </div>
-            </div>
-        
-            {/* Quick-nav buttons */}
-            <div className="mt-10 flex flex-wrap gap-4">
-                <button
-                onClick={() => handleNavClick("video-preparation")}
-                className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition duration-200"
-                >
-                📽️ Video Prep
-                </button>
-                <button
-                onClick={() => handleNavClick("label-preparation")}
-                className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition duration-200"
-                >
-                🏷️ Label Prep
-                </button>
-                <button
-                onClick={() => handleNavClick("running-feral")}
-                className="bg-gray-900 hover:bg-gray-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition duration-200"
-                >
-                🚀 Run FERAL
-                </button>
-            </div>
-            </section>
-        );
+    {/* High-level intro */}
+    <p className="text-gray-700 leading-relaxed mb-6">
+      To use FERAL you need to have (1) videos and (2) discrete behavior
+      labels for some of these videos. FERAL trains a deep learning model
+      using labels you provide, evaluates quality, and predicts labels for
+      unannotated videos.
+    </p>
+
+    <p className="text-gray-700 leading-relaxed mb-6">
+      FERAL workflow has <strong>3 stages</strong>:
+    </p>
+
+    <ol className="space-y-6 md:space-y-4 list-decimal list-inside">
+      <li>
+        <span className="font-semibold text-gray-900">Prepare your videos.</span>{" "}
+        FERAL needs seek-able video files (quickly load frames from the middle of the video)
+        <button
+          onClick={() => handleNavClick("video-preparation")}
+          className="ml-2 text-blue-600 hover:underline text-sm"
+        >
+          (see Video&nbsp;Preparation)
+        </button>
+      </li>
+
+      <li>
+        <span className="font-semibold text-gray-900">Prepare your labels.</span>{" "}
+        Convert annotations into the JSON schema FERAL expects
+        <button
+          onClick={() => handleNavClick("label-preparation")}
+          className="ml-2 text-blue-600 hover:underline text-sm"
+        >
+          (see Label&nbsp;Preparation)
+        </button>
+      </li>
+
+      <li>
+        <span className="font-semibold text-gray-900">Run FERAL.</span>{" "}
+        Train a model on your dataset and generate labels for unannotated videos.
+        <button
+          onClick={() => handleNavClick("colab")}
+          className="ml-2 text-blue-600 hover:underline text-sm"
+        >
+          (how to run)
+        </button>
+      </li>
+    </ol>
+
+    {/* How to run */}
+    <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-4">
+      Choose how to run FERAL
+    </h3>
+
+    <div className="grid grid-cols-1 gap-6">
+      {/* A. Local install */}
+      <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg">
+        <div className="flex items-center mb-3">
+          <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
+            A
+          </div>
+          <h4 className="text-lg font-semibold text-blue-900">
+            Local Installation
+          </h4>
+        </div>
+
+        <p className="text-sm text-blue-800 mb-4">
+          Best for users with their own GPUs and command-line experience.
+        </p>
+
+        <ul className="text-blue-700 text-sm space-y-1">
+          <li>💻 Install CUDA + PyTorch yourself</li>
+          <li>🔒 Data never leaves your machine</li>
+          <li>💸 Completely free</li>
+        </ul>
+
+        <button
+          onClick={() => handleNavClick("running-feral")}
+          className="mt-4 inline-block bg-gray-900 hover:bg-gray-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition duration-200"
+        >
+          💻 Run Locally
+        </button>
+      </div>
+
+      {/* B. Google Colab */}
+      <div className="bg-green-50 border border-green-200 p-6 rounded-lg">
+        <div className="flex items-center mb-3">
+          <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
+            B
+          </div>
+          <h4 className="text-lg font-semibold text-green-900">
+            Google Colab (Recommended)
+          </h4>
+        </div>
+
+        <p className="text-sm text-green-800 mb-4">
+          Run FERAL fully in your browser using our Colab notebook.
+          No installs, no drivers, no cluster.
+        </p>
+
+        <ul className="text-green-700 text-sm space-y-1">
+          <li>🚀 Zero setup: open and run</li>
+          <li>⚡ Use an <code>A100</code> or <code>L4</code> GPU</li>
+          <li>🎓 Colab Pro is free for academics (institutional email)</li>
+          <li>☁️ Data can stay in your Drive</li>
+        </ul>
+
+        <div className="flex flex-wrap gap-3 mt-4">
+          <button
+            onClick={() => handleNavClick("colab")}
+            className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition duration-200"
+          >
+            🚀 Run on Google Colab
+          </button>
+
+          
+        </div>
+      </div>
+
+      {/* C. RunPod / dedicated remote GPU */}
+      <div className="bg-indigo-50 border border-indigo-200 p-6 rounded-lg">
+        <div className="flex items-center mb-3">
+          <div className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
+            C
+          </div>
+          <h4 className="text-lg font-semibold text-indigo-900">
+            RunPod Cloud GPU
+          </h4>
+        </div>
+
+        <p className="text-sm text-indigo-800 mb-4">
+          Spin up your own remote GPU server with full control. Best if you
+          have lots of data and want persistent storage.
+        </p>
+
+        <ul className="text-indigo-700 text-sm space-y-1">
+          <li>☁️ Your own long-running GPU pod</li>
+          <li>🏎 Access to A100 / H100 class GPUs</li>
+          <li>💳 Pay-as-you-go billing</li>
+        </ul>
+
+        <button
+          onClick={() => handleNavClick("runpod")}
+          className="mt-4 inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition duration-200"
+        >
+          ☁️ Run on RunPod
+        </button>
+      </div>
+    </div>
+
+    {/* Bottom quick links */}
+    <div className="mt-10 flex flex-wrap gap-4">
+      <button
+        onClick={() => handleNavClick("video-preparation")}
+        className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition duration-200"
+      >
+        📽️ Video Prep
+      </button>
+      <button
+        onClick={() => handleNavClick("label-preparation")}
+        className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition duration-200"
+      >
+        🏷️ Label Prep
+      </button>
+      <button
+        onClick={() => handleNavClick("colab")}
+        className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition duration-200"
+      >
+        🚀 Run FERAL
+      </button>
+    </div>
+  </section>
+);
+
   
 
         const VideoPreparationSection = () => {
@@ -1278,281 +1341,342 @@ def convert_path_to_feral(input_path):
   
 
         const RunningFeralSection = ({ handleNavClick }) => {
-            const [isTransferExpanded, setIsTransferExpanded] = React.useState(false);
+  const [isTransferExpanded, setIsTransferExpanded] = React.useState(false);
 
-            return (
-            <section id="running-feral" className="bg-white p-8 rounded-lg shadow-md">
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">1. Setup your environment</h3>
-                <h4 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Option A: Local</h4>
-                Make sure that you have installed:<br />
-                &nbsp;&nbsp;- Python&nbsp;3.10<br />
-                &nbsp;&nbsp;- PyTorch&nbsp;2.4.0<br />
-                &nbsp;&nbsp;- CUDA&nbsp;12.4<br />
-                You can try running with newer/older versions, but we don't guarantee that it will work. <br />
-                Ensure that you can access your video folder and the JSON file containing the labels.
+  return (
+    <section id="running-feral" className="bg-white p-8 rounded-lg shadow-md">
+      <h2 className="text-3xl font-bold text-gray-900 mb-6">
+        Running FERAL
+      </h2>
 
-                <h4 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Option B: Cloud server on RunPod</h4>
-                1. Get a RunPod account with about&nbsp;$10 on it, or contact us and we'll give you an account with some credit.<br />
-                2. Go to&nbsp;
-                  <a
-                    href="https://console.runpod.io/deploy?gpu=H100%20SXM&count=1&template=runpod-torch-v240"
-                    className="text-blue-600 hover:underline"
-                    rel="noopener noreferrer"
-                  >
-                    this RunPod deploy link
-                  </a>
-                  . Make sure <em>SSH Terminal Access</em> and <em>Start Jupyter Notebook</em> are selected. Depending on the size of your data, you might want to increase disk size in <em>Edit&nbsp;Template&nbsp;&rarr;&nbsp;Volume&nbsp;Disk</em>.<br />
-                3. Go to&nbsp;
-                  <a
-                    href="https://console.runpod.io/pods"
-                    className="text-blue-600 hover:underline"
-                    rel="noopener noreferrer"
-                  >
-                  My&nbsp;Pods
-                  </a>
-                  
-                  
-                  &nbsp;and wait for your pod to start. Once the server is set up, click <em>Connect</em>.<br />
-                4. Find a button <em>Jupyter&nbsp;Lab → :8888</em>. Wait untill it has a green light that says Ready, then click it.<br />
-                5. This should open a Jupyter Lab interface on your remote server. If it doesn't work, try a different WiFi or turn on a VPN. <br />
-                6. At the bottom, in the “Other” section, click <em>Terminal</em><br />
-                7. Run: <code className="bg-gray-200 px-1 rounded">
-                    apt update && apt install -y unzip
-                  </code><br />
-                8. Transfer your videos and labels. You can just drag and drop your json file with labels to a panel on the left 
-                from your terminal. Transfering videos is harder, pick the option below that works best for you<br/>
-                <br/>
-                
-                <button
-                onClick={() => setIsTransferExpanded(!isTransferExpanded)}
-                className="w-full flex items-center justify-between p-4 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg transition-colors duration-200"
-                >
-                <span className="font-medium text-gray-800">
-                    {isTransferExpanded
-                        ? '🔽 Hide Video Transfer Options'
-                        : '📤 Show Video Transfer Options'}
-                </span>
-                <svg
-                    className={`w-5 h-5 transform transition-transform duration-200 ${isTransferExpanded ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-                </button>
+      {/* Option A: Google Colab */}
+      <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">
+        Option A: Google Colab (Recommended)
+      </h3>
+      <p className="text-gray-700 leading-relaxed mb-3">
+        The easiest way to run FERAL is directly in your browser using our
+        <strong> interactive Google Colab notebook</strong>. This notebook is
+        <strong> fully self-contained</strong> and provides end-to-end
+        instructions for the entire workflow—from video preparation to model
+        training and evaluation.
+      </p>
+      <ul className="list-disc list-inside text-gray-700 mb-4">
+        <li>💻 Zero setup — no installation or dependencies required</li>
+        <li>⚡ Use an <code>A100</code> or <code>L4</code> GPU for best performance</li>
+        <li>🎓 Colab Pro is free for academics with an institutional email</li>
+        <li>☁️ Data can stay in your Google Drive</li>
+      </ul>
 
-                {isTransferExpanded && (
-                <div className="mt-4 border border-gray-300 rounded-lg overflow-hidden p-4">
-                    <div className="space-y-4 text-gray-700">
+      <a
+        href="https://colab.research.google.com/drive/1bJkHewHpEU7iJT3fIHd0YNrQJ9hkSEdu?usp=sharing"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition"
+      >
+        🚀 Launch FERAL in Colab
+      </a>
 
-                        {/* Intro */}
-                        <p>
-                          We advise you to first compress the folder with your videos into a <code>.zip</code> archive. 
-                          You can do that by selecting your file in Finder/File explorer and clicking “compress”.
-                          Transfer the archive to the remote server and unzip it there:
-                          <code className="bg-gray-200 px-1 rounded ml-1">unzip&nbsp;path_to_archive.zip</code>.
-                          SSH (below) is the only method that can skip zipping.
-                        </p>
-                      
-                        {/* Drag & drop */}
-                        <h3 className="text-xl font-semibold text-gray-800 mt-4">Very slow but simple: drag and drop</h3>
-                        <p>
-                          Drag the archive into JupyterLab, or click the upload icon (<span className="font-semibold">↑</span>)
-                          and choose the file. A blue progress bar will appear at the bottom, keep the window open until it finishes.
-                          Then run <code className="bg-gray-200 px-1 rounded">ls -lh path_to_archive</code> and check that the file size matches the size 
-                          on your local machine. Sometimes the upload quietly fails, 
-                          in that case you'll have to delete the partial file and start again.
-                        </p>
-                      
-                        {/* SSH */}
-                        <h3 className="text-xl font-semibold text-gray-800 mt-4">Fast but more complicated: set up SSH</h3>
-                        <p>
-                            You can set up a way to connect to the server directly from your local machine without a web interface, that would also 
-                            allow an efficient file transfer (~10x faster then drag and drop in JupyterLab). First, generate an SSH key and add it to RunPod&nbsp;
-                          <a
-                            href="https://docs.runpod.io/pods/configuration/use-ssh#generate-an-ssh-key-and-add-it-to-your-runpod-account"
-                            className="text-blue-600 underline"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            (tutorial)
-                          </a>. <strong>Make sure you create the pod after adding the key!</strong> Then you can run the following command on your local machine
-                        </p>
-                      
-                        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                          <code>scp -P &lt;PORT&gt; -r path_to_your_video_folder root@&lt;IP_ADDRESS&gt;:/workspace</code>
-                        </pre>
-                      
-                        <p>
-                          For an archive, skip the <code>-r</code> flag:
-                        </p>
-                      
-                        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                          <code>scp -P &lt;PORT&gt; path_to_your_archive.zip root@&lt;IP_ADDRESS&gt;:/workspace</code>
-                        </pre>
+      <p className="text-sm text-gray-600 mt-3">
+        This method is ideal for most users and replicates the same results as
+        local or cloud-GPU setups.
+      </p>
 
-                        <p>
-                            To get the PORT and IP_ADDRESS, go to&nbsp;
+      {/* Option B: Local */}
+      <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
+        Option B: Local Installation
+      </h3>
+      <p>
+        Make sure that you have installed:
+        <br />  - Python 3.10
+        <br />  - PyTorch 2.4.0
+        <br />  - CUDA 12.4
+        <br />
+        You can try newer/older versions, but we don't guarantee compatibility.
+        Ensure that you can access your video folder and the JSON file containing
+        labels.
+      </p>
 
-                            <a
-                                href="https://console.runpod.io/pods"
-                                className="text-blue-600 hover:underline"
-                                rel="noopener noreferrer"
-                            >
-                            My&nbsp;Pods page&nbsp;
-                            </a>
-                        
+      {/* Option C: RunPod */}
+      <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
+        Option C: Cloud Server on RunPod
+      </h3>
+      <p>
+        Prefer a dedicated GPU server? FERAL can run on
+        <a
+          href="https://www.runpod.io"
+          className="text-blue-600 hover:underline ml-1"
+          rel="noopener noreferrer"
+        >
+          RunPod
+        </a>.
+        This option gives you full control of the environment and long-term
+        storage for large datasets.
+      </p>
 
-                            click "Connect", select "SSH" tab. Then copy the "SSH over exposed TCP" command. It should look like this 
-                        </p>
-                        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                            <code>ssh root@213.173.98.106 -p 19235 -i ~/.ssh/id_ed25519</code>
-                        </pre>
-                        <p>
-                            in this case your IP_ADDRESS would be 213.173.98.106 and PORT 19235 
-                            
-                        </p>  
-                      
-                        {/* Drive / Dropbox */}
-                        <h3 className="text-xl font-semibold text-gray-800 mt-4">Simple, paid: Google Drive / Dropbox</h3>
-                        <p>
-                          Upload the archive to the cloud provider of your choice, then download the file on the server. <br/>
-                          Google drive:
-                        </p>
-                      
-                        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                          <code>
-                      pip install gdown<br/>
-                      python -m gdown --fuzzy 'sharing_link_to_your_file'
-                          </code>
-                        </pre>
-                      
-                        <p className="mt-2">
-                          Dropbox (force direct download with <code>?dl=1</code>):
-                        </p>
-                      
-                        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                          <code>wget -O myfile.zip "https://www.dropbox.com/s/abcd1234efg/myfile.zip?dl=1"</code>
-                        </pre>
-                      
-                        {/* bashupload */}
-                        <h3 className="text-xl font-semibold text-gray-800 mt-4">Simple, fast: bashupload.com</h3>
-                        <p>
-                          Go to <a className="text-blue-600 underline" href="https://bashupload.com" target="_blank" rel="noopener noreferrer">bashupload.com</a>,
-                          click <code>choose file(s)</code>, choose your archive, wait for the upload, then copy the link it returns. On the server:
-                          <code className="bg-gray-200 px-1 rounded ml-1">wget&nbsp;&lt;link&gt;</code>
-                        </p>
+      <ol className="list-decimal list-inside space-y-2 mt-3 text-gray-700">
+        <li>
+          Get a RunPod account with about $10 credit, or contact us for access.
+        </li>
+        <li>
+          Go to 
+          <a
+            href="https://console.runpod.io/deploy?gpu=H100%20SXM&count=1&template=runpod-torch-v240"
+            className="text-blue-600 hover:underline"
+            rel="noopener noreferrer"
+          >
+            this RunPod deploy link
+          </a>{" "}
+          and enable <em>SSH Terminal Access</em> and <em>Start Jupyter Notebook</em>.
+          Increase disk size if needed.
+        </li>
+        <li>
+          Go to 
+          <a
+            href="https://console.runpod.io/pods"
+            className="text-blue-600 hover:underline"
+            rel="noopener noreferrer"
+          >
+            My Pods
+          </a>
+          , wait for startup, then click <em>Connect → Jupyter Lab :8888</em>.
+        </li>
+        <li>
+          Once in Jupyter Lab, open <em>Terminal</em> and run:{" "}
+          <code className="bg-gray-200 px-1 rounded">
+            apt update && apt install -y unzip
+          </code>
+        </li>
+        <li>
+          Transfer your videos and labels to the server (see transfer options below).
+        </li>
+      </ol>
 
-                        <p className="mt-2">
-                            To ensure no one can access your file, we recommend encrypting it locally, transferring it, and 
-                            then decrypting it on the server. Confirm that <code>gpg</code> is installed on both machines. Encrypt 
-                            with <code className="bg-gray-200 px-1 rounded">gpg --symmetric --cipher-algo AES256 folder.zip</code> and 
-                            decrypt with <code className="bg-gray-200 px-1 rounded">gpg -o folder.zip -d folder.zip.gpg</code>. You’ll be 
-                            prompted for the same password during both steps.
-                        </p>
-                      </div>
-                           
-                </div>
-                )}
+      {/* Expandable transfer options */}
+      <button
+        onClick={() => setIsTransferExpanded(!isTransferExpanded)}
+        className="w-full flex items-center justify-between p-4 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg transition-colors duration-200 mt-4"
+      >
+        <span className="font-medium text-gray-800">
+          {isTransferExpanded
+            ? "🔽 Hide Video Transfer Options"
+            : "📤 Show Video Transfer Options"}
+        </span>
+        <svg
+          className={`w-5 h-5 transform transition-transform duration-200 ${
+            isTransferExpanded ? "rotate-180" : ""
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
 
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">2. Start training</h3>
-                <div className="space-y-4">
+      {isTransferExpanded && (
+        <div className="mt-4 border border-gray-300 rounded-lg overflow-hidden p-4">
+          <p className="text-gray-700">
+            We advise compressing your video folder into a .zip archive before
+            transfer. You can then use Jupyter Lab upload, SSH, or bashupload.com.
+            <br />
+            SSH is fastest; drag and drop is simplest.
+          </p>
+        </div>
+      )}
 
-                
+      {/* Step 2: Prepare your data */}
+      <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
+        1. Prepare your data
+      </h3>
 
-                    <p>
-                    First, clone the repository and install python libraries:
-                    </p>
+      <p className="text-gray-700 leading-relaxed mb-4">
+        Before starting training, you must have:
+      </p>
 
-                    <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                        git clone https://github.com/Skovorp/feral.git<br />
-                        cd feral<br />
-                        pip install -r requirements.txt
-                    </pre>
+      <ul className="list-disc list-inside text-gray-700 mb-4">
+        <li>
+          A folder containing all your{" "}
+          <strong>re-encoded videos</strong> (256×256 .mp4 files from the
+          Video Preparation step).
+        </li>
+        <li>
+          A single <code className="bg-gray-100 px-1 py-0.5 rounded">.json</code>{" "}
+          file with your frame-by-frame annotations in FERAL format
+          (class_names / labels / splits).
+        </li>
+      </ul>
 
-                    <p>To start your training run:</p>
+      <p className="text-gray-700 leading-relaxed mb-4">
+        Place the JSON file <strong>in the same directory</strong> where the
+        videos live, so FERAL can find both the data and the labels.
+      </p>
 
-                    <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                        python run.py path_to_folder_with_reencoded_videos&nbsp;path_to_labels_json
-                    </pre>
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+        <p className="text-yellow-900 text-sm leading-relaxed">
+          ✅ You can confirm your annotation JSON is valid by using the
+          built-in dataset validator.
+        </p>
 
-                    <p>
-                        We use Weights &amp; Biases to track training performance. When you start a run, you’ll be prompted to choose where to log it:  
-                        <br />
-                        - <strong>Your private project</strong>: requires your&nbsp;
-                                    <a
-                                href="https://wandb.ai/authorize"
-                                className="text-blue-600 hover:underline"
-                                rel="noopener noreferrer"
-                            >wandb API key
-                                </a> and project URL.<br />
-                        - <strong>FERAL’s shared project</strong>: public and ready to use; no additional setup needed.
-                      </p>
-                      
-                </div>
-                
+        <button
+          onClick={() => handleNavClick("dataset-validator")}
+          className="mt-4 inline-block w-full sm:w-auto text-center bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-5 rounded-lg shadow-md transition duration-200"
+        >
+          🔍 Validate my dataset
+        </button>
+      </div>
 
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">3. Track performance</h3>
-                
-                <p className="text-gray-700 leading-relaxed">
-                    We log many metrics, but in a good run you’ll only need to track a couple key ones, the rest are for debugging. 
-                    Here they are, ranked by importance:<br/>
+      {/* Step 3: Start training */}
+      <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
+        2. Start training (Manual or RunPod/Local)
+      </h3>
 
-                    1. <strong>val_raster_plot, ema_val_raster_plot</strong> - raster plot with predictions of the model. All validation videos are concatenated along the x axis. <br/>
+      <p className="text-gray-700 leading-relaxed">
+        If you’re not using Colab, clone the repository and install dependencies:
+      </p>
 
-                    2. <strong>ema_val_frame_level_map, val_frame_level_map </strong> - predict labels for all validation frames (averaging across overlapping chunks).
-                    Compare with ground truth to compute Average Precision per class (excluding "other"), then average across classes. This is the main metric: &lt;0.5 is bad, &gt;0.9 is pretty good. <br/>
+      <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+        git clone https://github.com/Skovorp/feral.git
+        <br />
+        cd feral
+        <br />
+        pip install -r requirements.txt
+      </pre>
 
-                    3. <strong>ema_val_map, val_map, train_map </strong> - same as frame_level metrics but without ensembling. 
-                    Compute predictions and labels per batch, calculate Average Precision across all batches, then average over classes (excluding "other"). 
-                    Typically slightly worse than frame-level mAP. See below for how ground truth is computed for training metrics.<br/>
+      <p className="text-gray-700 leading-relaxed">
+        To start a training run:
+      </p>
 
-                    4. <strong> val_ap_classname, train_ap_classname </strong> - average precisions from 3. Can help you identify hard classes for the model<br />
-                    
-                    5. <strong>train loss, val loss</strong>: average loss over the epoch. Should decrease steadily each epoch. If training loss drops but validation loss rises, the model is overfitting<br/>
+      <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+        python run.py path_to_videos path_to_labels.json
+      </pre>
 
-                    6. <strong>batch_loss</strong>: loss for each bacth, step level. Very noisy, check that it trends downward overall. If it spikes and stays high, something is likely wrong<br />
-                <br/>
-                </p>
+      <p className="mt-3 text-gray-700 leading-relaxed">
+        Training metrics are logged to Weights &amp; Biases. You’ll be prompted to either
+        log to your own project (using a{" "}
+        <a
+          href="https://wandb.ai/authorize"
+          className="text-blue-600 hover:underline"
+          rel="noopener noreferrer"
+        >
+          W&amp;B API key
+        </a>
+        ) or the public FERAL project.
+      </p>
 
-                
-                <h4 className="text-lg font-semibold text-gray-800 mb-2">What's EMA?</h4>
-                
-                Sometimes using EMA (Exponential Moving Average) of the weights instead of the original model gives better results. 
-                At each step, EMA weights are updated as: <code>ema_weight = 0.999 * ema_weight + 0.001 * orig_weight</code>.
-                This means you're effectively training two models: the main one and its EMA version.
-                That’s why many validation metrics appear twice, e.g. <code>some_metric</code> and <code>ema_some_metric</code>.
-                At the end of training, FERAL saves outputs from both models so you can choose the one you prefer.
-                <br/><br/>
-                
-                <h4 className="text-lg font-semibold text-gray-800 mb-2">Ground truth for train </h4>
+      {/* Step 4: Track performance */}
+      <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
+        3. Track performance
+      </h3>
 
+      <p className="text-gray-700 leading-relaxed">
+        In Weights &amp; Biases, monitor:
+        <br />
+        1. <strong>val_raster_plot / ema_val_raster_plot</strong> – raster of model
+        predictions across validation videos.
+        <br />
+        2. <strong>ema_val_frame_level_map</strong> – main metric (Average Precision
+        across classes, frame-level). &lt;0.5 is weak, &gt;0.9 is strong.
+        <br />
+        3. <strong>train_map / val_map / ema_val_map</strong> – batch-level
+        Average Precision.
+        <br />
+        4. <strong>train loss / val loss</strong> – should steadily go down. If
+        train loss drops and val loss rises, you're overfitting.
+      </p>
 
-                We use a data augmentation technique called MixUp during training.
-                For each sample in a batch, we blend in a small portion of another video and adjust the label in the same proportion.&nbsp; 
-                
-                <a
-                href="https://miro.medium.com/v2/resize:fit:1400/0*JYE5MTpwJ4vddslv.PNG"
-                className="text-blue-600 hover:underline"
-                rel="noopener noreferrer"
-            >
-                Example
-                </a>. 
+      <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2">
+        What's EMA?
+      </h4>
+      <p className="text-gray-700 leading-relaxed">
+        EMA (Exponential Moving Average) keeps a smoothed copy of the model
+        weights:
+        <code className="bg-gray-100 px-1 py-0.5 rounded ml-1">
+          ema = 0.999 × ema + 0.001 × weights
+        </code>
+        . FERAL saves outputs from both the main model and the EMA model so you
+        can choose whichever performs better.
+      </p>
 
-                So during training all of our samples have labels like 90% class A + 10% class B. To calculate metrics, we 
-                set ground truth to be class with the biggest weight. Although this makes the training metrics less fair, 
-                it allows for comparison with validation metrics. Due to MixUp and other regularization techniques (like dropout and video augmentations), validation metrics 
-                usually show better performance than train metrics.
-                
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">4. Get final results</h3>
-                <p className="text-gray-700 leading-relaxed">
-                  In the end you'll get an&nbsp;<code className="font-mono">_inference_&#123;run_name&#125;_&#123;%Y-%m-%d_%H-%M-%S&#125;.json</code> file inside your 
-                  "answers" folder with predictions for your inference videos.
-                </p>
-              </section>
-            );
-        };
+      {/* Step 5: Final results */}
+      <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
+        4. Get final results
+      </h3>
+
+      <p className="text-gray-700 leading-relaxed">
+        At the end of training you'll get a file in your{" "}
+        <code className="bg-gray-100 px-1 py-0.5 rounded font-mono">answers</code>{" "}
+        folder named something like{" "}
+        <code className="bg-gray-100 px-1 py-0.5 rounded font-mono">
+          _inference_&#123;run_name&#125;_&#123;%Y-%m-%d_%H-%M-%S&#125;.json
+        </code>
+        . That JSON contains predicted behaviors for every frame of every
+        inference video you provided.
+      </p>
+
+    </section>
+  );
+};
+        const ColabSection = () => (
+  <section id="colab" className="bg-white p-8 rounded-lg shadow-md">
+    <h2 className="text-3xl font-bold text-gray-900 mb-4">Run FERAL on Google Colab</h2>
+    <p className="text-gray-700 leading-relaxed mb-4">
+      The easiest way to run FERAL is directly in your browser using our
+      <strong> interactive Google Colab notebook</strong> — no installation,
+      drivers, or setup required.
+    </p>
+
+    <ul className="list-disc list-inside text-gray-700 mb-4">
+      <li>💻 <strong>Zero-setup</strong>: open, connect, and run immediately.</li>
+      <li>⚡ <strong>GPU accelerated</strong>: select an <code>A100</code> or <code>L4</code> GPU for best performance.</li>
+      <li>🎓 <strong>Free for academics</strong>: Colab Pro can be requested free of charge with an institutional email.</li>
+      <li>☁️ Data stays in your Google Drive; no external uploads needed.</li>
+    </ul>
+
+    <div className="mt-6">
+      <a
+        href="https://colab.research.google.com/drive/1bJkHewHpEU7iJT3fIHd0YNrQJ9hkSEdu?usp=sharing"
+
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition"
+      >
+        🚀 Launch in Colab
+      </a>
+    </div>
+
+    <p className="text-gray-600 mt-6 text-sm">
+      For most users this is the recommended method — training runs smoothly even
+      on modest datasets and reproduces identical results to local or cloud-GPU setups.
+    </p>
+  </section>
+);
+
+const RunPodSection = () => (
+  <section id="runpod" className="bg-white p-8 rounded-lg shadow-md">
+    <h2 className="text-3xl font-bold text-gray-900 mb-4">Run FERAL on RunPod</h2>
+    <p className="text-gray-700 leading-relaxed mb-4">
+      Prefer a dedicated cloud GPU? FERAL supports full training on&nbsp;
+      <a href="https://www.runpod.io" className="text-blue-600 hover:underline">RunPod</a>.
+      Deployment takes under 5 minutes using our ready-made template.
+    </p>
+
+    <ul className="list-disc list-inside text-gray-700 mb-4">
+      <li>🔧 Full control over environment and storage.</li>
+      <li>🚀 Access to H100 / A100 GPUs for large-scale datasets.</li>
+      <li>💳 Pay-as-you-go billing — shut down anytime.</li>
+    </ul>
+
+    <p className="text-gray-600">
+      See the detailed step-by-step guide in the <strong>RunPod</strong> section
+      of the documentation if you prefer this route.
+    </p>
+  </section>
+);
 
         const DatasetValidatorSection = () => {
             const [file, setFile] = useState(null);
