@@ -172,7 +172,13 @@
                     )}
 
                     {/* Footer */}
+
                     <footer className="bg-gray-900 text-white py-6 px-8 text-center text-sm">
+                        <div class="flex flex-wrap justify-center items-center gap-8 mt-6">
+  <img src="src\images\HHMI_logo.png" alt="NIH Logo" class="h-10 opacity-90 hover:opacity-100 transition" />
+  <img src="src\images\rocke_logo.png" alt="NSF Logo" class="h-10 opacity-90 hover:opacity-100 transition" />
+
+</div>
                         <p>&copy; {new Date().getFullYear()} Feral AI. All rights reserved.</p>
                         <p className="mt-2">
                             <a href="/privacy-policy" className="text-gray-400 hover:underline mx-2">Privacy Policy</a> |
@@ -205,39 +211,43 @@
         // ===== Hero Mosaic (GIFs) =====
 const HeroMosaic = () => (
   <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-    {/* Main tile – bird */}
+    {/* Main feature tile */}
     <figure className="col-span-2 md:col-span-2 md:row-span-2 overflow-hidden rounded-xl border border-gray-200 shadow-sm">
       <img
-        src="./src/videos/bird_example.gif"
-        alt="Bird example behavior"
-        loading="lazy"
+        src="src\images\camera_interaction.gif"
+        alt="example behavior"
         className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
       />
-      <figcaption className="sr-only">Bird example</figcaption>
     </figure>
 
-    {/* Side tiles – replace filenames with your two other GIFs */}
+    {/* Existing examples */}
     <figure className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-      <img
-        src="src\videos\ants_example.gif"  /* ← change if different */
-        alt="Ants example behavior"
-        loading="lazy"
-        className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-      />
-      <figcaption className="sr-only">Ants example</figcaption>
+      <img src="src/videos/ants_example.gif" alt="Ants example behavior" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
     </figure>
 
     <figure className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-      <img
-        src="src\videos\worms_example.gif" /* ← change if different */
-        alt="Worms example behavior"
-        loading="lazy"
-        className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-      />
-      <figcaption className="sr-only">Worms example</figcaption>
+      <img src="src/videos/worms_example.gif" alt="Worms example behavior" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
     </figure>
+
+    <figure className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+  <img
+    src="src\videos\calms_example.gif"   // <-- your GIF file
+    alt="CalMS21 example"
+    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+  />
+</figure>
+
+{/* NEW: Pan20K teaser */}
+<figure className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+  <img
+    src="src\videos\gorilla1.gif"    // <-- your GIF file
+    alt="Pan20K example"
+    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+  />
+</figure>
   </div>
 );
+
 
 
         // Content Sections
@@ -2151,6 +2161,7 @@ const RunPodSection = () => (
         };
 
         const ExamplesSection = () => (
+
   <section id="examples" className="bg-white p-8 rounded-lg shadow-md">
     <h2 className="text-3xl font-bold text-gray-900 mb-6">Example Datasets</h2>
     <p className="text-gray-700 leading-relaxed mb-8">
@@ -2158,6 +2169,48 @@ const RunPodSection = () => (
       single-animal, dyadic, and collective behaviors. Each example includes a brief 
       description of the dataset and analysis procedure.
     </p>
+
+<div className="mb-12">
+  <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+    🐭 CalMS21 (Resident–Intruder Mice)
+  </h3>
+
+  <p className="text-gray-700 leading-relaxed mb-4">
+    The CalMS21 dataset contains resident–intruder social interactions with rich social
+    behavior labels. FERAL learns directly from the raw video and expert annotations to
+    produce accurate, frame-level behavioral segmentation.
+  </p>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+    {/* Main GIF */}
+    <img
+      src="src\videos\calms_example.gif"  // <-- your GIF
+      alt="CalMS21 example"
+      className="w-full rounded-lg shadow-md"
+    />
+<p className="text-gray-700 leading-relaxed mb-2">
+  Dataset citation:
+  <br />
+  <a
+    href="https://doi.org/10.22002/D1.1991"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-blue-700 underline"
+  >
+    Jennifer J. Sun, Tomomi Karigo, David J. Anderson, Pietro Perona, Yisong Yue, &
+    Ann Kennedy. (2021). <i>Caltech Mouse Social Interactions (CalMS21) Dataset (1.0)</i>.
+    CaltechDATA.
+  </a>
+</p>
+    {/* Optional static figure */}
+    {/* <img
+      src="src/images/calms21_figure.png"
+      alt="CalMS21 ethogram"
+      className="w-full rounded-lg shadow-md"
+    /> */}
+  </div>
+</div>
+
 
     {/* Worms Section */}
     <div className="mb-12">
@@ -2212,7 +2265,42 @@ const RunPodSection = () => (
       </p>
       <img src="src/images/collective_figure.png" alt="FERAL detection of collective raids" className="w-full rounded-lg shadow-md" />
     </div>
+
+    <div className="mb-4">
+  <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+    🦍 Pan20K (Ape Field Recordings)
+  </h3>
+
+  <p className="text-gray-700 leading-relaxed mb-4">
+    Pan20K contains naturalistic field videos of wild apes in complex forest environments.
+    FERAL handles strong occlusions, moving cameras, and variable lighting to robustly
+    classify behaviors without pose estimation.
+  </p>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+    <img
+      src="src\videos\gorilla1.gif"   // <-- your GIF
+      alt="Pan20K example"
+      className="w-full rounded-lg shadow-md"
+    />
+    <p className="text-gray-700 leading-relaxed mb-4">
+  PanAf20K contains large-scale field recordings of wild apes 
+  (<a className="text-blue-700 underline" href="https://link.springer.com/content/pdf/10.1007/s11263-024-02003-z.pdf" target="_blank" rel="noopener noreferrer">
+    Brookes et&nbsp;al.
+  </a>).
+</p>
+
+    {/* Optional static figure */}
+    {/* <img
+      src="src/images/pan20k_figure.png"
+      alt="Pan20K ethogram"
+      className="w-full rounded-lg shadow-md"
+    /> */}
+  </div>
+</div>
+
   </section>
+  
 );
 
 
