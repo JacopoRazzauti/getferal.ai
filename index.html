@@ -99,6 +99,7 @@
     <path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.438 9.8 8.205 11.39.6.113.82-.26.82-.577v-2.173c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.746.083-.73.083-.73 1.205.085 1.84 1.238 1.84 1.238 1.07 1.835 2.808 1.305 3.495.998.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.333-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.125-.303-.54-1.523.115-3.176 0 0 1.005-.323 3.3 1.23a11.49 11.49 0 0 1 3-.403c1.02.005 2.045.137 3 .403 2.295-1.553 3.3-1.23 3.3-1.23.655 1.653.24 2.873.12 3.176.77.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.37.81 1.1.81 2.22v3.293c0 .32.22.694.825.576C20.565 22.295 24 17.795 24 12.5 24 5.87 18.63.5 12 .5z" />
   </svg>
 </a>
+
                         </div>
                         <nav className="hidden md:flex space-x-6 mt-4 md:mt-0">
                             <NavLink section="home" current={activeSection} onClick={handleNavClick}>Home</NavLink>
@@ -109,6 +110,8 @@
                             <NavLink section="running-feral" current={activeSection} onClick={handleNavClick}>Running Feral</NavLink>
                             <NavLink section="colab" current={activeSection} onClick={handleNavClick}>Google Colab</NavLink>
                             <NavLink section="runpod" current={activeSection} onClick={handleNavClick}>RunPod</NavLink>
+                            <NavLink section="contact" current={activeSection} onClick={handleNavClick}>Contact</NavLink>
+                            <NavLink section="preprint" current={activeSection} onClick={handleNavClick}>Preprint</NavLink>
                             <NavLink section="contact" current={activeSection} onClick={handleNavClick}>Contact</NavLink>
                         </nav>
                     </header>
@@ -127,7 +130,7 @@
                                 <SidebarLink section="colab" current={activeSection} onClick={handleNavClick}>Google Colab</SidebarLink>
                                 <SidebarLink section="runpod" current={activeSection} onClick={handleNavClick}>RunPod</SidebarLink>
                                 <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</SidebarLink>
-
+                                <SidebarLink section="preprint" current={activeSection} onClick={handleNavClick}>Preprint</SidebarLink>
                                 
                                 <SidebarLink section="contact" current={activeSection} onClick={handleNavClick}>Contact Us</SidebarLink>
                                 <div className="mt-6 flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors">
@@ -148,6 +151,36 @@
     View on GitHub
   </a>
 </div>
+
+<div className="mt-3 flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors">
+  <img
+    src="src/images/biorxiv_logo.png"
+    alt="bioRxiv logo"
+    className="w-12 h-5"
+  />
+  <a
+    href="https://www.biorxiv.org/content/10.1101/2025.11.16.688666v1.full.pdf+html"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-sm font-medium hover:underline"
+  >
+    View preprint on bioRxiv
+  </a>
+</div>
+
+<div className="mt-2 flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3h9m-9 3h5.25M4.5 6h15v12h-15z" />
+  </svg>
+  <a
+    href="https://github.com/Skovorp/feral/discussions"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-sm font-medium hover:underline"
+  >
+    GitHub Discussions
+  </a>
+</div>
                             </nav>
                         </aside>
 
@@ -162,6 +195,7 @@
                             {activeSection === 'runpod' && <RunPodSection />}
                             {activeSection === 'dataset-validator' && <DatasetValidatorSection />}
                             {activeSection === 'examples' && <ExamplesSection />}
+                            {activeSection === 'preprint' && <PreprintSection />}
                             {activeSection === 'contact' && <ContactSection />}
                         </main>
                     </div>
@@ -279,7 +313,7 @@ const HeroMosaic = () => (
                     
                     <p className="text-gray-700 leading-relaxed mb-4">
                         
-                        AI is advancing at lightning speed: new models arrive every month, and their quality is improving exponentially. To put that power in the hands of biologists, we created FERAL.
+                        AI is advancing at lightning speed: new models arrive every month, and their quality is improving exponentially. To put that power in the hands of biologists who study behavior, we created FERAL.
                     </p>
                     
                     <p className="text-gray-700 leading-relaxed mb-4">
@@ -2323,6 +2357,70 @@ const RunPodSection = () => (
   </section>
   
 );
+const PreprintSection = () => {
+  const [viewerLoaded, setViewerLoaded] = React.useState(false);
+
+  return (
+    <section
+      id="preprint"
+      className="bg-white p-8 rounded-lg shadow-md h-full flex flex-col"
+    >
+      <h2 className="text-3xl font-bold text-gray-900 mb-4">FERAL preprint</h2>
+
+      <p className="text-gray-700 leading-relaxed mb-4">
+        You can read the FERAL manuscript on{" "}
+        <a
+          href="https://www.biorxiv.org/content/10.1101/2025.11.16.688666v1.full.pdf+html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:underline font-medium"
+        >
+          bioRxiv
+        </a>{" "}
+        or load the PDF directly in this page using the embedded viewer.
+      </p>
+
+      <div className="flex flex-wrap gap-3 mb-4">
+        {/* Open PDF in new tab (will only trigger when clicked) */}
+        <a
+          href="manuscript.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-700 shadow-md transition"
+        >
+          Open PDF in new tab
+        </a>
+
+        {/* Button to load the embedded viewer */}
+        <button
+          type="button"
+          onClick={() => setViewerLoaded(true)}
+          className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-200 border border-gray-300 shadow-sm transition"
+        >
+          {viewerLoaded ? "Reload embedded viewer" : "Open embedded viewer"}
+        </button>
+      </div>
+
+      {/* Interactive, scrollable PDF area */}
+      <div className="flex-1 min-h-[65vh] border rounded-lg overflow-hidden shadow-inner">
+        {viewerLoaded ? (
+          <iframe
+            src="src\pdf\Skovorodnikov_Razzauti_FERAL_Submission_2025.pdf#view=FitH"
+            title="FERAL preprint PDF"
+            className="w-full h-full"
+          />
+        ) : (
+          <div className="h-full w-full flex items-center justify-center px-6 text-center text-gray-500 text-sm">
+            Click <span className="mx-1 font-medium">“Open embedded viewer”</span>{" "}
+            to load the manuscript here without downloading it automatically.
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+
 
 
         const ContactSection = () => {
@@ -2369,7 +2467,15 @@ const RunPodSection = () => (
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Contact Us</h2>
                     <p className="text-gray-700 leading-relaxed">
                         Have questions about FERAL? Need help with your research or implementation? 
-                        We're here to help! Reach out to us for support, collaborations, or any inquiries.
+                        We're here to help! Reach out to us for support, collaborations, or any inquiries. You can also ask questions or request features on our
+    <a
+      href="https://github.com/Skovorp/feral/discussions"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-600 hover:underline ml-1"
+    >
+      GitHub Discussions page
+    </a>.
                     </p>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -2505,6 +2611,20 @@ const RunPodSection = () => (
                             </div>
                         </div>
                     </div>
+                    <div className="mt-4">
+  <p className="text-gray-700">
+    💬 You can also ask questions or request features on our
+    <a
+      href="https://github.com/Skovorp/feral/discussions"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-600 hover:underline ml-1"
+    >
+      GitHub Discussions page
+    </a>.
+  </p>
+</div>
+
                 </section>
             );
         };
