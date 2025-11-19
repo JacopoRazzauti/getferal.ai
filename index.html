@@ -120,8 +120,6 @@
                             <NavLink section="colab" current={activeSection} onClick={handleNavClick}>Google Colab</NavLink>
                             <NavLink section="runpod" current={activeSection} onClick={handleNavClick}>RunPod</NavLink>
                             <NavLink section="contact" current={activeSection} onClick={handleNavClick}>Contact</NavLink>
-                            <NavLink section="preprint" current={activeSection} onClick={handleNavClick}>Preprint</NavLink>
-                            <NavLink section="contact" current={activeSection} onClick={handleNavClick}>Contact</NavLink>
                         </nav>
                     </header>
 
@@ -139,7 +137,6 @@
                                 <SidebarLink section="colab" current={activeSection} onClick={handleNavClick}>Google Colab</SidebarLink>
                                 <SidebarLink section="runpod" current={activeSection} onClick={handleNavClick}>RunPod</SidebarLink>
                                 <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</SidebarLink>
-                                <SidebarLink section="preprint" current={activeSection} onClick={handleNavClick}>Preprint</SidebarLink>
                                 
                                 <SidebarLink section="contact" current={activeSection} onClick={handleNavClick}>Contact Us</SidebarLink>
                                 <div className="mt-6 flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors">
@@ -158,22 +155,6 @@
     className="text-sm font-medium hover:underline"
   >
     View on GitHub
-  </a>
-</div>
-
-<div className="mt-3 flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors">
-  <img
-    src="src/images/BioRxiv_logo.png"
-    alt="bioRxiv logo"
-    className="w-12 h-5"
-  />
-  <a
-    href="https://www.biorxiv.org/content/10.1101/2025.11.16.688666v1.full.pdf+html"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-sm font-medium hover:underline"
-  >
-    View preprint on bioRxiv
   </a>
 </div>
 
@@ -204,7 +185,6 @@
                             {activeSection === 'runpod' && <RunPodSection />}
                             {activeSection === 'dataset-validator' && <DatasetValidatorSection />}
                             {activeSection === 'examples' && <ExamplesSection />}
-                            {activeSection === 'preprint' && <PreprintSection />}
                             {activeSection === 'contact' && <ContactSection />}
                         </main>
                     </div>
@@ -2366,72 +2346,6 @@ const RunPodSection = () => (
   </section>
   
 );
-const PreprintSection = () => {
-  const [viewerLoaded, setViewerLoaded] = React.useState(false);
-
-  return (
-    <section
-      id="preprint"
-      className="bg-white p-8 rounded-lg shadow-md h-full flex flex-col"
-    >
-      <h2 className="text-3xl font-bold text-gray-900 mb-4">FERAL preprint</h2>
-
-      <p className="text-gray-700 leading-relaxed mb-4">
-        You can read the FERAL manuscript on{" "}
-        <a
-          href="https://www.biorxiv.org/content/10.1101/2025.11.16.688666v1.full.pdf+html"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 hover:underline font-medium"
-        >
-          bioRxiv
-        </a>{" "}
-        or load the PDF directly in this page using the embedded viewer.
-      </p>
-
-      <div className="flex flex-wrap gap-3 mb-4">
-        {/* Open PDF in new tab (will only trigger when clicked) */}
-        <a
-          href="manuscript.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-700 shadow-md transition"
-        >
-          Open PDF in new tab
-        </a>
-
-        {/* Button to load the embedded viewer */}
-        <button
-          type="button"
-          onClick={() => setViewerLoaded(true)}
-          className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-200 border border-gray-300 shadow-sm transition"
-        >
-          {viewerLoaded ? "Reload embedded viewer" : "Open embedded viewer"}
-        </button>
-      </div>
-
-      {/* Interactive, scrollable PDF area */}
-      <div className="flex-1 min-h-[65vh] border rounded-lg overflow-hidden shadow-inner">
-        {viewerLoaded ? (
-          <iframe
-            src="src\pdf\Skovorodnikov_Razzauti_FERAL_Submission_2025.pdf#view=FitH"
-            title="FERAL preprint PDF"
-            className="w-full h-full"
-          />
-        ) : (
-          <div className="h-full w-full flex items-center justify-center px-6 text-center text-gray-500 text-sm">
-            Click <span className="mx-1 font-medium">“Open embedded viewer”</span>{" "}
-            to load the manuscript here without downloading it automatically.
-          </div>
-        )}
-      </div>
-    </section>
-  );
-};
-
-
-
-
         const ContactSection = () => {
             const [formData, setFormData] = useState({
                 name: '',
