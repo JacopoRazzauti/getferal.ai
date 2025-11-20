@@ -411,7 +411,23 @@ const HeroMosaic = () => (
                         </div>
                     </div>
                 </div>
-                <HeroMosaic />                                
+                <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+  <p className="text-gray-800 text-sm">
+    If FERAL is useful to you, please consider giving the project a ⭐ on GitHub —
+    it really helps us support the community!
+  </p>
+  <a
+    href="https://github.com/jacoporazzauti/FERAL"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block mt-2 px-4 py-2 bg-yellow-200 hover:bg-yellow-300 text-gray-900 rounded-md font-semibold transition"
+  >
+    ⭐ Star FERAL on GitHub
+  </a>
+</div>
+
+                <HeroMosaic />    
+
             </section>
         );
 
@@ -591,6 +607,7 @@ const GettingStartedSection = ({ handleNavClick }) => (
         🚀 Run FERAL
       </button>
     </div>
+    
   </section>
 );
 
@@ -1000,6 +1017,21 @@ if __name__ == "__main__":
                     <code className="bg-gray-100 px-1 py-0.5 rounded">ffmpeg_portable</code>,
                     and reuses it next time.
                   </p>             
+                  <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+  <p className="text-gray-800 text-sm">
+    If FERAL is useful to you, please consider giving the project a ⭐ on GitHub —
+    it really helps us support the community!
+  </p>
+  <a
+    href="https://github.com/jacoporazzauti/FERAL"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block mt-2 px-4 py-2 bg-yellow-200 hover:bg-yellow-300 text-gray-900 rounded-md font-semibold transition"
+  >
+    ⭐ Star FERAL on GitHub
+  </a>
+</div>
+
             </section>
         );
         };
@@ -1054,12 +1086,48 @@ if __name__ == "__main__":
   }
 }`}</code></pre>
                 </div>
+<p className="text-gray-700 leading-relaxed mt-4 mb-2">
+  For <strong>multi-label datasets</strong> (<code>is_multilabel: true</code>), each frame is represented by a
+  <strong>multi-hot vector</strong> (one entry per class, 0/1), not a single integer:
+</p>
+
+<div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+  <pre><code>{`{
+  "is_multilabel": true,
+  "class_names": {
+    "0": "contact",
+    "1": "attempt",
+    "2": "flight",
+    "3": "kicking",
+    "4": "genital_contact",
+    "5": "mating"
+  },
+  "labels": {
+    "035FQHMNRk.mp4": [
+      [0,0,1,0,0,0],
+      [1,0,0,0,0,0],
+      [1,1,0,0,0,0],
+      [0,0,0,0,0,0]
+    ]
+  },
+  "splits": {
+    "train": ["035FQHMNRk.mp4"],
+    "val": [],
+    "test": [],
+    "inference": ["035FQHMNRk.mp4"]
+  }
+}`}</code></pre>
+</div>
 
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Field Descriptions</h3>
                 <div className="space-y-4">
                     <div>
                         <h4 className="text-lg font-semibold text-gray-800 mb-2">is_multilabel</h4>
                         <p className="text-gray-700 leading-relaxed">
+                            <strong>Note:</strong> Set to <code className="bg-gray-100 px-2 py-1 rounded text-sm">false</code> if each frame has
+exactly one label (single-label). Set to <code className="bg-gray-100 px-2 py-1 rounded text-sm">true</code> if frames
+can have multiple behaviors at once (multi-label, multi-hot vectors).
+
                             <strong>Required:</strong> Yes<br/>
                             <strong>Description:</strong> Indicates whether the labeling task supports multiple labels per frame (multilabel) or a single label per frame (single-label)<br/>
                             <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">true</code> or <code className="bg-gray-100 px-2 py-1 rounded text-sm">false</code><br/>
@@ -1076,7 +1144,10 @@ if __name__ == "__main__":
                             <strong>Note:</strong> Class IDs must be strings, even for numeric values (e.g., <code className="bg-gray-100 px-2 py-1 rounded text-sm">"0"</code>, <code className="bg-gray-100 px-2 py-1 rounded text-sm">"1"</code>). 
                             Class ids have to be consecutive integers from 0 to number_of_classes - 1. 
                             If your labels have a background class, assigned when no other meaningful class fits, call it "other", then metrics that average over classes will exclude it.
-                        </p>
+                            In single-label mode we recommend reserving <code>0</code> for a background class such as <code>"other"</code>.
+In multi-label mode there is no need for a dedicated <code>"other"</code> class; a frame with all zeros simply
+means “no labeled behavior”.
+                          </p>
                     </div>
 
                     <div>
@@ -1098,9 +1169,11 @@ if __name__ == "__main__":
                         <p className="text-gray-700 leading-relaxed">
                             <strong>Required:</strong> Yes<br/>
                             <strong>Description:</strong> Contains frame-by-frame behavior labels for each video<br/>
-                            <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{'{'}"video_filename.mp4": [array_of_class_ids]{'}'}</code><br/>
-                            <strong>Note:</strong> Each key should be a filename of the video (with extention). Each value in the dictionary is an integer array 
-                            of the same length as number of frames in teh corresponding video. Each value in the array must correspond to a class ID defined in <code className="bg-gray-100 px-2 py-1 rounded text-sm">class_names</code>
+                            <strong>Format (for single class):</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{'{'}"video_filename.mp4": [array_of_class_ids]{'}'}</code><br/> 
+                            <strong>Format (for multiclass):</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{'{'}"video_filename.mp4": [[0/1,...], [0/1,...], ...]{'}'}</code><br/> 
+                            <strong>Note:</strong> In single-label mode, each element is an integer class ID.
+In multi-label mode, each element is an array of 0/1 values of length equal to the number of classes, where
+1 means the behavior is active at that frame.
                         </p>
                     </div>
                 </div>
@@ -1148,25 +1221,16 @@ if __name__ == "__main__":
                 </p>
 
                 <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-                    <pre><code>{`# BORIS TSV -> FERAL JSON
-# - Works with a single TSV path or a folder containing *.tsv
-# - START/STOP rows create half-open frame intervals [START, STOP)
-# - class_names are derived from the union of behaviors found across all TSVs
-# - Video name is taken from "Media file path" (fallback: <tsv_stem>.mp4)
-# - Saves "feral_behavioral_labels.json" in the input folder (or next to the TSV if single file)
-
-import json, re, math
+                    <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+  <pre><code>{`import os, re, json, math, argparse
 from pathlib import Path
 
-# ---------------------- settings ----------------------
-INPUT_PATH = "/mnt/data/ob088-track-9.tsv"  # file OR folder
 DEFAULT_FPS = 30.0
-SPLIT_STRATEGY = "roundrobin"               # "roundrobin" | "all_train"
-ROUNDROBIN_RATIO = 0.8                      # 80% train / 20% val when using roundrobin
-# ------------------------------------------------------
+SPLIT_STRATEGY = "fractions"  # or "all_train"
+TRAIN_FRAC, VAL_FRAC, TEST_FRAC = 0.7, 0.15, 0.15
 
-def _norm_name(s: str) -> str:
-    return re.sub(r"\s+", "_", str(s).strip().lower())
+def _norm_name(s):
+    return re.sub(r"\\s+", "_", str(s).strip().lower())
 
 def _safe_float(x, default=None):
     try:
@@ -1174,53 +1238,50 @@ def _safe_float(x, default=None):
     except Exception:
         return default
 
-def _read_boris_records(tsv_path: str):
-    """Return (header_cols, records[list of dicts]). Robust to spacer lines."""
+def _read_boris_records(tsv_path):
     p = Path(tsv_path)
     with open(p, "r", encoding="utf-8", errors="ignore") as f:
         lines = f.readlines()
-
     header_idx, header_cols = None, None
     for i, raw in enumerate(lines):
-        s = raw.replace("\u00A0", " ").strip("\r\n")
+        s = raw.strip()
         if not s:
             continue
-        parts = s.split("\t")
-        joined_lower = "\t".join([x.strip().lower() for x in parts])
-        if (joined_lower.startswith("time")
-            and "media file path" in joined_lower
-            and "total length" in joined_lower
-            and "fps" in joined_lower
-            and "status" in joined_lower):
+        parts = s.split("\\t")
+        joined = "\\t".join(x.strip().lower() for x in parts)
+        if (
+            joined.startswith("time")
+            and "media file path" in joined
+            and "total length" in joined
+            and "fps" in joined
+            and "status" in joined
+        ):
             header_idx = i
             header_cols = [c.strip() for c in parts]
             break
-
     if header_idx is not None:
         rows = []
         for raw in lines[header_idx+1:]:
             if not raw.strip():
                 continue
-            parts = [c.strip() for c in raw.strip("\r\n").split("\t")]
+            parts = [c.strip() for c in raw.strip("\\n").split("\\t")]
             if len(parts) < len(header_cols):
-                parts += [""] * (len(header_cols) - len(parts))
+                parts += [""] * (len(header_cols)-len(parts))
             elif len(parts) > len(header_cols):
                 parts = parts[:len(header_cols)]
             rows.append(parts)
         return header_cols, [dict(zip(header_cols, r)) for r in rows]
-
-    # headerless fallback: assume standard BORIS order
     fallback = ["Time","Media file path","Total length","FPS","Subject","Behavior","Behavioral category","Comment","Status"]
     rows = []
     for raw in lines:
         if not raw.strip():
             continue
-        parts = [c.strip() for c in raw.strip("\r\n").split("\t")]
+        parts = [c.strip() for c in raw.strip("\\n").split("\\t")]
         t = _safe_float(parts[0] if parts else None, None)
         if t is None:
             continue
         if len(parts) < len(fallback):
-            parts += [""] * (len(fallback) - len(parts))
+            parts += [""] * (len(fallback)-len(parts))
         elif len(parts) > len(fallback):
             parts = parts[:len(fallback)]
         rows.append(parts)
@@ -1236,25 +1297,23 @@ def _find_col(header_cols, name):
             return c
     return None
 
-def _video_name(records, col_path, fallback):
-    # Prefer basename of media path; otherwise <tsv_stem>.mp4; ensure extension present
-    media_path = None
+def _video_name(records, col_path, fallback_stem):
+    media = None
     for rec in records:
         mp = rec.get(col_path, "").strip() if col_path else ""
         if mp:
-            media_path = mp
+            media = mp
             break
-    if media_path:
-        name = Path(media_path).name
+    if media:
+        name = Path(media).name
     else:
-        name = f"{fallback}.mp4"
-    if "." not in Path(name).name:
+        name = f"{fallback_stem}.mp4"
+    if "." not in name:
         name = f"{name}.mp4"
     return name
 
 def _fps_and_duration(records, col_fps, col_total_len, col_time):
-    fps = None
-    total_len = None
+    fps, total_len = None, None
     for rec in records:
         if fps is None:
             fps = _safe_float(rec.get(col_fps), None) if col_fps else None
@@ -1265,7 +1324,6 @@ def _fps_and_duration(records, col_fps, col_total_len, col_time):
     if fps is None or not math.isfinite(fps) or fps <= 0:
         fps = DEFAULT_FPS
     if total_len is None or not math.isfinite(total_len) or total_len <= 0:
-        # fallback to max of time
         mx = 0.0
         for rec in records:
             t = _safe_float(rec.get(col_time), None) if col_time else None
@@ -1273,43 +1331,6 @@ def _fps_and_duration(records, col_fps, col_total_len, col_time):
                 mx = t
         total_len = mx
     return fps, total_len
-
-def _labels_from_records(records, fps, total_frames, col_time, col_beh, col_status, beh_to_id):
-    labels = [0] * total_frames
-    active = {}
-    def to_frame(t):
-        if t is None:
-            return None
-        f = int(round(t * fps))
-        return max(0, min(f, total_frames))
-
-    for rec in records:
-        t = _safe_float(rec.get(col_time), None)
-        beh_raw = str(rec.get(col_beh, "")).strip() if col_beh else ""
-        status = str(rec.get(col_status, "")).strip().upper() if col_status else ""
-        if not beh_raw or t is None:
-            continue
-
-        beh = _norm_name(beh_raw)
-        cid = beh_to_id.get(beh, 0)
-        f = to_frame(t)
-        if f is None:
-            continue
-
-        if status == "START":
-            active[beh] = f
-        elif status == "STOP":
-            if beh in active:
-                s = active.pop(beh)
-                a, b = min(s, f), max(s, f)
-                for ff in range(a, min(b, total_frames)):
-                    labels[ff] = cid
-        else:
-            # treat unknown/POINT as single-frame
-            ff = min(max(0, f), max(0, total_frames - 1))
-            if 0 <= ff < total_frames:
-                labels[ff] = cid
-    return labels
 
 def _collect_all_behaviors(tsv_paths):
     beh = set()
@@ -1324,79 +1345,149 @@ def _collect_all_behaviors(tsv_paths):
                 beh.add(_norm_name(b))
     return sorted(beh)
 
-def convert_path_to_feral(input_path):
+def _labels_single(records, fps, total_frames, col_time, col_beh, col_status, beh_to_id):
+    total_frames = max(0, int(total_frames))
+    labels = [0] * total_frames
+    active = {}
+    def to_frame(t):
+        if t is None:
+            return None
+        f = int(round(t * fps))
+        return max(0, min(f, total_frames))
+    for rec in records:
+        t = _safe_float(rec.get(col_time), None)
+        beh_raw = str(rec.get(col_beh, "")).strip() if col_beh else ""
+        status = str(rec.get(col_status, "")).strip().upper() if col_status else ""
+        if not beh_raw or t is None:
+            continue
+        beh = _norm_name(beh_raw)
+        cid = beh_to_id.get(beh, 0)
+        f = to_frame(t)
+        if f is None:
+            continue
+        if status == "START":
+            active[beh] = f
+        elif status == "STOP":
+            if beh in active:
+                s = active.pop(beh)
+                a, b = min(s, f), max(s, f)
+                for ff in range(a, min(b, total_frames)):
+                    labels[ff] = cid
+        else:
+            ff = min(max(0, f), max(0, total_frames-1))
+            if 0 <= ff < total_frames:
+                labels[ff] = cid
+    return labels
+
+def _labels_multilabel(records, fps, total_frames, col_time, col_beh, col_status, beh_to_id, num_classes):
+    total_frames = max(0, int(total_frames))
+    labels = [[0]*num_classes for _ in range(total_frames)]
+    active = {}
+    def to_frame(t):
+        if t is None:
+            return None
+        f = int(round(t * fps))
+        return max(0, min(f, total_frames))
+    for rec in records:
+        t = _safe_float(rec.get(col_time), None)
+        beh_raw = str(rec.get(col_beh, "")).strip() if col_beh else ""
+        status = str(rec.get(col_status, "")).strip().upper() if col_status else ""
+        if not beh_raw or t is None:
+            continue
+        beh = _norm_name(beh_raw)
+        if beh not in beh_to_id:
+            continue
+        cid = beh_to_id[beh]
+        f = to_frame(t)
+        if f is None:
+            continue
+        if status == "START":
+            active[beh] = f
+        elif status == "STOP":
+            if beh in active:
+                s = active.pop(beh)
+                a, b = min(s, f), max(s, f)
+                for ff in range(a, min(b, total_frames)):
+                    labels[ff][cid] = 1
+        else:
+            ff = min(max(0, f), max(0, total_frames-1))
+            if 0 <= ff < total_frames:
+                labels[ff][cid] = 1
+    return labels
+
+def _make_splits(video_files):
+    n = len(video_files)
+    if n == 0:
+        return {"train": [], "val": [], "test": [], "inference": []}
+    if SPLIT_STRATEGY == "all_train":
+        return {"train": list(video_files), "val": [], "test": [], "inference": list(video_files)}
+    n_train = max(1, int(round(n * TRAIN_FRAC)))
+    n_val   = int(round(n * VAL_FRAC))
+    if n_train + n_val > n:
+        n_val = max(0, n - n_train)
+    n_test = max(0, n - n_train - n_val)
+    train = video_files[:n_train]
+    val   = video_files[n_train:n_train+n_val]
+    test  = video_files[n_train+n_val:n_train+n_val+n_test]
+    return {"train": train, "val": val, "test": test, "inference": list(video_files)}
+
+def convert_path_to_feral(input_path, is_multilabel=False):
     p = Path(input_path)
     if p.is_dir():
         tsvs = sorted(p.glob("*.tsv"))
-        out_json_path = p / "feral_behavioral_labels.json"
+        out_json = p / "feral_behavioral_labels.json"
     else:
         tsvs = [p]
-        out_json_path = p.with_name("feral_behavioral_labels.json")
-
+        out_json = p.with_name("feral_behavioral_labels.json")
     if not tsvs:
-        raise FileNotFoundError("No TSV files found.")
-
-    # Build class set from union of behaviors across all TSVs
+        raise FileNotFoundError(f"No TSV files found at: {p}")
     observed = _collect_all_behaviors(tsvs)
-    beh_to_id = {"other": 0}
-    next_id = 1
-    for b in observed:
-        if b not in beh_to_id:
-            beh_to_id[b] = next_id
-            next_id += 1
-    class_names = {str(v): k for k, v in beh_to_id.items()}
-
+    if is_multilabel:
+        beh_to_id = {b: i for i, b in enumerate(observed)}
+    else:
+        beh_to_id = {"other": 0}
+        idx = 1
+        for b in observed:
+            if b not in beh_to_id:
+                beh_to_id[b] = idx
+                idx += 1
+    class_names = {str(i): b for b, i in beh_to_id.items()}
     labels = {}
     video_files = []
-
     for tsv in tsvs:
-        header, recs = _read_boris_records(str(tsv))
-
+        header, recs = _read_boris_records(tsv)
         col_time   = _find_col(header, "Time")
         col_path   = _find_col(header, "Media file path")
-        col_tlen   = _find_col(header, "Total length")
+        col_total  = _find_col(header, "Total length")
         col_fps    = _find_col(header, "FPS")
         col_beh    = _find_col(header, "Behavior")
         col_status = _find_col(header, "Status")
-
-        missing = [n for n,c in {
-            "Time": col_time, "Media file path": col_path, "Total length": col_tlen,
-            "FPS": col_fps, "Behavior": col_beh, "Status": col_status
-        }.items() if c is None]
-        if missing:
-            raise KeyError(f"{tsv.name}: missing columns: {missing} (found: {header})")
-
-        fps, total_len = _fps_and_duration(recs, col_fps, col_tlen, col_time)
-        total_frames = int(max(0, round(total_len * fps)))
-        vname = _video_name(recs, col_path, tsv.stem)
+        fps, total = _fps_and_duration(recs, col_fps, col_total, col_time)
+        total_frames = int(max(0, round(total * fps)))
+        vname = _video_name(recs, col_path, Path(tsv).stem)
         video_files.append(vname)
+        if is_multilabel:
+            labels[vname] = _labels_multilabel(recs, fps, total_frames, col_time, col_beh, col_status, beh_to_id, len(beh_to_id))
+        else:
+            labels[vname] = _labels_single(recs, fps, total_frames, col_time, col_beh, col_status, beh_to_id)
+    splits = _make_splits(video_files)
+    out = {"is_multilabel": bool(is_multilabel), "class_names": class_names, "labels": labels, "splits": splits}
+    with open(out_json, "w", encoding="utf-8") as f:
+        json.dump(out, f, separators=(",", ":"), ensure_ascii=False)
+    print(f"Saved JSON → {out_json}")
+    return out_json, out
 
-        labels[vname] = _labels_from_records(
-            recs, fps, total_frames, col_time, col_beh, col_status, beh_to_id
-        )
+def main():
+    parser = argparse.ArgumentParser(description="Convert BORIS .tsv files to FERAL JSON.")
+    parser.add_argument("input_path", help="TSV file or folder of TSV files")
+    parser.add_argument("--multilabel", action="store_true", help="Use multi-label format (frame → multi-hot vector)")
+    args = parser.parse_args()
+    convert_path_to_feral(args.input_path, is_multilabel=args.multilabel)
 
-    # Splits
-    splits = {"train": [], "val": [], "inference": []}
-    if SPLIT_STRATEGY == "all_train":
-        splits["train"] = video_files
-    else:
-        # simple round-robin 80/20
-        cutoff = max(1, int(round(len(video_files) * ROUNDROBIN_RATIO)))
-        splits["train"] = video_files[:cutoff]
-        splits["val"] = video_files[cutoff:]
+if __name__ == "__main__":
+    main()`}</code></pre>
+</div>
 
-    out = {"class_names": class_names, "labels": labels, "splits": splits}
-
-    with open(out_json_path, "w", encoding="utf-8") as f:
-        json.dump(out, f, indent=2)
-
-    print(f"Saved: {out_json_path}")
-    print(f"Videos: {len(video_files)} | Classes (incl. 'other'): {len(class_names)}")
-    return out_json_path, out
-
-# Run:
-# convert_path_to_feral(INPUT_PATH)
-`}</code></pre>
                 </div>
 
                 <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
@@ -1412,12 +1503,16 @@ def convert_path_to_feral(input_path):
 
         const RunningFeralSection = ({ handleNavClick }) => {
   const [isTransferExpanded, setIsTransferExpanded] = React.useState(false);
-
+  
   return (
     <section id="running-feral" className="bg-white p-8 rounded-lg shadow-md">
       <h2 className="text-3xl font-bold text-gray-900 mb-6">
         Running FERAL
       </h2>
+<p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md p-3 mt-3">
+  <strong>Important:</strong> FERAL uses large video models. On GPUs with less than <strong>24&nbsp;GB VRAM</strong> you may
+  see CUDA out-of-memory errors unless you strongly downsample videos, shorten clips, and reduce batch size.
+</p>
 
       {/* Option A: Google Colab */}
       <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">
@@ -1695,10 +1790,16 @@ def convert_path_to_feral(input_path):
   <section id="colab" className="bg-white p-8 rounded-lg shadow-md">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Run FERAL on Google Colab</h2>
     <p className="text-gray-700 leading-relaxed mb-4">
+      <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md p-3 mt-3">
+  <strong>Important:</strong> FERAL uses large video models. On GPUs with less than <strong>24&nbsp;GB VRAM</strong> you may
+  see CUDA out-of-memory errors unless you strongly downsample videos, shorten clips, and reduce batch size.
+</p>
+
       The easiest way to run FERAL is directly in your browser using our
       <strong> interactive Google Colab notebook</strong> — no installation,
       drivers, or setup required.
     </p>
+    <li>🧠 For stable training we recommend GPUs with at least <strong>24&nbsp;GB VRAM</strong> (e.g. A100).</li>
 
     <ul className="list-disc list-inside text-gray-700 mb-4">
       <li>💻 <strong>Zero-setup</strong>: open, connect, and run immediately.</li>
@@ -1723,6 +1824,21 @@ def convert_path_to_feral(input_path):
       For most users this is the recommended method — training runs smoothly even
       on modest datasets and reproduces identical results to local or cloud-GPU setups.
     </p>
+    <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+  <p className="text-gray-800 text-sm">
+    If FERAL is useful to you, please consider giving the project a ⭐ on GitHub —
+    it really helps us support the community!
+  </p>
+  <a
+    href="https://github.com/jacoporazzauti/FERAL"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block mt-2 px-4 py-2 bg-yellow-200 hover:bg-yellow-300 text-gray-900 rounded-md font-semibold transition"
+  >
+    ⭐ Star FERAL on GitHub
+  </a>
+</div>
+
   </section>
 );
 
@@ -1745,6 +1861,22 @@ const RunPodSection = () => (
       See the detailed step-by-step guide in the <strong>RunPod</strong> section
       of the documentation if you prefer this route.
     </p>
+
+    <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+  <p className="text-gray-800 text-sm">
+    If FERAL is useful to you, please consider giving the project a ⭐ on GitHub —
+    it really helps us support the community!
+  </p>
+  <a
+    href="https://github.com/jacoporazzauti/FERAL"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block mt-2 px-4 py-2 bg-yellow-200 hover:bg-yellow-300 text-gray-900 rounded-md font-semibold transition"
+  >
+    ⭐ Star FERAL on GitHub
+  </a>
+</div>
+
   </section>
 );
 
@@ -1774,10 +1906,16 @@ const RunPodSection = () => (
                     }
                 }
 
+
+
                 if (!isValid) {
                     return { isValid: false, issues, warnings, metadata: null };
                 }
-
+                
+                                if (typeof data.is_multilabel !== 'boolean') {
+  issues.push('is_multilabel must be a boolean (true or false)');
+  isValid = false;
+}
                 // Validate is_multilabel
                 if (typeof data.is_multilabel !== "boolean") {
                     issues.push('is_multilabel must be a boolean (true or false)');
@@ -1912,62 +2050,97 @@ const RunPodSection = () => (
                 }
 
                 // Analyze labels for each video
-                const videoMetadata = {};
-                const behaviorCounts = {};
-                const classCounts = {};
+// Analyze labels for each video
+const videoMetadata = {};
+const behaviorCounts = {};
+const classCounts = {};
 
-                // Initialize behavior counts
-                Object.values(data.class_names).forEach(behavior => {
-                    behaviorCounts[behavior] = 0;
-                });
+// Initialize global counts
+classIds.forEach(id => {
+  classCounts[id] = 0;
+  const name = data.class_names[id];
+  behaviorCounts[name] = 0;
+});
 
-                // Initialize class counts
-                classIds.forEach(id => {
-                    classCounts[id] = 0;
-                });
+const isMulti = !!data.is_multilabel;
 
-                for (const [videoFile, labelArray] of Object.entries(data.labels)) {
-                    if (!Array.isArray(labelArray)) {
-                        issues.push(`Labels for "${videoFile}" must be an array`);
-                        continue;
-                    }
+videoFiles.forEach(videoFile => {
+  const labelArray = data.labels[videoFile];
+  const frameCount = Array.isArray(labelArray) ? labelArray.length : 0;
 
-                    const frameCount = labelArray.length;
-                    const videoBehaviorCounts = {};
-                    const videoClassCounts = {};
+  const videoBehaviorCounts = {};
+  const videoClassCounts = {};
 
-                    // Initialize counts for this video
-                    Object.values(data.class_names).forEach(behavior => {
-                        videoBehaviorCounts[behavior] = 0;
-                    });
-                    classIds.forEach(id => {
-                        videoClassCounts[id] = 0;
-                    });
+  classIds.forEach(id => {
+    videoClassCounts[id] = 0;
+    const name = data.class_names[id];
+    videoBehaviorCounts[name] = 0;
+  });
 
-                    // Count occurrences
-                    labelArray.forEach(label => {
-                        const labelStr = String(label);
-                        if (!classIds.includes(labelStr)) {
-                            issues.push(`Invalid class ID "${label}" in video "${videoFile}"`);
-                            return;
-                        }
-                        
-                        const behaviorName = data.class_names[labelStr];
-                        videoBehaviorCounts[behaviorName]++;
-                        videoClassCounts[labelStr]++;
-                        behaviorCounts[behaviorName]++;
-                        classCounts[labelStr]++;
-                    });
+  if (isMulti) {
+    // Multi-label: each entry is a multi-hot vector
+    labelArray.forEach((frameLabels, frameIdx) => {
+      if (!Array.isArray(frameLabels)) {
+        issues.push(`labels["${videoFile}"][${frameIdx}] must be an array in multi-label mode`);
+        isValid = false;
+        return;
+      }
+      if (frameLabels.length !== classIds.length) {
+        issues.push(`labels["${videoFile}"][${frameIdx}] has length ${frameLabels.length}, expected ${classIds.length}`);
+        isValid = false;
+        return;
+      }
+      frameLabels.forEach((v, j) => {
+        if (v !== 0 && v !== 1) {
+          issues.push(`labels["${videoFile}"][${frameIdx}][${j}] must be 0 or 1 in multi-label mode (got ${JSON.stringify(v)})`);
+          isValid = false;
+          return;
+        }
+        if (v === 1) {
+          const classId = classIds[j];
+          const behaviorName = data.class_names[classId];
+          videoBehaviorCounts[behaviorName]++;
+          videoClassCounts[classId]++;
+          behaviorCounts[behaviorName]++;
+          classCounts[classId]++;
+        }
+      });
+    });
+  } else {
+    // Single-label: each entry is an integer class index
+    labelArray.forEach((label, frameIdx) => {
+      if (!Number.isInteger(label)) {
+        issues.push(`labels["${videoFile}"][${frameIdx}] must be an integer class index (got ${JSON.stringify(label)})`);
+        isValid = false;
+        return;
+      }
+      const labelStr = String(label);
+      if (!classIds.includes(labelStr)) {
+        issues.push(`labels["${videoFile}"][${frameIdx}] = ${label} but "class_names" has no key "${labelStr}"`);
+        isValid = false;
+        return;
+      }
+      const behaviorName = data.class_names[labelStr];
+      videoBehaviorCounts[behaviorName]++;
+      videoClassCounts[labelStr]++;
+      behaviorCounts[behaviorName]++;
+      classCounts[labelStr]++;
+    });
+  }
 
-                    videoMetadata[videoFile] = {
-                        frameCount,
-                        behaviorCounts: videoBehaviorCounts,
-                        classIdCounts: videoClassCounts,
-                        split: trainFiles.includes(videoFile) ? 'train' : 
-                               valFiles.includes(videoFile) ? 'val' : 'unassigned'
-                    };
-                }
-
+  videoMetadata[videoFile] = {
+    frameCount,
+    behaviorCounts: videoBehaviorCounts,
+    classIdCounts: videoClassCounts,
+    split: trainFiles.includes(videoFile)
+      ? 'train'
+      : valFiles.includes(videoFile)
+      ? 'val'
+      : testFiles.includes(videoFile)
+      ? 'test'
+      : 'unassigned',
+  };
+});
                 const totalClassFrames = Object.values(behaviorCounts).reduce((sum, count) => sum + count, 0);
 
                 for (const [className, count] of Object.entries(behaviorCounts)) {
