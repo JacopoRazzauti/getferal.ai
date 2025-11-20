@@ -1019,6 +1019,7 @@ if __name__ == "__main__":
 
                 <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
                     <pre><code>{`{
+  "is_multilabel": false,
   "class_names": {
     "0": "other",
     "1": "contact",
@@ -1028,11 +1029,6 @@ if __name__ == "__main__":
     "5": "genital_contact",
     "6": "mating"
   },
-  "labels": {
-    "video_file_1.mp4": [0, 0, 1, 1, 2, 0, 0, 3, 3, 0],
-    "video_file_2.mp4": [0, 0, 0, 4, 4, 5, 6, 6, 0, 0],
-    "video_file_3.mp4": [0, 1, 1, 0, 0, 0, 2, 2, 3, 0]
-  },
   "splits": {
     "train": [
       "video_file_1.mp4",
@@ -1040,18 +1036,37 @@ if __name__ == "__main__":
     ],
     "val": [
       "video_file_3.mp4"
+    ],
+    "test": [
+      "video_file_4.mp4"
     ]
     "inference": [
-      "video_file_4.mp4",
       "video_file_5.mp4",
       "video_file_6.mp4",
+      "video_file_7.mp4",
     ]
+  },
+  "labels": {
+    "video_file_1.mp4": [0, 0, 1, 1, 2, 0, 0, 3, 3, 0],
+    "video_file_2.mp4": [0, 0, 0, 4, 4, 5, 6, 6, 0, 0],
+    "video_file_3.mp4": [0, 1, 1, 0, 0, 0, 2, 2, 3, 0],
+    "video_file_4.mp4": [0, 6, 6, 6, 6, 6, 0, 0, 1, 1],
   }
 }`}</code></pre>
                 </div>
 
                 <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Field Descriptions</h3>
                 <div className="space-y-4">
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-2">is_multilabel</h4>
+                        <p className="text-gray-700 leading-relaxed">
+                            <strong>Required:</strong> Yes<br/>
+                            <strong>Description:</strong> Indicates whether the labeling task supports multiple labels per frame (multilabel) or a single label per frame (single-label)<br/>
+                            <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">true</code> or <code className="bg-gray-100 px-2 py-1 rounded text-sm">false</code><br/>
+                            <strong>Note:</strong> Set to <code className="bg-gray-100 px-2 py-1 rounded text-sm">true</code> if each frame can have multiple behavior labels simultaneously, or <code className="bg-gray-100 px-2 py-1 rounded text-sm">false</code> if each frame should have exactly one label
+                        </p>
+                    </div>
+
                     <div>
                         <h4 className="text-lg font-semibold text-gray-800 mb-2">class_names</h4>
                         <p className="text-gray-700 leading-relaxed">
@@ -1065,6 +1080,20 @@ if __name__ == "__main__":
                     </div>
 
                     <div>
+                      <h4 className="text-lg font-semibold text-gray-800 mb-2">splits</h4>
+                      <p className="text-gray-700 leading-relaxed">
+                          <strong>Required:</strong> Yes<br/>
+                          <strong>Description:</strong> Defines dataset partitions for training and validation<br/>
+                          <strong>Fields:</strong><br/>
+                          • <code className="bg-gray-100 px-2 py-1 rounded text-sm">train</code>: Array of video filenames for training<br/>
+                          • <code className="bg-gray-100 px-2 py-1 rounded text-sm">val</code>: Array of video filenames for validation<br/>
+                          • <code className="bg-gray-100 px-2 py-1 rounded text-sm">test</code>: Array of video filenames for test<br/>
+                          • <code className="bg-gray-100 px-2 py-1 rounded text-sm">inference</code>: Array of video filenames for inference of the trained model<br/>
+                          <strong>Note:</strong> Train must be in the <code className="bg-gray-100 px-2 py-1 rounded text-sm">labels</code> section to actually train the model
+                      </p>
+                  </div>
+
+                    <div>
                         <h4 className="text-lg font-semibold text-gray-800 mb-2">labels</h4>
                         <p className="text-gray-700 leading-relaxed">
                             <strong>Required:</strong> Yes<br/>
@@ -1072,19 +1101,6 @@ if __name__ == "__main__":
                             <strong>Format:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">{'{'}"video_filename.mp4": [array_of_class_ids]{'}'}</code><br/>
                             <strong>Note:</strong> Each key should be a filename of the video (with extention). Each value in the dictionary is an integer array 
                             of the same length as number of frames in teh corresponding video. Each value in the array must correspond to a class ID defined in <code className="bg-gray-100 px-2 py-1 rounded text-sm">class_names</code>
-                        </p>
-                    </div>
-
-                    <div>
-                        <h4 className="text-lg font-semibold text-gray-800 mb-2">splits</h4>
-                        <p className="text-gray-700 leading-relaxed">
-                            <strong>Required:</strong> Yes<br/>
-                            <strong>Description:</strong> Defines dataset partitions for training and validation<br/>
-                            <strong>Fields:</strong><br/>
-                            • <code className="bg-gray-100 px-2 py-1 rounded text-sm">train</code>: Array of video filenames for training<br/>
-                            • <code className="bg-gray-100 px-2 py-1 rounded text-sm">val</code>: Array of video filenames for validation<br/>
-                            • <code className="bg-gray-100 px-2 py-1 rounded text-sm">inference</code>: Array of video filenames for inference of the trained model<br/>
-                            <strong>Note:</strong> Train and val filenames must have corresponding entries in the <code className="bg-gray-100 px-2 py-1 rounded text-sm">labels</code> section
                         </p>
                     </div>
                 </div>
@@ -1750,7 +1766,7 @@ const RunPodSection = () => (
                 let isValid = true;
 
                 // Check required top-level keys
-                const requiredKeys = ['class_names', 'labels', 'splits'];
+                const requiredKeys = ['class_names', 'labels', 'splits', 'is_multilabel'];
                 for (const key of requiredKeys) {
                     if (!(key in data)) {
                         issues.push(`Missing required key: "${key}"`);
@@ -1762,6 +1778,11 @@ const RunPodSection = () => (
                     return { isValid: false, issues, warnings, metadata: null };
                 }
 
+                // Validate is_multilabel
+                if (typeof data.is_multilabel !== "boolean") {
+                    issues.push('is_multilabel must be a boolean (true or false)');
+                    isValid = false;
+                }
 
                 // Validate class_names
                 if (typeof data.class_names !== 'object' || Array.isArray(data.class_names)) {
@@ -1817,10 +1838,10 @@ const RunPodSection = () => (
                     issues.push('splits must be an object');
                     isValid = false;
                 } else {
-                    const allowedKeys = new Set(['train', 'val', 'inference']);
+                    const allowedKeys = new Set(['train', 'val', 'test', 'inference']);
                     for (const key in data.splits) {
                         if (!allowedKeys.has(key)) {
-                            issues.push(`splits must have keys "train", "val" and maybe "inference". Found unexpected: ${key}`);
+                            issues.push(`splits can have keys "train", "val", "test", "inference". Found unexpected: ${key}`);
                             isValid = false;
                         }
                     }
