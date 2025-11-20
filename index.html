@@ -436,6 +436,11 @@ const GettingStartedSection = ({ handleNavClick }) => (
     id="getting-started"
     className="bg-white p-8 rounded-lg shadow-md"
   >
+  <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md p-3 mt-3">
+  <strong>Important:</strong> FERAL uses large video models. On GPUs with less than <strong>24&nbsp;GB VRAM</strong> you may
+  see CUDA out-of-memory errors unless you strongly downsample videos, shorten clips, and reduce batch size. For start, try the Google Colab or reach out to us!
+</p>
+
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Getting Started</h2>
 
     {/* High-level intro */}
