@@ -503,7 +503,7 @@ const GettingStartedSection = ({ handleNavClick }) => (
             A
           </div>
           <h4 className="text-lg font-semibold text-blue-900">
-            Local Installation
+            Local or High Performance Cluster (preferred) Installation
           </h4>
         </div>
 
@@ -515,6 +515,7 @@ const GettingStartedSection = ({ handleNavClick }) => (
           <li>💻 Install CUDA + PyTorch yourself</li>
           <li>🔒 Data never leaves your machine</li>
           <li>💸 Completely free</li>
+          <li> IMPORTANT: You need to have a GPU with at least 24gB RAM!</li>
         </ul>
 
         <button
@@ -572,8 +573,8 @@ const GettingStartedSection = ({ handleNavClick }) => (
         </div>
 
         <p className="text-sm text-indigo-800 mb-4">
-          Spin up your own remote GPU server with full control. Best if you
-          have lots of data and want persistent storage.
+          Remote GPU server with full control. Best if you
+          have lots of data and want persistent storage. Cons: data uploading is slow
         </p>
 
         <ul className="text-indigo-700 text-sm space-y-1">
@@ -1227,270 +1228,237 @@ In multi-label mode, each element is an array of 0/1 values of length equal to t
 
                 <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
                     <div className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
-  <pre><code>{`import os, re, json, math, argparse
+  <pre><code>{`
+# ============================================
+# FERAL Unified Conversion Script
+# Handles BOTH single-label and multi-label BORIS exports
+# Supports TSV and CSV
+# No upload UI – reads from INPUT_PATH folder
+# ============================================
+
+import os, re, json, math
+import csv
 from pathlib import Path
 
 DEFAULT_FPS = 30.0
-SPLIT_STRATEGY = "fractions"  # or "all_train"
-TRAIN_FRAC, VAL_FRAC, TEST_FRAC = 0.7, 0.15, 0.15
 
-def _norm_name(s):
-    return re.sub(r"\\s+", "_", str(s).strip().lower())
+# ---- ask the user once (single-label or multi-label) ----
+MODE = input("Are your labels MULTI-LABEL? (y/n): ").strip().lower()
+IS_MULTILABEL = (MODE == "y")
 
-def _safe_float(x, default=None):
-    try:
-        return float(x)
-    except Exception:
-        return default
+# ---- user-defined input folder ----
+INPUT_PATH = "/path/to/your/boris_exports"   # ← edit this manually before running
 
-def _read_boris_records(tsv_path):
-    p = Path(tsv_path)
-    with open(p, "r", encoding="utf-8", errors="ignore") as f:
-        lines = f.readlines()
-    header_idx, header_cols = None, None
-    for i, raw in enumerate(lines):
-        s = raw.strip()
-        if not s:
-            continue
-        parts = s.split("\\t")
-        joined = "\\t".join(x.strip().lower() for x in parts)
-        if (
-            joined.startswith("time")
-            and "media file path" in joined
-            and "total length" in joined
-            and "fps" in joined
-            and "status" in joined
-        ):
-            header_idx = i
-            header_cols = [c.strip() for c in parts]
-            break
-    if header_idx is not None:
-        rows = []
-        for raw in lines[header_idx+1:]:
-            if not raw.strip():
-                continue
-            parts = [c.strip() for c in raw.strip("\\n").split("\\t")]
-            if len(parts) < len(header_cols):
-                parts += [""] * (len(header_cols)-len(parts))
-            elif len(parts) > len(header_cols):
-                parts = parts[:len(header_cols)]
-            rows.append(parts)
-        return header_cols, [dict(zip(header_cols, r)) for r in rows]
-    fallback = ["Time","Media file path","Total length","FPS","Subject","Behavior","Behavioral category","Comment","Status"]
-    rows = []
-    for raw in lines:
-        if not raw.strip():
-            continue
-        parts = [c.strip() for c in raw.strip("\\n").split("\\t")]
-        t = _safe_float(parts[0] if parts else None, None)
-        if t is None:
-            continue
-        if len(parts) < len(fallback):
-            parts += [""] * (len(fallback)-len(parts))
-        elif len(parts) > len(fallback):
-            parts = parts[:len(fallback)]
-        rows.append(parts)
-    return fallback, [dict(zip(fallback, r)) for r in rows]
+# ---- splitting parameters ----
+TRAIN_FRAC = 0.7
+VAL_FRAC   = 0.15
+TEST_FRAC  = 0.15
+SPLIT_STRATEGY = "fractions"   # or "all_train"
 
-def _find_col(header_cols, name):
-    name_l = name.strip().lower()
-    for c in header_cols:
-        if c.strip().lower() == name_l:
-            return c
-    for c in header_cols:
-        if name_l in c.strip().lower():
-            return c
+# --------------------------------------------
+# Helpers
+# --------------------------------------------
+
+def _norm_name(s): return re.sub(r"\\s+", "_", str(s).strip().lower())
+
+def _safe_float(x):
+    try: return float(x)
+    except: return None
+
+def _read_table(path):
+    ext = path.suffix.lower()
+    delimiter = "\\t" if ext == ".tsv" else ","
+
+    with open(path, "r", encoding="utf-8", errors="ignore") as f:
+        reader = csv.reader(f, delimiter=delimiter)
+        rows = list(reader)
+
+    if not rows:
+        return [], []
+
+    header = [h.strip() for h in rows[0]]
+    data = []
+    for r in rows[1:]:
+        if not any(r): continue
+        if len(r) < len(header):
+            r = r + [""]*(len(header)-len(r))
+        data.append({header[i]: r[i].strip() for i in range(len(header))})
+    return header, data
+
+def _find_col(header, key):
+    key = key.lower()
+    for c in header:
+        if c.lower() == key: return c
+    for c in header:
+        if key in c.lower(): return c
     return None
 
-def _video_name(records, col_path, fallback_stem):
-    media = None
-    for rec in records:
-        mp = rec.get(col_path, "").strip() if col_path else ""
-        if mp:
-            media = mp
-            break
-    if media:
-        name = Path(media).name
-    else:
-        name = f"{fallback_stem}.mp4"
-    if "." not in name:
-        name = f"{name}.mp4"
-    return name
+def _extract_video_name(records, col_media, fallback):
+    for r in records:
+        p = r.get(col_media, "").strip()
+        if p:
+            name = Path(p).name
+            if "." not in name: name += ".mp4"
+            return name
+    return fallback + ".mp4"
 
-def _fps_and_duration(records, col_fps, col_total_len, col_time):
-    fps, total_len = None, None
-    for rec in records:
-        if fps is None:
-            fps = _safe_float(rec.get(col_fps), None) if col_fps else None
-        if total_len is None:
-            total_len = _safe_float(rec.get(col_total_len), None) if col_total_len else None
-        if fps is not None and total_len is not None:
-            break
-    if fps is None or not math.isfinite(fps) or fps <= 0:
-        fps = DEFAULT_FPS
-    if total_len is None or not math.isfinite(total_len) or total_len <= 0:
+def _fps_total(records, col_fps, col_total, col_time):
+    fps, total = None, None
+    for r in records:
+        if fps is None:   fps   = _safe_float(r.get(col_fps, "")) if col_fps else None
+        if total is None: total = _safe_float(r.get(col_total,"")) if col_total else None
+    if not fps or fps <= 0: fps = DEFAULT_FPS
+    if not total or total <= 0:
         mx = 0.0
-        for rec in records:
-            t = _safe_float(rec.get(col_time), None) if col_time else None
-            if t is not None and t > mx:
-                mx = t
-        total_len = mx
-    return fps, total_len
+        for r in records:
+            t = _safe_float(r.get(col_time,""))
+            if t and t > mx: mx = t
+        total = mx
+    return fps, total
 
-def _collect_all_behaviors(tsv_paths):
+def _collect_behaviors(tsv_paths):
     beh = set()
-    for tsv in tsv_paths:
-        header, recs = _read_boris_records(tsv)
-        col_beh = _find_col(header, "Behavior")
-        if not col_beh:
-            continue
+    for p in tsv_paths:
+        header, recs = _read_table(p)
+        col_b = _find_col(header, "behavior")
+        if not col_b: continue
         for r in recs:
-            b = str(r.get(col_beh, "")).strip()
-            if b:
-                beh.add(_norm_name(b))
+            b = r.get(col_b, "").strip()
+            if b: beh.add(_norm_name(b))
     return sorted(beh)
 
-def _labels_single(records, fps, total_frames, col_time, col_beh, col_status, beh_to_id):
-    total_frames = max(0, int(total_frames))
-    labels = [0] * total_frames
+# --------------------------------------------
+# Label filling logic
+# --------------------------------------------
+
+def _to_frame(t, fps, total_frames):
+    if t is None: return None
+    f = int(round(t * fps))
+    return max(0, min(f, total_frames))
+
+def _labels_single(records, fps, total_frames, col_t, col_b, col_s, beh_to_id):
+    labels = [0]*total_frames
     active = {}
-    def to_frame(t):
-        if t is None:
-            return None
-        f = int(round(t * fps))
-        return max(0, min(f, total_frames))
-    for rec in records:
-        t = _safe_float(rec.get(col_time), None)
-        beh_raw = str(rec.get(col_beh, "")).strip() if col_beh else ""
-        status = str(rec.get(col_status, "")).strip().upper() if col_status else ""
-        if not beh_raw or t is None:
-            continue
-        beh = _norm_name(beh_raw)
+
+    for r in records:
+        t = _safe_float(r.get(col_t,""))
+        b_raw = r.get(col_b,"").strip()
+        s = r.get(col_s,"").strip().upper() if col_s else ""
+        if not b_raw or t is None: continue
+
+        beh = _norm_name(b_raw)
         cid = beh_to_id.get(beh, 0)
-        f = to_frame(t)
-        if f is None:
-            continue
-        if status == "START":
+        f = _to_frame(t, fps, total_frames)
+        if f is None: continue
+
+        if s == "START":
             active[beh] = f
-        elif status == "STOP":
+        elif s == "STOP":
             if beh in active:
-                s = active.pop(beh)
-                a, b = min(s, f), max(s, f)
-                for ff in range(a, min(b, total_frames)):
+                a, b = active.pop(beh), f
+                a, b = min(a,b), max(a,b)
+                for ff in range(a, min(b,total_frames)):
                     labels[ff] = cid
         else:
-            ff = min(max(0, f), max(0, total_frames-1))
-            if 0 <= ff < total_frames:
-                labels[ff] = cid
+            ff = min(max(0,f), total_frames-1)
+            labels[ff] = cid
+
     return labels
 
-def _labels_multilabel(records, fps, total_frames, col_time, col_beh, col_status, beh_to_id, num_classes):
-    total_frames = max(0, int(total_frames))
-    labels = [[0]*num_classes for _ in range(total_frames)]
+def _labels_multi(records, fps, total_frames, col_t, col_b, col_s, beh_to_id, K):
+    labels = [[0]*K for _ in range(total_frames)]
     active = {}
-    def to_frame(t):
-        if t is None:
-            return None
-        f = int(round(t * fps))
-        return max(0, min(f, total_frames))
-    for rec in records:
-        t = _safe_float(rec.get(col_time), None)
-        beh_raw = str(rec.get(col_beh, "")).strip() if col_beh else ""
-        status = str(rec.get(col_status, "")).strip().upper() if col_status else ""
-        if not beh_raw or t is None:
-            continue
-        beh = _norm_name(beh_raw)
-        if beh not in beh_to_id:
-            continue
+
+    for r in records:
+        t = _safe_float(r.get(col_t,""))
+        b_raw = r.get(col_b,"").strip()
+        s = r.get(col_s,"").strip().upper() if col_s else ""
+        if not b_raw or t is None: continue
+
+        beh = _norm_name(b_raw)
+        if beh not in beh_to_id: continue
         cid = beh_to_id[beh]
-        f = to_frame(t)
-        if f is None:
-            continue
-        if status == "START":
+        f = _to_frame(t, fps, total_frames)
+        if f is None: continue
+
+        if s == "START":
             active[beh] = f
-        elif status == "STOP":
+        elif s == "STOP":
             if beh in active:
-                s = active.pop(beh)
-                a, b = min(s, f), max(s, f)
-                for ff in range(a, min(b, total_frames)):
+                a, b = active.pop(beh), f
+                a, b = min(a,b), max(a,b)
+                for ff in range(a, min(b,total_frames)):
                     labels[ff][cid] = 1
         else:
-            ff = min(max(0, f), max(0, total_frames-1))
-            if 0 <= ff < total_frames:
-                labels[ff][cid] = 1
+            ff = min(max(0,f), total_frames-1)
+            labels[ff][cid] = 1
+
     return labels
 
-def _make_splits(video_files):
-    n = len(video_files)
-    if n == 0:
-        return {"train": [], "val": [], "test": [], "inference": []}
-    if SPLIT_STRATEGY == "all_train":
-        return {"train": list(video_files), "val": [], "test": [], "inference": list(video_files)}
-    n_train = max(1, int(round(n * TRAIN_FRAC)))
-    n_val   = int(round(n * VAL_FRAC))
-    if n_train + n_val > n:
-        n_val = max(0, n - n_train)
-    n_test = max(0, n - n_train - n_val)
-    train = video_files[:n_train]
-    val   = video_files[n_train:n_train+n_val]
-    test  = video_files[n_train+n_val:n_train+n_val+n_test]
-    return {"train": train, "val": val, "test": test, "inference": list(video_files)}
+# --------------------------------------------
+# Main conversion
+# --------------------------------------------
 
-def convert_path_to_feral(input_path, is_multilabel=False):
-    p = Path(input_path)
-    if p.is_dir():
-        tsvs = sorted(p.glob("*.tsv"))
-        out_json = p / "feral_behavioral_labels.json"
+tsv_files = sorted([p for p in Path(INPUT_PATH).iterdir()
+                    if p.suffix.lower() in (".tsv", ".csv")])
+
+if not tsv_files:
+    raise RuntimeError("No TSV/CSV files found in INPUT_PATH")
+
+behaviors = _collect_behaviors(tsv_files)
+if not behaviors:
+    raise RuntimeError("No behaviors found — check your files")
+
+beh_to_id = {b:i for i,b in enumerate(behaviors)}
+
+labels_json = {"is_multilabel": IS_MULTILABEL,
+               "class_names": {str(i): b for i,b in enumerate(behaviors)},
+               "labels": {},
+               "splits": {}}
+
+video_files = []
+
+for file in tsv_files:
+    header, recs = _read_table(file)
+    col_t   = _find_col(header, "time")
+    col_b   = _find_col(header, "behavior")
+    col_s   = _find_col(header, "status") or _find_col(header, "comment")
+    col_m   = _find_col(header, "media file path")
+    col_fps = _find_col(header, "fps")
+    col_len = _find_col(header, "total length")
+
+    name = _extract_video_name(recs, col_m, file.stem)
+    fps, total_sec = _fps_total(recs, col_fps, col_len, col_t)
+    total_frames = max(1, int(round(total_sec * fps)))
+
+    if IS_MULTILABEL:
+        L = _labels_multi(recs, fps, total_frames, col_t, col_b, col_s, beh_to_id, len(behaviors))
     else:
-        tsvs = [p]
-        out_json = p.with_name("feral_behavioral_labels.json")
-    if not tsvs:
-        raise FileNotFoundError(f"No TSV files found at: {p}")
-    observed = _collect_all_behaviors(tsvs)
-    if is_multilabel:
-        beh_to_id = {b: i for i, b in enumerate(observed)}
-    else:
-        beh_to_id = {"other": 0}
-        idx = 1
-        for b in observed:
-            if b not in beh_to_id:
-                beh_to_id[b] = idx
-                idx += 1
-    class_names = {str(i): b for b, i in beh_to_id.items()}
-    labels = {}
-    video_files = []
-    for tsv in tsvs:
-        header, recs = _read_boris_records(tsv)
-        col_time   = _find_col(header, "Time")
-        col_path   = _find_col(header, "Media file path")
-        col_total  = _find_col(header, "Total length")
-        col_fps    = _find_col(header, "FPS")
-        col_beh    = _find_col(header, "Behavior")
-        col_status = _find_col(header, "Status")
-        fps, total = _fps_and_duration(recs, col_fps, col_total, col_time)
-        total_frames = int(max(0, round(total * fps)))
-        vname = _video_name(recs, col_path, Path(tsv).stem)
-        video_files.append(vname)
-        if is_multilabel:
-            labels[vname] = _labels_multilabel(recs, fps, total_frames, col_time, col_beh, col_status, beh_to_id, len(beh_to_id))
-        else:
-            labels[vname] = _labels_single(recs, fps, total_frames, col_time, col_beh, col_status, beh_to_id)
-    splits = _make_splits(video_files)
-    out = {"is_multilabel": bool(is_multilabel), "class_names": class_names, "labels": labels, "splits": splits}
-    with open(out_json, "w", encoding="utf-8") as f:
-        json.dump(out, f, separators=(",", ":"), ensure_ascii=False)
-    print(f"Saved JSON → {out_json}")
-    return out_json, out
+        L = _labels_single(recs, fps, total_frames, col_t, col_b, col_s, beh_to_id)
 
-def main():
-    parser = argparse.ArgumentParser(description="Convert BORIS .tsv files to FERAL JSON.")
-    parser.add_argument("input_path", help="TSV file or folder of TSV files")
-    parser.add_argument("--multilabel", action="store_true", help="Use multi-label format (frame → multi-hot vector)")
-    args = parser.parse_args()
-    convert_path_to_feral(args.input_path, is_multilabel=args.multilabel)
+    labels_json["labels"][name] = L
+    video_files.append(name)
 
-if __name__ == "__main__":
-    main()`}</code></pre>
+# ---- dataset splits ----
+n = len(video_files)
+n_train = max(1, int(n*TRAIN_FRAC))
+n_val   = int(n*VAL_FRAC)
+n_test  = n - n_train - n_val
+
+labels_json["splits"] = {
+    "train":     video_files[:n_train],
+    "val":       video_files[n_train:n_train+n_val],
+    "test":      video_files[n_train+n_val:],
+    "inference": video_files
+}
+
+# ---- save ----
+outpath = Path(INPUT_PATH)/"feral_behavioral_labels.json"
+with open(outpath, "w") as f:
+    json.dump(labels_json, f, indent=2)
+
+print("Saved JSON:", outpath)
+`}</code></pre>
 </div>
 
                 </div>
@@ -1506,18 +1474,21 @@ if __name__ == "__main__":
         );
   
 
-        const RunningFeralSection = ({ handleNavClick }) => {
+ const RunningFeralSection = ({ handleNavClick }) => {
   const [isTransferExpanded, setIsTransferExpanded] = React.useState(false);
-  
+
   return (
     <section id="running-feral" className="bg-white p-8 rounded-lg shadow-md">
       <h2 className="text-3xl font-bold text-gray-900 mb-6">
         Running FERAL
       </h2>
-<p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md p-3 mt-3">
-  <strong>Important:</strong> FERAL uses large video models. On GPUs with less than <strong>24&nbsp;GB VRAM</strong> you may
-  see CUDA out-of-memory errors unless you strongly downsample videos, shorten clips, and reduce batch size.
-</p>
+
+      <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md p-3 mt-3">
+        <strong>Important:</strong> FERAL uses large video models. For smooth training we recommend
+        GPUs with at least <strong>24&nbsp;GB VRAM</strong> (e.g. A100 / RTX 4090 / RTX 6000). On
+        GPUs with less memory you will likely need to <strong>downsample your dataset</strong>
+        (fewer videos, fewer frames, smaller batch size) to avoid CUDA out-of-memory errors.
+      </p>
 
       {/* Option A: Google Colab */}
       <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">
@@ -1526,16 +1497,42 @@ if __name__ == "__main__":
       <p className="text-gray-700 leading-relaxed mb-3">
         The easiest way to run FERAL is directly in your browser using our
         <strong> interactive Google Colab notebook</strong>. This notebook is
-        <strong> fully self-contained</strong> and provides end-to-end
-        instructions for the entire workflow—from video preparation to model
-        training and evaluation.
+        <strong> fully self-contained</strong> and walks you through the full workflow:
       </p>
-      <ul className="list-disc list-inside text-gray-700 mb-4">
-        <li>💻 Zero setup — no installation or dependencies required</li>
-        <li>⚡ Use an <code>A100</code> GPU for best performance</li>
+      <ul className="list-disc list-inside text-gray-700 mb-3">
+        <li>💻 Zero setup — no local installation or dependency juggling</li>
+        <li>⚡ Uses a Colab GPU (we strongly recommend an <code>A100</code> if available)</li>
         <li>🎓 Colab Pro is free for academics with an institutional email</li>
-        <li>☁️ Data can stay in your Google Drive</li>
+        <li>☁️ Your data can live in Google Drive and be accessed directly</li>
       </ul>
+
+      <p className="text-gray-700 leading-relaxed mb-3">
+        Inside the Colab, the main steps are:
+      </p>
+      <ol className="list-decimal list-inside text-gray-700 mb-4 space-y-1">
+        <li>
+          <strong>Video re-encoding:</strong> re-encode your raw videos to 256×256 H.264 MP4
+          (FERAL&apos;s expected input format).
+        </li>
+        <li>
+          <strong>Label conversion:</strong> convert BORIS TSV/CSV exports into a single
+          <code className="bg-gray-100 px-1 py-0.5 rounded ml-1">feral_behavioral_labels.json</code>{" "}
+          in the correct schema.
+        </li>
+        <li>
+          <strong>Training configuration:</strong> set how many videos and frames to use,
+          number of epochs, batch size, etc.
+        </li>
+        <li>
+          <strong>Training:</strong> launch a FERAL training run with logging to Weights &amp; Biases
+          (wandb) and periodic checkpoint saving in{" "}
+          <code className="bg-gray-100 px-1 py-0.5 rounded">feral/checkpoints/</code>.
+        </li>
+        <li>
+          <strong>Inference:</strong> optionally run a trained checkpoint on new videos using the
+          same JSON (see &quot;Using checkpoints for inference&quot; below).
+        </li>
+      </ol>
 
       <a
         href="https://colab.research.google.com/drive/1bJkHewHpEU7iJT3fIHd0YNrQJ9hkSEdu?usp=sharing"
@@ -1547,30 +1544,63 @@ if __name__ == "__main__":
       </a>
 
       <p className="text-sm text-gray-600 mt-3">
-        This method is ideal for most users and replicates the same results as
-        local or cloud-GPU setups.
+        This method is ideal for most users and mirrors the behavior of local / cluster setups.
       </p>
 
-      {/* Option B: Local */}
+      {/* Colab runtime limits & downsampling */}
+      <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2">
+        If your Colab run is too slow or times out
+      </h4>
+      <p className="text-gray-700 leading-relaxed mb-2">
+        Colab runtimes often reset after several hours. If training takes too long or crashes,
+        you can shorten runs by downsampling your dataset in the config cells:
+      </p>
+      <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+        <li>
+          <strong>Limit the number of videos</strong> used for training/validation (e.g., use only
+          a subset of videos while you prototype).
+        </li>
+        <li>
+          <strong>Subsample frames</strong> (e.g., analyze every N-th frame instead of all frames).
+        </li>
+        <li>
+          <strong>Cap maximum frames per video</strong> (truncate long recordings to a shorter
+          window for the first runs).
+        </li>
+        <li>
+          <strong>Reduce the number of epochs</strong> to get quicker “first-pass” models.</li>
+        <li>
+          <strong>Reduce batch size</strong> if you see CUDA out-of-memory errors.
+        </li>
+      </ul>
+      <p className="text-gray-700 leading-relaxed mb-6">
+        These options are exposed in the Colab configuration cells before training and are the
+        easiest way to keep Colab runs within the runtime and memory limits.
+      </p>
+
+      {/* Option B: Local / HPC */}
       <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
-        Option B: Local Installation
+        Option B: Local or High Performance Cluster
       </h3>
-      <p>
-        Make sure that you have installed:
-        <br />  - Python 3.10
-        <br />  - PyTorch 2.4.0
-        <br />  - CUDA 12.4
-        <br />
-        You can try newer/older versions, but we don't guarantee compatibility.
-        Ensure that you can access your video folder and the JSON file containing
-        labels.
+      <p className="text-gray-700 leading-relaxed mb-3">
+        Each cluster is built differently. Before running FERAL, make sure your environment or
+        container has at least:
+      </p>
+      <ul className="list-disc list-inside text-gray-700 mb-4">
+        <li>Python 3.10</li>
+        <li>PyTorch 2.4.0</li>
+        <li>CUDA 12.4</li>
+      </ul>
+      <p className="text-gray-700 leading-relaxed mb-3">
+        You can try newer/older versions, but we don&apos;t guarantee compatibility. Ensure that you
+        can access your video folder and the JSON file containing labels from the training job.
       </p>
 
       {/* Option C: RunPod */}
       <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
         Option C: Cloud Server on RunPod
       </h3>
-      <p>
+      <p className="text-gray-700 leading-relaxed">
         Prefer a dedicated GPU server? FERAL can run on
         <a
           href="https://www.runpod.io"
@@ -1578,17 +1608,16 @@ if __name__ == "__main__":
           rel="noopener noreferrer"
         >
           RunPod
-        </a>.
-        This option gives you full control of the environment and long-term
-        storage for large datasets.
+        </a>
+        . This option gives you full control of the environment and longer runtimes for large datasets.
       </p>
 
       <ol className="list-decimal list-inside space-y-2 mt-3 text-gray-700">
         <li>
-          Get a RunPod account with about $10 credit, or contact us for access.
+          Get a RunPod account with some credit, or contact us if you need access help.
         </li>
         <li>
-          Go to 
+          Go to{" "}
           <a
             href="https://console.runpod.io/deploy?gpu=H100%20SXM&count=1&template=runpod-torch-v240"
             className="text-blue-600 hover:underline"
@@ -1600,7 +1629,7 @@ if __name__ == "__main__":
           Increase disk size if needed.
         </li>
         <li>
-          Go to 
+          Go to{" "}
           <a
             href="https://console.runpod.io/pods"
             className="text-blue-600 hover:underline"
@@ -1611,55 +1640,22 @@ if __name__ == "__main__":
           , wait for startup, then click <em>Connect → Jupyter Lab :8888</em>.
         </li>
         <li>
-          Once in Jupyter Lab, open <em>Terminal</em> and run:{" "}
+          Once in Jupyter Lab, open <em>Terminal</em> and run{" "}
           <code className="bg-gray-200 px-1 rounded">
             apt update && apt install -y unzip
           </code>
+          .
         </li>
         <li>
           Transfer your videos and labels to the server (see transfer options below).
         </li>
       </ol>
 
-      {/* Expandable transfer options */}
-      <button
-        onClick={() => setIsTransferExpanded(!isTransferExpanded)}
-        className="w-full flex items-center justify-between p-4 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg transition-colors duration-200 mt-4"
-      >
-        <span className="font-medium text-gray-800">
-          {isTransferExpanded
-            ? "🔽 Hide Video Transfer Options"
-            : "📤 Show Video Transfer Options"}
-        </span>
-        <svg
-          className={`w-5 h-5 transform transition-transform duration-200 ${
-            isTransferExpanded ? "rotate-180" : ""
-          }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
 
-      {isTransferExpanded && (
-        <div className="mt-4 border border-gray-300 rounded-lg overflow-hidden p-4">
-          <p className="text-gray-700">
-            We advise compressing your video folder into a .zip archive before
-            transfer. You can then use Jupyter Lab upload, SSH, or bashupload.com.
-            <br />
-            SSH is fastest; drag and drop is simplest.
-          </p>
-        </div>
-      )}
 
-      {/* Step 2: Prepare your data */}
+
+
+      {/* Step 1: Prepare your data */}
       <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
         1. Prepare your data
       </h3>
@@ -1670,26 +1666,24 @@ if __name__ == "__main__":
 
       <ul className="list-disc list-inside text-gray-700 mb-4">
         <li>
-          A folder containing all your{" "}
-          <strong>re-encoded videos</strong> (256×256 .mp4 files from the
-          Video Preparation step).
+          A folder containing all your <strong>re-encoded videos</strong> (256×256 <code>.mp4</code>{" "}
+          files from the Video Preparation step or Colab).
         </li>
         <li>
-          A single <code className="bg-gray-100 px-1 py-0.5 rounded">.json</code>{" "}
-          file with your frame-by-frame annotations in FERAL format
-          (class_names / labels / splits).
+          A single <code className="bg-gray-100 px-1 py-0.5 rounded">.json</code> file with your
+          frame-by-frame annotations in FERAL format (<code>class_names</code>,{" "}
+          <code>labels</code>, and <code>splits</code>).
         </li>
       </ul>
 
       <p className="text-gray-700 leading-relaxed mb-4">
-        Place the JSON file <strong>in the same directory</strong> where the
-        videos live, so FERAL can find both the data and the labels.
+        Place the JSON file <strong>in the same directory</strong> where the videos live, so FERAL
+        can find both the data and the labels.
       </p>
 
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
         <p className="text-yellow-900 text-sm leading-relaxed">
-          ✅ You can confirm your annotation JSON is valid by using the
-          built-in dataset validator.
+          ✅ You can confirm your annotation JSON is valid by using the built-in dataset validator.
         </p>
 
         <button
@@ -1700,7 +1694,7 @@ if __name__ == "__main__":
         </button>
       </div>
 
-      {/* Step 3: Start training */}
+      {/* Step 2: Start training */}
       <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
         2. Start training (Manual or RunPod/Local)
       </h3>
@@ -1709,7 +1703,7 @@ if __name__ == "__main__":
         If you’re not using Colab, clone the repository and install dependencies:
       </p>
 
-      <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto">
+      <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto mt-2">
         git clone https://github.com/Skovorp/feral.git
         <br />
         cd feral
@@ -1717,7 +1711,7 @@ if __name__ == "__main__":
         pip install -r requirements.txt
       </pre>
 
-      <p className="text-gray-700 leading-relaxed">
+      <p className="text-gray-700 leading-relaxed mt-3">
         To start a training run:
       </p>
 
@@ -1726,8 +1720,8 @@ if __name__ == "__main__":
       </pre>
 
       <p className="mt-3 text-gray-700 leading-relaxed">
-        Training metrics are logged to Weights &amp; Biases. You’ll be prompted to either
-        log to your own project (using a{" "}
+        Training metrics are logged to Weights &amp; Biases. You’ll be prompted to either log to your
+        own project (using a{" "}
         <a
           href="https://wandb.ai/authorize"
           className="text-blue-600 hover:underline"
@@ -1738,7 +1732,26 @@ if __name__ == "__main__":
         ) or the public FERAL project.
       </p>
 
-      {/* Step 4: Track performance */}
+      {/* Using checkpoints for inference */}
+      <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2">
+        Using checkpoints for inference
+      </h4>
+      <p className="text-gray-700 leading-relaxed mb-2">
+        During training, FERAL saves checkpoints under{" "}
+        <code className="bg-gray-100 px-1 py-0.5 rounded">feral/checkpoints/</code>. You can use
+        any of these checkpoints to run inference on new videos:
+      </p>
+      <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono overflow-x-auto mb-3">
+        python run.py path_to_videos path_to_labels.json --checkpoint path_to_checkpoint.pth
+      </pre>
+      <p className="text-gray-700 leading-relaxed mb-4">
+        If you only want inference, you can keep videos in the <code>inference</code> split of your
+        JSON and set <code>train</code>, <code>val</code>, and <code>test</code> to empty lists.
+        FERAL will then run predictions only on the inference videos using the checkpoint you
+        provide.
+      </p>
+
+      {/* Step 3: Track performance */}
       <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
         3. Track performance
       </h3>
@@ -1746,51 +1759,49 @@ if __name__ == "__main__":
       <p className="text-gray-700 leading-relaxed">
         In Weights &amp; Biases, monitor:
         <br />
-        1. <strong>val_raster_plot / ema_val_raster_plot</strong> – raster of model
-        predictions across validation videos.
+        1. <strong>val_raster_plot / ema_val_raster_plot</strong> – raster of model predictions
+        across validation videos.
         <br />
-        2. <strong>ema_val_frame_level_map</strong> – main metric (Average Precision
-        across classes, frame-level). &lt;0.5 is weak, &gt;0.9 is strong.
+        2. <strong>ema_val_frame_level_map</strong> – main metric (Average Precision across classes,
+        frame-level). &lt;0.5 is weak, &gt;0.9 is strong.
         <br />
-        3. <strong>train_map / val_map / ema_val_map</strong> – batch-level
-        Average Precision.
+        3. <strong>train_map / val_map / ema_val_map</strong> – batch-level Average Precision.
         <br />
-        4. <strong>train loss / val loss</strong> – should steadily go down. If
-        train loss drops and val loss rises, you're overfitting.
+        4. <strong>train loss / val loss</strong> – should steadily go down. If train loss drops and
+        val loss rises, you're overfitting.
       </p>
 
       <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2">
         What's EMA?
       </h4>
       <p className="text-gray-700 leading-relaxed">
-        EMA (Exponential Moving Average) keeps a smoothed copy of the model
-        weights:
+        EMA (Exponential Moving Average) keeps a smoothed copy of the model weights:
         <code className="bg-gray-100 px-1 py-0.5 rounded ml-1">
           ema = 0.999 × ema + 0.001 × weights
         </code>
-        . FERAL saves outputs from both the main model and the EMA model so you
-        can choose whichever performs better.
+        . FERAL saves outputs from both the main model and the EMA model so you can choose whichever
+        performs better.
       </p>
 
-      {/* Step 5: Final results */}
+      {/* Step 4: Final results */}
       <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
         4. Get final results
       </h3>
 
       <p className="text-gray-700 leading-relaxed">
         At the end of training you'll get a file in your{" "}
-        <code className="bg-gray-100 px-1 py-0.5 rounded font-mono">answers</code>{" "}
-        folder named something like{" "}
+        <code className="bg-gray-100 px-1 py-0.5 rounded font-mono">answers</code> folder named
+        something like{" "}
         <code className="bg-gray-100 px-1 py-0.5 rounded font-mono">
           _inference_&#123;run_name&#125;_&#123;%Y-%m-%d_%H-%M-%S&#125;.json
         </code>
-        . That JSON contains predicted behaviors for every frame of every
-        inference video you provided.
+        . That JSON contains predicted behaviors for every frame of every inference video you
+        provided.
       </p>
-
     </section>
   );
 };
+
         const ColabSection = () => (
   <section id="colab" className="bg-white p-8 rounded-lg shadow-md">
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Run FERAL on Google Colab</h2>
