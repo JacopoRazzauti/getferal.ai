@@ -352,8 +352,8 @@ const HeroMosaic = () => (
                             </div>
                         
                             <p className="text-sm text-gray-700 mb-1">
-                            <a href="mailto:pskovorodnikov@rockefeller.edu" className="text-blue-600 hover:underline">
-                                pskovorodnikov@rockefeller.edu
+                            <a href="mailto:peter.skovorodnikov@gmail.com" className="text-blue-600 hover:underline">
+                                peter.skovorodnikov@gmail.com
                             </a>
                             </p>
                             <p className="text-sm text-gray-600">
@@ -388,8 +388,8 @@ const HeroMosaic = () => (
                             </div>
                         
                             <p className="text-sm text-gray-700 mb-1">
-                            <a href="mailto:jrazzauti@rockefeller.edu" className="text-blue-600 hover:underline">
-                                jrazzauti@rockefeller.edu
+                            <a href="mailto:jacopo.razza@gmail.com" className="text-blue-600 hover:underline">
+                                jacopo.razza@gmail.com
                             </a>
                             </p>
                             <p className="text-sm text-gray-600">
@@ -417,7 +417,7 @@ const HeroMosaic = () => (
     it really helps us support the community!
   </p>
   <a
-    href="https://github.com/jacoporazzauti/FERAL"
+    href="https://github.com/Skovorp/feral"
     target="_blank"
     rel="noopener noreferrer"
     className="inline-block mt-2 px-4 py-2 bg-yellow-200 hover:bg-yellow-300 text-gray-900 rounded-md font-semibold transition"
@@ -437,8 +437,8 @@ const GettingStartedSection = ({ handleNavClick }) => (
     className="bg-white p-8 rounded-lg shadow-md"
   >
   <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md p-3 mt-3">
-  <strong>Important:</strong> FERAL uses large video models. On GPUs with less than <strong>24&nbsp;GB VRAM</strong> you may
-  see CUDA out-of-memory errors unless you strongly downsample videos, shorten clips, and reduce batch size. For start, try the Google Colab or reach out to us!
+  <strong>Important:</strong> FERAL uses large video models. On GPUs with less than <strong>24&nbsp;GB VRAM</strong> you will
+  need to manually change the config to avoid CUDA out-of-memory errors. For start, try the Google Colab or reach out to us!
 </p>
 
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Getting Started</h2>
@@ -1029,7 +1029,7 @@ if __name__ == "__main__":
     it really helps us support the community!
   </p>
   <a
-    href="https://github.com/jacoporazzauti/FERAL"
+    href="https://github.com/Skovorp/feral"
     target="_blank"
     rel="noopener noreferrer"
     className="inline-block mt-2 px-4 py-2 bg-yellow-200 hover:bg-yellow-300 text-gray-900 rounded-md font-semibold transition"
@@ -1486,8 +1486,7 @@ print("Saved JSON:", outpath)
       <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md p-3 mt-3">
         <strong>Important:</strong> FERAL uses large video models. For smooth training we recommend
         GPUs with at least <strong>24&nbsp;GB VRAM</strong> (e.g. A100 / RTX 4090 / RTX 6000). On
-        GPUs with less memory you will likely need to <strong>downsample your dataset</strong>
-        (fewer videos, fewer frames, smaller batch size) to avoid CUDA out-of-memory errors.
+        GPUs with less memory you will need to manually change the config to avoid CUDA out-of-memory errors.
       </p>
 
       {/* Option A: Google Colab */}
@@ -1807,8 +1806,8 @@ print("Saved JSON:", outpath)
     <h2 className="text-3xl font-bold text-gray-900 mb-4">Run FERAL on Google Colab</h2>
     <p className="text-gray-700 leading-relaxed mb-4">
       <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md p-3 mt-3">
-  <strong>Important:</strong> FERAL uses large video models. On GPUs with less than <strong>24&nbsp;GB VRAM</strong> you may
-  see CUDA out-of-memory errors unless you strongly downsample videos, shorten clips, and reduce batch size.
+  <strong>Important:</strong> FERAL uses large video models. On GPUs with less than <strong>24&nbsp;GB VRAM</strong>
+  you will need to manually change the config to avoid CUDA out-of-memory errors
 </p>
 
       The easiest way to run FERAL is directly in your browser using our
@@ -1846,7 +1845,7 @@ print("Saved JSON:", outpath)
     it really helps us support the community!
   </p>
   <a
-    href="https://github.com/jacoporazzauti/FERAL"
+    href="https://github.com/Skovorp/feral"
     target="_blank"
     rel="noopener noreferrer"
     className="inline-block mt-2 px-4 py-2 bg-yellow-200 hover:bg-yellow-300 text-gray-900 rounded-md font-semibold transition"
@@ -1884,7 +1883,7 @@ const RunPodSection = () => (
     it really helps us support the community!
   </p>
   <a
-    href="https://github.com/jacoporazzauti/FERAL"
+    href="https://github.com/Skovorp/feral"
     target="_blank"
     rel="noopener noreferrer"
     className="inline-block mt-2 px-4 py-2 bg-yellow-200 hover:bg-yellow-300 text-gray-900 rounded-md font-semibold transition"
@@ -2576,7 +2575,7 @@ videoFiles.forEach(videoFile => {
                 e.preventDefault();
                 
                 // Create mailto link with both recipients
-                const recipients = 'jrazzauti@rockefeller.edu,pskovorodnikov@rockefeller.edu';
+                const recipients = 'jacopo.razza@gmail.com,peter.skovorodnikov@gmail.com';
                 const subject = encodeURIComponent(formData.subject || 'FERAL AI Inquiry');
                 const body = encodeURIComponent(
                     `Name: ${formData.name}\n` +
@@ -2706,10 +2705,10 @@ videoFiles.forEach(videoFile => {
                                         Researcher & Co-Developer
                                     </p>
                                     <button
-                                        onClick={() => sendDirectEmail('jrazzauti@rockefeller.edu', 'Jacopo')}
+                                        onClick={() => sendDirectEmail('jacopo.razza@gmail.com', 'Jacopo')}
                                         className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 text-sm"
                                     >
-                                        ✉️ jrazzauti@rockefeller.edu
+                                        ✉️ jacopo.razza@gmail.com
                                     </button>
                                 </div>
 
@@ -2722,10 +2721,10 @@ videoFiles.forEach(videoFile => {
                                         Researcher & Lead Developer
                                     </p>
                                     <button
-                                        onClick={() => sendDirectEmail('pskovorodnikov@rockefeller.edu', 'Peter')}
+                                        onClick={() => sendDirectEmail('peter.skovorodnikov@gmail.com', 'Peter')}
                                         className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 text-sm"
                                     >
-                                        ✉️ pskovorodnikov@rockefeller.edu
+                                        ✉️ peter.skovorodnikov@gmail.com
                                     </button>
                                 </div>
                             </div>
