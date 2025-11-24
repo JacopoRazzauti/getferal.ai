@@ -1896,523 +1896,558 @@ const RunPodSection = () => (
   </section>
 );
 
-        const DatasetValidatorSection = () => {
-            const [file, setFile] = useState(null);
-            const [validationResult, setValidationResult] = useState(null);
-            const [isLoading, setIsLoading] = useState(false);
-            const [error, setError] = useState(null);
+ const DatasetValidatorSection = () => {
+    const [file, setFile] = useState(null);
+    const [validationResult, setValidationResult] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-            const handleFileChange = (event) => {
-                setFile(event.target.files[0]);
-                setValidationResult(null);
-                setError(null);
-            };
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0]);
+        setValidationResult(null);
+        setError(null);
+    };
 
-            const validateFeralDataset = (data) => {
-                const issues = [];
-                const warnings = [];
-                let isValid = true;
+    const validateFeralDataset = (data) => {
+        const issues = [];
+        const warnings = [];
+        let isValid = true;
 
-                // Check required top-level keys
-                const requiredKeys = ['class_names', 'labels', 'splits', 'is_multilabel'];
-                for (const key of requiredKeys) {
-                    if (!(key in data)) {
-                        issues.push(`Missing required key: "${key}"`);
-                        isValid = false;
-                    }
-                }
-
-
-
-                if (!isValid) {
-                    return { isValid: false, issues, warnings, metadata: null };
-                }
-                
-                                if (typeof data.is_multilabel !== 'boolean') {
-  issues.push('is_multilabel must be a boolean (true or false)');
-  isValid = false;
-}
-                // Validate is_multilabel
-                if (typeof data.is_multilabel !== "boolean") {
-                    issues.push('is_multilabel must be a boolean (true or false)');
-                    isValid = false;
-                }
-
-                // Validate class_names
-                if (typeof data.class_names !== 'object' || Array.isArray(data.class_names)) {
-                    issues.push('class_names must be an object');
-                    isValid = false;
-                } else {
-                    const classIds = Object.keys(data.class_names);
-                    if (classIds.length === 0) {
-                        issues.push('class_names cannot be empty');
-                        isValid = false;
-                    } else {
-                        const expectedKeys = new Set();
-                        for (let i = 0; i < classIds.length; i++) {
-                            expectedKeys.add(String(i));
-                        }
-                
-                        const actualKeys = new Set(classIds);
-                        for (const key of expectedKeys) {
-                            if (!actualKeys.has(key)) {
-                                issues.push(`class_names must have consecutive numeric keys as strings starting from "0". Missing key: "${key}"`);
-                                isValid = false;
-                                break;
-                            }
-                        }
-                
-                        const values = Object.values(data.class_names);
-                        const uniqueValues = new Set(values);
-                        if (values.length !== uniqueValues.size) {
-                            issues.push('class_names values must be unique');
-                            isValid = false;
-                        }
-
-                        if (!Object.values(data.class_names).includes('other')) {
-                            warnings.push(`Class "other" isn't present in class names. Performance metrics will be averaged across all classes`);
-                        }
-                    }
-                }
-
-                // Validate labels structure
-                if (typeof data.labels !== 'object' || Array.isArray(data.labels)) {
-                    issues.push('labels must be an object');
-                    isValid = false;
-                } else {
-                    const videoFiles = Object.keys(data.labels);
-                    if (videoFiles.length === 0) {
-                        issues.push('labels cannot be empty');
-                        isValid = false;
-                    }
-                }
-
-                // Validate splits structure
-                if (typeof data.splits !== 'object' || Array.isArray(data.splits)) {
-                    issues.push('splits must be an object');
-                    isValid = false;
-                } else {
-                    const allowedKeys = new Set(['train', 'val', 'test', 'inference']);
-                    for (const key in data.splits) {
-                        if (!allowedKeys.has(key)) {
-                            issues.push(`splits can have keys "train", "val", "test", "inference". Found unexpected: ${key}`);
-                            isValid = false;
-                        }
-                    }
-                    if (!Array.isArray(data.splits.train)) {
-                        issues.push('splits.train must be an array');
-                        isValid = false;
-                    }
-                    if (!Array.isArray(data.splits.val)) {
-                        issues.push('splits.val must be an array');
-                        isValid = false;
-                    }
-                    if ('inference' in data.splits && !Array.isArray(data.splits.inference)) {
-                        issues.push('splits.inference must be an array');
-                        isValid = false;
-                    }                    
-                }
-
-                if (!isValid) {
-                    return { isValid: false, issues, warnings, metadata: null };
-                }
-
-                // Detailed validation and metadata extraction
-                const classIds = Object.keys(data.class_names);
-                const videoFiles = Object.keys(data.labels);
-                const trainFiles = data.splits.train || [];
-                const valFiles = data.splits.val || [];
-                const inferenceFiles = data.splits.inference || [];
-                const allSplitFiles = [...trainFiles, ...valFiles];
-
-                // Check consistency between labels and splits
-                const missingInLabels = allSplitFiles.filter(f => !videoFiles.includes(f));
-                const missingInSplits = videoFiles.filter(f => !allSplitFiles.includes(f));
-                
-                if (missingInLabels.length > 0) {
-                    issues.push(`Files in splits but missing in labels: ${missingInLabels.join(', ')}`);
-                }
-                if (missingInSplits.length > 0) {
-                    warnings.push(`Files in labels but missing in splits: ${missingInSplits.join(', ')}`);
-                }
-
-                // Helper to find duplicates
-                function findDuplicates(arr) {
-                    const seen = new Set();
-                    const duplicates = new Set();
-                    for (const item of arr) {
-                        if (seen.has(item)) {
-                            duplicates.add(item);
-                        }
-                        seen.add(item);
-                    }
-                    return [...duplicates];
-                }
-
-                const dupInSplits = findDuplicates(allSplitFiles);
-                if (dupInSplits.length > 0) {
-                    issues.push(`Duplicate files found in train/val splits: ${dupInSplits.join(', ')}`);
-                }
-
-                const dupInInference = findDuplicates(inferenceFiles);
-                if (dupInInference.length > 0) {
-                    issues.push(`Duplicate files found in inference split: ${dupInInference.join(', ')}`);
-                }
-
-                // Check for duplicate files in splits
-                const duplicates = trainFiles.filter(f => valFiles.includes(f));
-                if (duplicates.length > 0) {
-                    issues.push(`Files appear in both train and val splits: ${duplicates.join(', ')}`);
-                }
-
-                // Analyze labels for each video
-// Analyze labels for each video
-const videoMetadata = {};
-const behaviorCounts = {};
-const classCounts = {};
-
-// Initialize global counts
-classIds.forEach(id => {
-  classCounts[id] = 0;
-  const name = data.class_names[id];
-  behaviorCounts[name] = 0;
-});
-
-const isMulti = !!data.is_multilabel;
-
-videoFiles.forEach(videoFile => {
-  const labelArray = data.labels[videoFile];
-  const frameCount = Array.isArray(labelArray) ? labelArray.length : 0;
-
-  const videoBehaviorCounts = {};
-  const videoClassCounts = {};
-
-  classIds.forEach(id => {
-    videoClassCounts[id] = 0;
-    const name = data.class_names[id];
-    videoBehaviorCounts[name] = 0;
-  });
-
-  if (isMulti) {
-    // Multi-label: each entry is a multi-hot vector
-    labelArray.forEach((frameLabels, frameIdx) => {
-      if (!Array.isArray(frameLabels)) {
-        issues.push(`labels["${videoFile}"][${frameIdx}] must be an array in multi-label mode`);
-        isValid = false;
-        return;
-      }
-      if (frameLabels.length !== classIds.length) {
-        issues.push(`labels["${videoFile}"][${frameIdx}] has length ${frameLabels.length}, expected ${classIds.length}`);
-        isValid = false;
-        return;
-      }
-      frameLabels.forEach((v, j) => {
-        if (v !== 0 && v !== 1) {
-          issues.push(`labels["${videoFile}"][${frameIdx}][${j}] must be 0 or 1 in multi-label mode (got ${JSON.stringify(v)})`);
-          isValid = false;
-          return;
+        // Required top-level keys
+        const requiredKeys = ['class_names', 'labels', 'splits', 'is_multilabel'];
+        for (const key of requiredKeys) {
+            if (!(key in data)) {
+                issues.push(`Missing required key: "${key}"`);
+                isValid = false;
+            }
         }
-        if (v === 1) {
-          const classId = classIds[j];
-          const behaviorName = data.class_names[classId];
-          videoBehaviorCounts[behaviorName]++;
-          videoClassCounts[classId]++;
-          behaviorCounts[behaviorName]++;
-          classCounts[classId]++;
+
+        if (!isValid) return { isValid: false, issues, warnings, metadata: null };
+
+        // Validate is_multilabel
+        if (typeof data.is_multilabel !== 'boolean') {
+            issues.push('is_multilabel must be a boolean (true or false)');
+            isValid = false;
         }
-      });
-    });
-  } else {
-    // Single-label: each entry is an integer class index
-    labelArray.forEach((label, frameIdx) => {
-      if (!Number.isInteger(label)) {
-        issues.push(`labels["${videoFile}"][${frameIdx}] must be an integer class index (got ${JSON.stringify(label)})`);
-        isValid = false;
-        return;
-      }
-      const labelStr = String(label);
-      if (!classIds.includes(labelStr)) {
-        issues.push(`labels["${videoFile}"][${frameIdx}] = ${label} but "class_names" has no key "${labelStr}"`);
-        isValid = false;
-        return;
-      }
-      const behaviorName = data.class_names[labelStr];
-      videoBehaviorCounts[behaviorName]++;
-      videoClassCounts[labelStr]++;
-      behaviorCounts[behaviorName]++;
-      classCounts[labelStr]++;
-    });
-  }
 
-  videoMetadata[videoFile] = {
-    frameCount,
-    behaviorCounts: videoBehaviorCounts,
-    classIdCounts: videoClassCounts,
-    split: trainFiles.includes(videoFile)
-      ? 'train'
-      : valFiles.includes(videoFile)
-      ? 'val'
-      : testFiles.includes(videoFile)
-      ? 'test'
-      : 'unassigned',
-  };
-});
-                const totalClassFrames = Object.values(behaviorCounts).reduce((sum, count) => sum + count, 0);
+        // Validate class_names
+        if (typeof data.class_names !== 'object' || Array.isArray(data.class_names)) {
+            issues.push('class_names must be an object');
+            isValid = false;
+        } else {
+            const classIds = Object.keys(data.class_names);
+            if (classIds.length === 0) {
+                issues.push('class_names cannot be empty');
+                isValid = false;
+            } else {
+                const expected = new Set();
+                for (let i = 0; i < classIds.length; i++) expected.add(String(i));
 
-                for (const [className, count] of Object.entries(behaviorCounts)) {
-                    const percent = (count / totalClassFrames) * 100;
-                    if (percent < 0.5) {
-                        warnings.push(`Class "${className}" is rare (${percent.toFixed(2)}% of frames). Consider adding more labels for this class or joining it with a similar class`);
+                const actual = new Set(classIds);
+                for (const k of expected) {
+                    if (!actual.has(k)) {
+                        issues.push(`class_names keys must be consecutive numbers starting at 0. Missing: "${k}"`);
+                        isValid = false;
+                        break;
                     }
                 }
 
-                const metadata = {
-                    trainVideos: trainFiles.length,
-                    valVideos: valFiles.length,
-                    inferenceVideos: inferenceFiles.length,
-                    totalClasses: classIds.length,
-                    classNames: data.class_names,
-                    totalFrames: Object.values(videoMetadata).reduce((sum, meta) => sum + meta.frameCount, 0),
-                    behaviorCounts,
-                    classCounts,
-                    videoMetadata
-                };
-
-                return {
-                    isValid: issues.length === 0,
-                    issues,
-                    warnings,
-                    metadata
-                };
-            };
-
-            const validateDataset = async () => {
-                if (!file) {
-                    setError("Please select a file to validate.");
-                    return;
+                const vals = Object.values(data.class_names);
+                const uniqueVals = new Set(vals);
+                if (vals.length !== uniqueVals.size) {
+                    issues.push('class_names values must be unique');
+                    isValid = false;
                 }
 
-                setIsLoading(true);
-                setError(null);
-                setValidationResult(null);
+                if (!vals.includes('other')) {
+                    warnings.push(`Class "other" is not present. Performance metrics will be averaged across all classes.`);
+                }
+            }
+        }
+
+        // Validate labels
+        if (typeof data.labels !== 'object' || Array.isArray(data.labels)) {
+            issues.push('labels must be an object');
+            isValid = false;
+        } else if (Object.keys(data.labels).length === 0) {
+            issues.push('labels cannot be empty');
+            isValid = false;
+        }
+
+        // Validate splits
+        if (typeof data.splits !== 'object' || Array.isArray(data.splits)) {
+            issues.push('splits must be an object');
+            isValid = false;
+        } else {
+            const allowed = new Set(['train', 'val', 'test', 'inference']);
+
+            for (const key in data.splits) {
+                if (!allowed.has(key)) {
+                    issues.push(`splits has invalid key "${key}". Allowed: train, val, test, inference`);
+                    isValid = false;
+                }
+            }
+            if (!Array.isArray(data.splits.train)) {
+                issues.push('splits.train must be an array'); isValid = false;
+            }
+            if (!Array.isArray(data.splits.val)) {
+                issues.push('splits.val must be an array'); isValid = false;
+            }
+            if ('test' in data.splits && !Array.isArray(data.splits.test)) {
+                issues.push('splits.test must be an array'); isValid = false;
+            }
+            if ('inference' in data.splits && !Array.isArray(data.splits.inference)) {
+                issues.push('splits.inference must be an array'); isValid = false;
+            }
+        }
+
+        if (!isValid) return { isValid: false, issues, warnings, metadata: null };
+
+        // ---- Extract metadata ----
+        const classIds = Object.keys(data.class_names);
+        const videoFiles = Object.keys(data.labels);
+
+        const trainFiles = data.splits.train || [];
+        const valFiles = data.splits.val || [];
+        const testFiles = data.splits.test || [];
+        const inferenceFiles = data.splits.inference || [];
+
+        const allSplitFiles = [
+            ...trainFiles,
+            ...valFiles,
+            ...testFiles,
+            ...inferenceFiles
+        ];
+
+        // Check missing / extra files
+        const missingInLabels = allSplitFiles.filter(f => !videoFiles.includes(f));
+        const missingInSplits = videoFiles.filter(f => !allSplitFiles.includes(f));
+
+        if (missingInLabels.length > 0)
+            issues.push(`Files in splits but missing in labels: ${missingInLabels.join(', ')}`);
+
+        if (missingInSplits.length > 0)
+            warnings.push(`Files in labels but missing in splits: ${missingInSplits.join(', ')}`);
+
+        // Duplicate detection helper
+        const findDuplicates = arr => {
+            const seen = new Set();
+            const dupe = new Set();
+            for (const item of arr) {
+                if (seen.has(item)) dupe.add(item);
+                seen.add(item);
+            }
+            return [...dupe];
+        };
+
+        const dupAll = findDuplicates(allSplitFiles);
+        if (dupAll.length > 0)
+            issues.push(`Duplicate file entries across splits: ${dupAll.join(', ')}`);
+
+        // Cross-split conflicts
+        if (trainFiles.some(f => valFiles.includes(f)))
+            issues.push(`Files appear in both train and val`);
+        if (trainFiles.some(f => testFiles.includes(f)))
+            issues.push(`Files appear in both train and test`);
+        if (valFiles.some(f => testFiles.includes(f)))
+            issues.push(`Files appear in both val and test`);
+
+        // ---- Count frames ----
+        const behaviorCounts = {};
+        const classCounts = {};
+        classIds.forEach(id => {
+            classCounts[id] = 0;
+            const name = data.class_names[id];
+            behaviorCounts[name] = 0;
+        });
+
+        const videoMetadata = {};
+        const isMulti = data.is_multilabel;
+
+        videoFiles.forEach(videoFile => {
+            const labelArray = data.labels[videoFile];
+            const frameCount = labelArray.length;
+
+            const videoClassCounts = {};
+            const videoBehaviorCounts = {};
+
+            classIds.forEach(id => {
+                videoClassCounts[id] = 0;
+                videoBehaviorCounts[data.class_names[id]] = 0;
+            });
+
+            if (isMulti) {
+                labelArray.forEach((frame, idx) => {
+                    if (!Array.isArray(frame)) {
+                        issues.push(`Frame ${idx} in "${videoFile}" must be an array`);
+                        isValid = false;
+                        return;
+                    }
+                    if (frame.length !== classIds.length) {
+                        issues.push(`Frame ${idx} in "${videoFile}" must have length ${classIds.length}`);
+                        isValid = false;
+                    }
+                    frame.forEach((v, j) => {
+                        if (v === 1) {
+                            const classId = classIds[j];
+                            const beh = data.class_names[classId];
+                            videoClassCounts[classId]++;
+                            videoBehaviorCounts[beh]++;
+                            classCounts[classId]++;
+                            behaviorCounts[beh]++;
+                        }
+                    });
+                });
+            } else {
+                labelArray.forEach((label, idx) => {
+                    if (!Number.isInteger(label)) {
+                        issues.push(`Frame ${idx} in "${videoFile}" must be an integer label`);
+                        isValid = false;
+                    }
+                    const key = String(label);
+                    if (!classIds.includes(key)) {
+                        issues.push(`Label ${label} in "${videoFile}" not found in class_names`);
+                        isValid = false;
+                    }
+                    const beh = data.class_names[key];
+                    videoClassCounts[key]++;
+                    videoBehaviorCounts[beh]++;
+                    classCounts[key]++;
+                    behaviorCounts[beh]++;
+                });
+            }
+
+            // Determine split
+            let split = 'unassigned';
+            if (trainFiles.includes(videoFile)) split = 'train';
+            else if (valFiles.includes(videoFile)) split = 'val';
+            else if (testFiles.includes(videoFile)) split = 'test';
+            else if (inferenceFiles.includes(videoFile)) split = 'inference';
+
+            videoMetadata[videoFile] = {
+                frameCount,
+                behaviorCounts: videoBehaviorCounts,
+                classIdCounts: videoClassCounts,
+                split
+            };
+        });
+
+        // Rare class warnings
+        const totalClassFrames = Object.values(behaviorCounts).reduce((a, b) => a + b, 0);
+        if (totalClassFrames > 0) {
+            for (const [name, count] of Object.entries(behaviorCounts)) {
+                const pct = (count / totalClassFrames) * 100;
+                if (pct < 0.5)
+                    warnings.push(`Class "${name}" is rare (${pct.toFixed(2)}%). Consider rebalancing.`);
+            }
+        }
+
+        const metadata = {
+            trainVideos: trainFiles.length,
+            valVideos: valFiles.length,
+            testVideos: testFiles.length,
+            inferenceVideos: inferenceFiles.length,
+            totalClasses: classIds.length,
+            classNames: data.class_names,
+            totalFrames: Object.values(videoMetadata).reduce((a, v) => a + v.frameCount, 0),
+            behaviorCounts,
+            classCounts,
+            videoMetadata
+        };
+
+        return { isValid: issues.length === 0, issues, warnings, metadata };
+    };
+
+
+    const validateDataset = async () => {
+        if (!file) {
+            setError("Please select a file to validate.");
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null);
+        setValidationResult(null);
+
+        try {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const fileContent = e.target.result;
 
                 try {
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        const fileContent = e.target.result;
-                        let result = {};
+                    const data = JSON.parse(fileContent);
+                    const validation = validateFeralDataset(data);
 
-                        if (file.name.endsWith('.json')) {
-                            try {
-                                const data = JSON.parse(fileContent);
-                                const validation = validateFeralDataset(data);
-                                
-                                result = {
-                                    status: validation.isValid ? 'success' : 'error',
-                                    message: validation.isValid ? 
-                                        `JSON file "${file.name}" is valid!` : 
-                                        `JSON file "${file.name}" has validation errors.`,
-                                    details: validation.isValid ? 
-                                        'All required fields are present and properly formatted.' : 
-                                        'Please fix the issues listed below.',
-                                    issues: validation.issues,
-                                    warnings: validation.warnings,
-                                    metadata: validation.metadata
-                                };
-                            } catch (parseError) {
-                                result = {
-                                    status: 'error',
-                                    message: `Invalid JSON format for file "${file.name}".`,
-                                    details: parseError.message,
-                                    issues: ['JSON parsing error'],
-                                    warnings: [],
-                                    metadata: null
-                                };
-                            }
-                        } else {
-                            result = {
-                                status: 'info',
-                                message: `File "${file.name}" is not a JSON file.`,
-                                details: 'Please upload a JSON file for FERAL dataset validation.',
-                                issues: ['Wrong file format'],
-                                warnings: [],
-                                metadata: null
-                            };
-                        }
-                        setValidationResult(result);
-                        setIsLoading(false);
-                    };
-                    reader.readAsText(file);
-                } catch (err) {
-                    setError(`An unexpected error occurred: ${err.message}`);
-                    setIsLoading(false);
+                    setValidationResult({
+                        status: validation.isValid ? 'success' : 'error',
+                        message: validation.isValid
+                            ? `JSON file "${file.name}" is valid!`
+                            : `JSON file "${file.name}" has validation errors.`,
+                        details: validation.isValid
+                            ? 'All required fields are present and properly formatted.'
+                            : 'Please fix the issues listed below.',
+                        issues: validation.issues,
+                        warnings: validation.warnings,
+                        metadata: validation.metadata
+                    });
+                } catch (parseErr) {
+                    setValidationResult({
+                        status: 'error',
+                        message: `Invalid JSON format for file "${file.name}".`,
+                        details: parseErr.message,
+                        issues: ['JSON parsing error'],
+                        warnings: [],
+                        metadata: null
+                    });
                 }
+
+                setIsLoading(false);
             };
 
-            return (
-                <section id="dataset-validator" className="bg-white p-8 rounded-lg shadow-md">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Dataset Validator</h2>
-                    <p className="text-gray-700 leading-relaxed mb-6">
-                        Upload your FERAL dataset JSON file to validate its structure and get detailed analysis including 
-                        frame counts, behavior distributions, and format compliance.
-                    </p>
+            reader.readAsText(file);
+        } catch (err) {
+            setError(`Unexpected error: ${err.message}`);
+            setIsLoading(false);
+        }
+    };
 
-                    <div className="mb-6">
-                        <label htmlFor="file-upload" className="block text-sm font-medium text-gray-700 mb-2">
-                            Upload your dataset JSON file:
-                        </label>
-                        <input
-                            id="file-upload"
-                            type="file"
-                            accept=".json"
-                            onChange={handleFileChange}
-                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300"
-                        />
-                        {file && (
-                            <p className="mt-2 text-sm text-gray-600">Selected file: <span className="font-medium">{file.name}</span></p>
+    return (
+        <section id="dataset-validator" className="bg-white p-8 rounded-lg shadow-md">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Dataset Validator</h2>
+            <p className="text-gray-700 leading-relaxed mb-6">
+                Upload your FERAL dataset JSON to validate its structure and view full metadata.
+            </p>
+
+            <div className="mb-6">
+                <label htmlFor="file-upload" className="block text-sm font-medium text-gray-700 mb-2">
+                    Upload your dataset JSON file:
+                </label>
+                <input
+                    id="file-upload"
+                    type="file"
+                    accept=".json"
+                    onChange={handleFileChange}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300"
+                />
+                {file && (
+                    <p className="mt-2 text-sm text-gray-600">Selected file: <span className="font-medium">{file.name}</span></p>
+                )}
+            </div>
+
+            <button
+                onClick={validateDataset}
+                disabled={!file || isLoading}
+                className={`bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 ${(!file || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+                {isLoading ? 'Validating...' : 'Validate Dataset'}
+            </button>
+
+            {error && (
+                <div className="mt-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md" role="alert">
+                    <p className="font-bold">Error:</p>
+                    <p>{error}</p>
+                </div>
+            )}
+
+            {validationResult && (
+                <div className="mt-6 space-y-6">
+                    {/* Main validation result */}
+                    <div
+                        className={`p-6 rounded-lg shadow-inner ${
+                            validationResult.status === 'success'
+                                ? 'bg-green-50 border-green-400'
+                                : validationResult.status === 'error'
+                                ? 'bg-red-50 border-red-400'
+                                : 'bg-gray-50 border-gray-400'
+                        } border-l-4`}
+                    >
+                        <h3
+                            className={`text-xl font-bold mb-2 ${
+                                validationResult.status === 'success'
+                                    ? 'text-green-700'
+                                    : validationResult.status === 'error'
+                                    ? 'text-red-700'
+                                    : 'text-gray-700'
+                            }`}
+                        >
+                            {validationResult.status === 'success'
+                                ? '✅ Validation Successful!'
+                                : validationResult.status === 'error'
+                                ? '❌ Validation Failed'
+                                : 'ℹ️ Information'}
+                        </h3>
+
+                        <p className="text-gray-800 mb-2">{validationResult.message}</p>
+                        {validationResult.details && (
+                            <p className="text-gray-600 text-sm">{validationResult.details}</p>
                         )}
                     </div>
 
-                    <button
-                        onClick={validateDataset}
-                        disabled={!file || isLoading}
-                        className={`bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 ${(!file || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                        {isLoading ? 'Validating...' : 'Validate Dataset'}
-                    </button>
+                    {/* Issues & Warnings */}
+                    {(validationResult.issues?.length > 0 ||
+                        validationResult.warnings?.length > 0) && (
+                        <div className="space-y-4">
+                            {validationResult.issues?.length > 0 && (
+                                <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                                    <h4 className="font-semibold text-red-700 mb-2">❌ Issues Found:</h4>
+                                    <ul className="list-disc list-inside text-red-600 space-y-1">
+                                        {validationResult.issues.map((issue, index) => (
+                                            <li key={index}>{issue}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
 
-                    {error && (
-                        <div className="mt-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md" role="alert">
-                            <p className="font-bold">Error:</p>
-                            <p>{error}</p>
+                            {validationResult.warnings?.length > 0 && (
+                                <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                                    <h4 className="font-semibold text-yellow-700 mb-2">⚠️ Warnings:</h4>
+                                    <ul className="list-disc list-inside text-yellow-600 space-y-1">
+                                        {validationResult.warnings.map((warning, index) => (
+                                            <li key={index}>{warning}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
                         </div>
                     )}
 
-                    {validationResult && (
-                        <div className="mt-6 space-y-6">
-                            {/* Main validation result */}
-                            <div className={`p-6 rounded-lg shadow-inner ${validationResult.status === 'success' ? 'bg-green-50 border-green-400' : validationResult.status === 'error' ? 'bg-red-50 border-red-400' : 'bg-gray-50 border-gray-400'} border-l-4`}>
-                                <h3 className={`text-xl font-bold mb-2 ${validationResult.status === 'success' ? 'text-green-700' : validationResult.status === 'error' ? 'text-red-700' : 'text-gray-700'}`}>
-                                    {validationResult.status === 'success' ? '✅ Validation Successful!' : 
-                                     validationResult.status === 'error' ? '❌ Validation Failed' : 'ℹ️ Information'}
-                                </h3>
-                                <p className="text-gray-800 mb-2">{validationResult.message}</p>
-                                {validationResult.details && <p className="text-gray-600 text-sm">{validationResult.details}</p>}
+                    {/* Summary statistics */}
+                    {validationResult.metadata && validationResult.status === 'success' && (
+                        <div className="space-y-6">
+                            <h3 className="text-xl font-bold text-gray-900">📊 Dataset Analysis</h3>
+
+                            {/* Summary Cards */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                                    <h4 className="font-semibold text-green-700">Training Videos</h4>
+                                    <p className="text-2xl font-bold text-green-800">
+                                        {validationResult.metadata.trainVideos}
+                                    </p>
+                                </div>
+
+                                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                                    <h4 className="font-semibold text-purple-700">Validation Videos</h4>
+                                    <p className="text-2xl font-bold text-purple-800">
+                                        {validationResult.metadata.valVideos}
+                                    </p>
+                                </div>
+
+                                <div className="bg-pink-50 p-4 rounded-lg border border-pink-200">
+                                    <h4 className="font-semibold text-pink-700">Test Videos</h4>
+                                    <p className="text-2xl font-bold text-pink-800">
+                                        {validationResult.metadata.testVideos}
+                                    </p>
+                                </div>
+
+                                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                    <h4 className="font-semibold text-blue-700">Inference Videos</h4>
+                                    <p className="text-2xl font-bold text-blue-800">
+                                        {validationResult.metadata.inferenceVideos}
+                                    </p>
+                                </div>
+
+                                <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                                    <h4 className="font-semibold text-orange-700">Total Labeled Frames</h4>
+                                    <p className="text-2xl font-bold text-orange-800">
+                                        {validationResult.metadata.totalFrames.toLocaleString()}
+                                    </p>
+                                </div>
                             </div>
 
-                            {/* Issues and Warnings */}
-                            {(validationResult.issues?.length > 0 || validationResult.warnings?.length > 0) && (
-                                <div className="space-y-4">
-                                    {validationResult.issues?.length > 0 && (
-                                        <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-                                            <h4 className="font-semibold text-red-700 mb-2">❌ Issues Found:</h4>
-                                            <ul className="list-disc list-inside text-red-600 space-y-1">
-                                                {validationResult.issues.map((issue, index) => (
-                                                    <li key={index}>{issue}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                    
-                                    {validationResult.warnings?.length > 0 && (
-                                        <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                                            <h4 className="font-semibold text-yellow-700 mb-2">⚠️ Warnings:</h4>
-                                            <ul className="list-disc list-inside text-yellow-600 space-y-1">
-                                                {validationResult.warnings.map((warning, index) => (
-                                                    <li key={index}>{warning}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
+                            {/* Behavior distribution */}
+                            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                                <h4 className="font-semibold text-gray-700 mb-4">🎯 Behavior Distribution</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {Object.entries(validationResult.metadata.behaviorCounts).map(
+                                        ([behavior, count]) => (
+                                            <div
+                                                key={behavior}
+                                                className="flex justify-between items-center p-3 bg-white rounded border"
+                                            >
+                                                <span className="font-medium text-gray-700 capitalize">
+                                                    {behavior}
+                                                </span>
+                                                <span className="text-lg font-bold text-gray-900">
+                                                    {count.toLocaleString()}
+                                                </span>
+                                            </div>
+                                        )
                                     )}
                                 </div>
-                            )}
+                            </div>
 
-                            {/* Dataset Metadata */}
-                            {validationResult.metadata && validationResult.status === 'success' && (
-                                <div className="space-y-6">
-                                    <h3 className="text-xl font-bold text-gray-900">📊 Dataset Analysis</h3>
-                                    
-                                    {/* Summary Statistics */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                                            <h4 className="font-semibold text-green-700">Training Videos</h4>
-                                            <p className="text-2xl font-bold text-green-800">{validationResult.metadata.trainVideos}</p>
-                                        </div>
-                                        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                                            <h4 className="font-semibold text-purple-700">Validation Videos</h4>
-                                            <p className="text-2xl font-bold text-purple-800">{validationResult.metadata.valVideos}</p>
-                                        </div>
-                                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                                            <h4 className="font-semibold text-blue-700">Inference Videos</h4>
-                                            <p className="text-2xl font-bold text-blue-800">{validationResult.metadata.inferenceVideos}</p>
-                                        </div>
-                                        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                                            <h4 className="font-semibold text-orange-700">Total Labeled Frames</h4>
-                                            <p className="text-2xl font-bold text-orange-800">{validationResult.metadata.totalFrames.toLocaleString()}</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Class Distribution */}
-                                    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                                        <h4 className="font-semibold text-gray-700 mb-4">🎯 Behavior Distribution</h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {Object.entries(validationResult.metadata.behaviorCounts).map(([behavior, count]) => (
-                                                <div key={behavior} className="flex justify-between items-center p-3 bg-white rounded border">
-                                                    <span className="font-medium text-gray-700 capitalize">{behavior}</span>
-                                                    <span className="text-lg font-bold text-gray-900">{count.toLocaleString()}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Per-Video Analysis */}
-                                    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-                                        <h4 className="font-semibold text-gray-700 mb-4">📹 Per-Video Analysis</h4>
-                                        <div className="overflow-x-auto">
-                                            <table className="w-full text-sm text-left text-gray-500 border border-gray-200">
-                                                <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                                                    <tr>
-                                                        <th className="px-4 py-2 border-b">Video File</th>
-                                                        <th className="px-4 py-2 border-b">Split</th>
-                                                        <th className="px-4 py-2 border-b">Frames</th>
-                                                        <th className="px-4 py-2 border-b">Behaviors</th>
+                            {/* Per-video analysis */}
+                            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                                <h4 className="font-semibold text-gray-700 mb-4">📹 Per-Video Analysis</h4>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm text-left text-gray-500 border border-gray-200">
+                                        <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                                            <tr>
+                                                <th className="px-4 py-2 border-b">Video File</th>
+                                                <th className="px-4 py-2 border-b">Split</th>
+                                                <th className="px-4 py-2 border-b">Frames</th>
+                                                <th className="px-4 py-2 border-b">Behaviors</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {Object.entries(validationResult.metadata.videoMetadata).map(
+                                                ([videoFile, meta]) => (
+                                                    <tr
+                                                        key={videoFile}
+                                                        className="bg-white border-b hover:bg-gray-50"
+                                                    >
+                                                        <td className="px-4 py-2 font-medium text-gray-900">
+                                                            {videoFile}
+                                                        </td>
+                                                        <td className="px-4 py-2">
+                                                            <span
+                                                                className={`px-2 py-1 text-xs rounded-full ${
+                                                                    meta.split === 'train'
+                                                                        ? 'bg-green-100 text-green-800'
+                                                                        : meta.split === 'val'
+                                                                        ? 'bg-purple-100 text-purple-800'
+                                                                        : meta.split === 'test'
+                                                                        ? 'bg-pink-100 text-pink-800'
+                                                                        : meta.split === 'inference'
+                                                                        ? 'bg-blue-100 text-blue-800'
+                                                                        : 'bg-gray-100 text-gray-800'
+                                                                }`}
+                                                            >
+                                                                {meta.split}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-4 py-2">
+                                                            {meta.frameCount.toLocaleString()}
+                                                        </td>
+                                                        <td className="px-4 py-2">
+                                                            <div className="flex flex-wrap gap-1">
+                                                                {Object.entries(meta.behaviorCounts)
+                                                                    .filter(([_, count]) => count > 0)
+                                                                    .map(([behavior, count]) => (
+                                                                        <span
+                                                                            key={behavior}
+                                                                            className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded"
+                                                                        >
+                                                                            {behavior}: {count}
+                                                                        </span>
+                                                                    ))}
+                                                            </div>
+                                                        </td>
                                                     </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {Object.entries(validationResult.metadata.videoMetadata).map(([videoFile, meta]) => (
-                                                        <tr key={videoFile} className="bg-white border-b hover:bg-gray-50">
-                                                            <td className="px-4 py-2 font-medium text-gray-900">{videoFile}</td>
-                                                            <td className="px-4 py-2">
-                                                                <span className={`px-2 py-1 text-xs rounded-full ${meta.split === 'train' ? 'bg-green-100 text-green-800' : meta.split === 'val' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
-                                                                    {meta.split}
-                                                                </span>
-                                                            </td>
-                                                            <td className="px-4 py-2">{meta.frameCount.toLocaleString()}</td>
-                                                            <td className="px-4 py-2">
-                                                                <div className="flex flex-wrap gap-1">
-                                                                    {Object.entries(meta.behaviorCounts)
-                                                                        .filter(([_, count]) => count > 0)
-                                                                        .map(([behavior, count]) => (
-                                                                            <span key={behavior} className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
-                                                                                {behavior}: {count}
-                                                                            </span>
-                                                                        ))
-                                                                    }
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                                )
+                                            )}
+                                        </tbody>
+                                    </table>
                                 </div>
-                            )}
+                            </div>
                         </div>
                     )}
-                </section>
-            );
-        };
+                </div>
+            )}
+        </section>
+    );
+};
+
 
         const ExamplesSection = () => (
 
