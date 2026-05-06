@@ -17,16 +17,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        sans: ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
                         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
-                        serif: ['"Instrument Serif"', 'ui-serif', 'Georgia', 'serif'],
+                        display: ['Newsreader', 'ui-serif', 'Georgia', 'serif'],
                     },
                     colors: {
                         ink: {
@@ -85,8 +85,7 @@
         html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-            font-feature-settings: "ss01", "cv11";
+            font-family: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             background-color: var(--page-bg);
@@ -98,13 +97,14 @@
         }
 
         h1, h2, h3, h4 {
-            letter-spacing: -0.02em;
+            letter-spacing: -0.025em;
         }
 
         .font-display {
-            font-family: 'Instrument Serif', ui-serif, Georgia, serif;
-            font-weight: 400;
-            letter-spacing: -0.01em;
+            font-family: 'Newsreader', ui-serif, Georgia, serif;
+            font-weight: 500;
+            letter-spacing: -0.012em;
+            font-optical-sizing: auto;
         }
 
         /* Refined scrollbar */
@@ -206,12 +206,15 @@
             background-position: -1px -1px;
         }
 
-        /* Gradient text */
-        .text-gradient {
-            background: linear-gradient(120deg, #0f172a 0%, #064e3b 60%, #059669 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        /* Display rule: a simple straight underline accent, drawn behind the text baseline */
+        .display-rule {
+            position: relative;
+            display: inline;
+            background-image: linear-gradient(to top, rgba(5,150,105,0.22) 0, rgba(5,150,105,0.22) 0.18em, transparent 0.18em);
+            background-position: 0 88%;
+            background-size: 100% 0.18em;
+            background-repeat: no-repeat;
+            padding: 0 0.04em;
         }
 
         /* Section anchor offset for sticky header */
@@ -551,20 +554,20 @@ const HeroMosaic = () => (
     <div className="relative overflow-hidden surface dot-grid">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-400/60 to-transparent"></div>
       <div className="px-6 md:px-12 pt-12 md:pt-16 pb-12 md:pb-16">
-        <span className="pill bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse"></span>
-          v0.3 · pip install feral
+        <span className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.16em] text-ink-500">
+          <span className="w-1 h-1 rounded-full bg-accent-500"></span>
+          Open source · v0.3 · pip install feral
         </span>
 
-        <h1 className="mt-6 text-5xl md:text-7xl font-bold tracking-tight leading-[1.05] text-ink-900">
+        <h1 className="mt-5 text-[2.6rem] sm:text-5xl md:text-[5.25rem] font-medium tracking-[-0.04em] leading-[1.02] text-ink-900">
           Animal behavior,<br/>
-          <span className="font-display italic text-gradient">segmented from raw video.</span>
+          <span className="font-display italic font-normal text-ink-900/90">segmented from <span className="display-rule">raw video</span>.</span>
         </h1>
 
-        <p className="mt-6 max-w-2xl text-lg text-ink-600 leading-relaxed">
+        <p className="mt-7 max-w-2xl text-[17px] text-ink-600 leading-[1.55]">
           FERAL is an open-source toolkit that learns to label behaviors directly from your videos —
-          <strong className="text-ink-900"> no tracking, no pose estimation</strong>. It pairs state-of-the-art
-          video models with a tiny, opinionated training pipeline so you can go from raw footage to
+          <span className="text-ink-900 font-medium"> no tracking, no pose estimation</span>. It pairs state-of-the-art
+          video models with a small, opinionated training pipeline so you can go from raw footage to
           frame-level ethograms in one afternoon.
         </p>
 
@@ -588,12 +591,18 @@ const HeroMosaic = () => (
             href="https://github.com/Skovorp/feral"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-ink-600 hover:text-ink-900 font-medium py-2.5 px-3 transition"
+            className="group inline-flex items-center gap-0 py-2.5 rounded-xl border border-ink-200 hover:border-amber-400 bg-white hover:bg-amber-50/60 text-ink-900 font-medium overflow-hidden transition"
           >
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-              <path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.438 9.8 8.205 11.39.6.113.82-.26.82-.577v-2.173c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.746.083-.73.083-.73 1.205.085 1.84 1.238 1.84 1.238 1.07 1.835 2.808 1.305 3.495.998.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.333-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.125-.303-.54-1.523.115-3.176 0 0 1.005-.323 3.3 1.23a11.49 11.49 0 0 1 3-.403c1.02.005 2.045.137 3 .403 2.295-1.553 3.3-1.23 3.3-1.23.655 1.653.24 2.873.12 3.176.77.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.37.81 1.1.81 2.22v3.293c0 .32.22.694.825.576C20.565 22.295 24 17.795 24 12.5 24 5.87 18.63.5 12 .5z" />
-            </svg>
-            Source on GitHub →
+            <span className="flex items-center gap-2 px-4 border-r border-ink-200 group-hover:border-amber-300 transition">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.438 9.8 8.205 11.39.6.113.82-.26.82-.577v-2.173c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.746.083-.73.083-.73 1.205.085 1.84 1.238 1.84 1.238 1.07 1.835 2.808 1.305 3.495.998.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.333-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.125-.303-.54-1.523.115-3.176 0 0 1.005-.323 3.3 1.23a11.49 11.49 0 0 1 3-.403c1.02.005 2.045.137 3 .403 2.295-1.553 3.3-1.23 3.3-1.23.655 1.653.24 2.873.12 3.176.77.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.37.81 1.1.81 2.22v3.293c0 .32.22.694.825.576C20.565 22.295 24 17.795 24 12.5 24 5.87 18.63.5 12 .5z" />
+              </svg>
+              <span>Star on GitHub</span>
+            </span>
+            <span className="flex items-center gap-1.5 px-4 text-amber-600">
+              <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path d="M10 1.5l2.61 5.29 5.84.85-4.22 4.12.99 5.81L10 14.83l-5.22 2.74.99-5.81L1.55 7.64l5.84-.85L10 1.5z"/></svg>
+              <span className="text-sm">Star</span>
+            </span>
           </a>
         </div>
 
@@ -643,7 +652,7 @@ const HeroMosaic = () => (
     {/* About */}
     <div className="surface p-8 md:p-10">
       <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">About</span>
-      <h2 className="mt-4 text-3xl font-bold tracking-tight text-ink-900">Why FERAL exists</h2>
+      <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-ink-900">Why FERAL exists</h2>
       <div className="mt-4 space-y-4 text-ink-700 leading-relaxed max-w-3xl">
         <p>
           AI is advancing at lightning speed: new video-understanding models arrive every month and quality is
@@ -667,7 +676,7 @@ const HeroMosaic = () => (
     {/* Acknowledgments */}
     <div className="surface p-8 md:p-10">
       <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Authors</span>
-      <h2 className="mt-4 text-3xl font-bold tracking-tight text-ink-900">Built at The Rockefeller University</h2>
+      <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-ink-900">Built at The Rockefeller University</h2>
       <p className="mt-3 text-ink-600 max-w-2xl">A joint effort between the Data Science Platform and the Vosshall Laboratory.</p>
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -709,6 +718,29 @@ const HeroMosaic = () => (
       </div>
     </div>
 
+    <a
+      href="https://github.com/Skovorp/feral"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block group relative overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-white hover:border-amber-300 transition shadow-soft hover:shadow-lifted"
+    >
+      <div className="px-6 md:px-8 py-6 md:py-7 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+        <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+          <span className="w-12 h-12 rounded-xl bg-amber-400/25 ring-1 ring-amber-300 grid place-items-center flex-shrink-0 group-hover:bg-amber-400/45 transition">
+            <svg className="w-6 h-6 text-amber-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path d="M10 1.5l2.61 5.29 5.84.85-4.22 4.12.99 5.81L10 14.83l-5.22 2.74.99-5.81L1.55 7.64l5.84-.85L10 1.5z"/></svg>
+          </span>
+          <div className="min-w-0">
+            <p className="text-base font-semibold text-ink-900">Help us reach more researchers</p>
+            <p className="text-sm text-ink-600 mt-0.5">A GitHub star is the single most impactful way to support an open-source academic project.</p>
+          </div>
+        </div>
+        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-ink-900 group-hover:bg-ink-800 text-white text-sm font-medium transition flex-shrink-0">
+          <span>⭐</span> Star FERAL on GitHub
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </span>
+      </div>
+    </a>
+
     <HeroMosaic />    
 
             </section>
@@ -717,7 +749,7 @@ const HeroMosaic = () => (
 const GettingStartedSection = ({ handleNavClick }) => (
   <section id="getting-started" className="surface p-8 md:p-10">
     <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Step 0 · Setup</span>
-    <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-ink-900">Getting Started</h2>
+    <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Getting Started</h2>
 
     <div className="mt-5 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
       <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
@@ -753,7 +785,7 @@ const GettingStartedSection = ({ handleNavClick }) => (
     {/* System requirements */}
     <div className="mt-10">
       <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Requirements</span>
-      <h3 className="mt-3 text-2xl font-semibold tracking-tight text-ink-900">System Requirements</h3>
+      <h3 className="mt-3 text-2xl font-semibold tracking-[-0.025em] text-ink-900">System Requirements</h3>
     </div>
     <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
       <div className="rounded-xl border border-ink-200 bg-white p-4 flex items-start gap-3">
@@ -830,7 +862,7 @@ const GettingStartedSection = ({ handleNavClick }) => (
     <div className="mt-12 flex items-center gap-3">
       <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Environments</span>
     </div>
-    <h3 className="mt-3 text-2xl font-semibold tracking-tight text-ink-900">
+    <h3 className="mt-3 text-2xl font-semibold tracking-[-0.025em] text-ink-900">
       Choose how to run FERAL
     </h3>
 
@@ -1192,7 +1224,7 @@ if __name__ == "__main__":
             return (
             <section id="video-preparation" className="surface p-8 md:p-10">
                 <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Step 1 · Data prep</span>
-                <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-ink-900">Video Preparation</h2>
+                <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Video Preparation</h2>
 
                 <p className="text-gray-700 leading-relaxed mb-6">
                   Re-encoding is built into the <code className="bg-gray-100 px-1 py-0.5 rounded">feral</code>
@@ -1368,7 +1400,7 @@ if __name__ == "__main__":
             className="surface p-8 md:p-10"
             >
             <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Step 2 · Data prep</span>
-            <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-ink-900">Label Preparation</h2>
+            <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Label Preparation</h2>
                 <p className="text-gray-700 leading-relaxed mb-4">
                     You need to structure your labels as a JSON file with a specific format. Here is an example of such file
                 </p>
@@ -1811,7 +1843,7 @@ print("Saved JSON:", outpath)
   return (
     <section id="running-feral" className="surface p-8 md:p-10">
       <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Step 3 · Train &amp; infer</span>
-      <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-ink-900">Running FERAL</h2>
+      <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Running FERAL</h2>
 
       <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md p-3 mt-3">
         <strong>Important:</strong> FERAL uses large video models. For smooth training we recommend
@@ -2186,7 +2218,7 @@ print("Saved JSON:", outpath)
         const ColabSection = () => (
   <section id="colab" className="surface p-8 md:p-10">
     <span className="pill bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-200">Recommended</span>
-    <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-ink-900">Run FERAL on Google Colab</h2>
+    <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Run FERAL on Google Colab</h2>
     <p className="mt-3 text-ink-700 leading-relaxed max-w-2xl">
       The easiest way to try FERAL is in your browser using our interactive Colab notebook —
       no installation, drivers, or environment setup.
@@ -2245,7 +2277,7 @@ print("Saved JSON:", outpath)
 const RunPodSection = () => (
   <section id="runpod" className="surface p-8 md:p-10">
     <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Cloud GPU</span>
-    <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-ink-900">Run FERAL on RunPod</h2>
+    <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Run FERAL on RunPod</h2>
     <p className="mt-3 text-ink-700 leading-relaxed max-w-2xl">
       Prefer a dedicated cloud GPU? FERAL runs end-to-end on
       <a href="https://www.runpod.io" target="_blank" rel="noopener noreferrer" className="link mx-1">RunPod</a>.
@@ -2706,7 +2738,7 @@ const RunPodSection = () => (
     return (
         <section id="dataset-validator" className="surface p-8 md:p-10">
             <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Tool</span>
-            <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-ink-900">Dataset Validator</h2>
+            <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Dataset Validator</h2>
             <p className="mt-3 text-ink-700 leading-relaxed max-w-2xl">
                 Upload your FERAL dataset JSON to validate its structure end-to-end and inspect dataset statistics.
                 The validator runs entirely in your browser — your file never leaves your machine.
@@ -3048,7 +3080,7 @@ const RunPodSection = () => (
                 <section id="examples" className="space-y-8">
                     <div className="surface p-8 md:p-10">
                         <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Reference</span>
-                        <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-ink-900">Example Datasets</h2>
+                        <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Example Datasets</h2>
                         <p className="mt-3 text-ink-700 leading-relaxed max-w-3xl">
                             FERAL has been applied across diverse datasets spanning single-animal, dyadic, and colony-scale
                             behaviors. Each example shows the dataset, the analysis setup, and the kind of segmentation FERAL produces.
@@ -3124,7 +3156,7 @@ const RunPodSection = () => (
                 <section id="contact" className="space-y-6">
                     <div className="surface p-8 md:p-10">
                         <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Contact</span>
-                        <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-ink-900">Get in touch</h2>
+                        <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Get in touch</h2>
                         <p className="mt-3 text-ink-700 leading-relaxed max-w-2xl">
                             Have questions about FERAL or need help with your data? Reach out directly, or open a thread on
                             <a href="https://github.com/Skovorp/feral/discussions" target="_blank" rel="noopener noreferrer" className="link ml-1">GitHub Discussions</a>
@@ -3267,7 +3299,7 @@ const RunPodSection = () => (
             return (
                 <section id="faq" className="surface p-8 md:p-10">
                     <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Reference</span>
-                    <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-ink-900">Frequently Asked Questions</h2>
+                    <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Frequently Asked Questions</h2>
                     <p className="mt-3 text-ink-600 max-w-2xl">Quick answers about installation, GPUs, label format, and tuning.</p>
                     <div className="mt-8 divide-y divide-ink-200/70">
                         {items.map((it, idx) => (
