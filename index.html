@@ -12,7 +12,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FERAL — Animal Behavior Segmentation</title>
+    <title>FERAL, Animal Behavior Segmentation</title>
     <meta name="description" content="FERAL is an open-source toolkit for supervised animal behavior segmentation. No pose estimation. Install with one pip command.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -83,6 +83,20 @@
         }
 
         html { scroll-behavior: smooth; }
+
+        /* Mobile: let long shell commands wrap instead of scrolling off-screen */
+        @media (max-width: 640px) {
+            pre, pre code {
+                white-space: pre-wrap;
+                word-break: break-all;
+            }
+            /* Make wide reference tables horizontally scrollable instead of overflowing the page */
+            table {
+                display: block;
+                overflow-x: auto;
+                max-width: 100%;
+            }
+        }
 
         body {
             font-family: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
@@ -257,6 +271,8 @@
     <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
 
+    <script src="./src/scripts/boris_to_feral.js"></script>
+
     <script type="text/babel">
         const { useState, useEffect } = React;
 
@@ -298,7 +314,6 @@
                                 />
                                 <div className="flex items-baseline gap-2">
                                     <span className="text-xl font-bold tracking-tight text-ink-900">FERAL</span>
-                                    <span className="hidden sm:inline text-xs uppercase tracking-widest font-medium text-ink-400">Docs</span>
                                 </div>
                             </button>
                         </div>
@@ -364,8 +379,6 @@
 
                                 <div className="sidebar-group-title pt-3">Run FERAL</div>
                                 <SidebarLink section="running-feral" current={activeSection} onClick={handleNavClick}>Running FERAL</SidebarLink>
-                                <SidebarLink section="colab" current={activeSection} onClick={handleNavClick}>Google Colab</SidebarLink>
-                                <SidebarLink section="runpod" current={activeSection} onClick={handleNavClick}>RunPod</SidebarLink>
 
                                 <div className="sidebar-group-title pt-3">Reference</div>
                                 <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</SidebarLink>
@@ -428,8 +441,6 @@
                             {activeSection === 'video-preparation' && <VideoPreparationSection />}
                             {activeSection === 'label-preparation' && <LabelPreparationSection handleNavClick={handleNavClick} />}
                             {activeSection === 'running-feral' && <RunningFeralSection handleNavClick={handleNavClick} />}
-                            {activeSection === 'colab' && <ColabSection />}
-                            {activeSection === 'runpod' && <RunPodSection />}
                             {activeSection === 'dataset-validator' && <DatasetValidatorSection />}
                             {activeSection === 'examples' && <ExamplesSection />}
                             {activeSection === 'contact' && <ContactSection />}
@@ -469,13 +480,13 @@
                                 <div>
                                     <h4 className="text-xs font-semibold text-white tracking-widest uppercase mb-3">Built at</h4>
                                     <div className="flex flex-wrap items-center gap-3">
-                                        <img src="src\images\rocke_logo.png" alt="The Rockefeller University" className="h-9 opacity-80 hover:opacity-100 transition bg-white rounded-md px-2 py-1" />
+                                        <img src="./src/images/rockefeller_logo.png" alt="The Rockefeller University" className="h-9 opacity-80 hover:opacity-100 transition bg-white rounded-md px-2 py-1" />
                                         <img src="src\images\HHMI_logo.png" alt="HHMI" className="h-9 opacity-90 hover:opacity-100 transition bg-white rounded-md px-2 py-1" />
                                     </div>
                                 </div>
                             </div>
                             <div className="pt-6 border-t border-ink-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-500">
-                                <p>&copy; {new Date().getFullYear()} FERAL — Skovorodnikov &amp; Razzauti, The Rockefeller University.</p>
+                                <p>&copy; {new Date().getFullYear()} FERAL, Skovorodnikov &amp; Razzauti, The Rockefeller University.</p>
                                 <p>
                                     <a href="/privacy-policy" className="hover:text-white transition mx-2">Privacy</a>·
                                     <a href="/terms-of-service" className="hover:text-white transition mx-2">Terms</a>
@@ -579,9 +590,9 @@ const HeroMosaic = () => (
         <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.16em] text-ink-500">
             <span className="w-1 h-1 rounded-full bg-accent-500"></span>
-            Open source · v0.3 · pip install feral
+            Open source · v0.3 
           </span>
-          <a
+          {/* <a
             href="https://www.biorxiv.org/content/10.1101/2025.11.16.688666v1"
             target="_blank"
             rel="noopener noreferrer"
@@ -589,7 +600,7 @@ const HeroMosaic = () => (
           >
             <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.4" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
             New · bioRxiv 2025
-          </a>
+          </a>*/}
         </div>
 
         <h1 className="mt-5 text-[2.6rem] sm:text-5xl md:text-[5.25rem] font-medium tracking-[-0.04em] leading-[1.02] text-ink-900">
@@ -598,10 +609,10 @@ const HeroMosaic = () => (
         </h1>
 
         <p className="mt-7 max-w-2xl text-[17px] text-ink-600 leading-[1.55]">
-          FERAL is an open-source toolkit that learns to label behaviors directly from your videos —
-          <span className="text-ink-900 font-medium"> no tracking, no pose estimation</span>. It pairs state-of-the-art
-          video models with a small, opinionated training pipeline so you can go from raw footage to
-          frame-level ethograms in one afternoon.
+          FERAL is an open-source toolkit that learns to label behaviors directly from videos 
+          <span className="text-ink-900 font-medium"> without pose estimation</span>. 
+          It fine-tunes the latest video-understanding models on your small set of manual labels, 
+          so you can go from raw footage to frame-level ethograms in one afternoon.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -613,38 +624,40 @@ const HeroMosaic = () => (
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </button>
           <a
-            href="https://www.biorxiv.org/content/10.1101/2025.11.16.688666v1"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white hover:bg-rose-50 text-ink-900 hover:text-rose-700 font-medium py-2.5 px-5 rounded-xl border border-ink-200 hover:border-rose-300 transition"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
-            Read the preprint
-          </a>
-          <a
-            href="https://colab.research.google.com/drive/1wPe7MX3IiY3zsFkeTzLzHgynrtj-wXFP?usp=sharing"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white hover:bg-ink-50 text-ink-900 font-medium py-2.5 px-5 rounded-xl border border-ink-200 transition"
-          >
-            <span className="text-base">🚀</span> Try on Colab
-          </a>
-          <a
             href="https://github.com/Skovorp/feral"
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-0 py-2.5 rounded-xl border border-ink-200 hover:border-amber-400 bg-white hover:bg-amber-50/60 text-ink-900 font-medium overflow-hidden transition"
           >
             <span className="flex items-center gap-2 px-4 border-r border-ink-200 group-hover:border-amber-300 transition">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4" aria-hidden="true">
                 <path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.438 9.8 8.205 11.39.6.113.82-.26.82-.577v-2.173c-3.338.726-4.033-1.61-4.033-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.746.083-.73.083-.73 1.205.085 1.84 1.238 1.84 1.238 1.07 1.835 2.808 1.305 3.495.998.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.333-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.125-.303-.54-1.523.115-3.176 0 0 1.005-.323 3.3 1.23a11.49 11.49 0 0 1 3-.403c1.02.005 2.045.137 3 .403 2.295-1.553 3.3-1.23 3.3-1.23.655 1.653.24 2.873.12 3.176.77.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.37.81 1.1.81 2.22v3.293c0 .32.22.694.825.576C20.565 22.295 24 17.795 24 12.5 24 5.87 18.63.5 12 .5z" />
               </svg>
               <span>Star on GitHub</span>
             </span>
-            <span className="flex items-center gap-1.5 px-4 text-amber-600">
+            <span className="flex items-center gap-1.5 px-4 text-amber-600" aria-hidden="true">
               <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path d="M10 1.5l2.61 5.29 5.84.85-4.22 4.12.99 5.81L10 14.83l-5.22 2.74.99-5.81L1.55 7.64l5.84-.85L10 1.5z"/></svg>
               <span className="text-sm">Star</span>
             </span>
+          </a>
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-ink-600">
+          <a
+            href="https://www.biorxiv.org/content/10.1101/2025.11.16.688666v1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-rose-700 underline decoration-ink-300 hover:decoration-rose-400 underline-offset-4 transition"
+          >
+            Read the preprint
+          </a>
+          <a
+            href="https://colab.research.google.com/drive/1wPe7MX3IiY3zsFkeTzLzHgynrtj-wXFP?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-ink-900 underline decoration-ink-300 hover:decoration-ink-500 underline-offset-4 transition"
+          >
+            Try on Colab
           </a>
         </div>
 
@@ -669,29 +682,36 @@ const HeroMosaic = () => (
     {/* Feature pills row */}
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div className="surface p-5">
-        <div className="w-9 h-9 rounded-xl bg-accent-50 ring-1 ring-accent-100 text-accent-700 grid place-items-center mb-3">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-9 h-9 rounded-xl bg-accent-50 ring-1 ring-accent-100 text-accent-700 grid place-items-center flex-shrink-0">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+          </div>
+          <h3 className="text-lg font-semibold text-ink-900">No pose estimation</h3>
         </div>
-        <h3 className="text-base font-semibold text-ink-900 mb-1">No pose, no tracking</h3>
-        <p className="text-sm text-ink-600 leading-relaxed">FERAL learns directly from raw pixels — works in cluttered, occluded, and multi-animal scenes.</p>
+        <p className="text-sm text-ink-600 leading-relaxed">FERAL learns directly from raw pixels. Works in cluttered, occluded, and multi-animal scenes.</p>
       </div>
       <div className="surface p-5">
-        <div className="w-9 h-9 rounded-xl bg-accent-50 ring-1 ring-accent-100 text-accent-700 grid place-items-center mb-3">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-9 h-9 rounded-xl bg-accent-50 ring-1 ring-accent-100 text-accent-700 grid place-items-center flex-shrink-0">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+          </div>
+          <h3 className="text-lg font-semibold text-ink-900">Just 3 commands</h3>
         </div>
-        <h3 className="text-base font-semibold text-ink-900 mb-1">3-command workflow</h3>
-        <p className="text-sm text-ink-600 leading-relaxed">Re-encode, train, infer. Interactive prompts handle Weights &amp; Biases logging — or skip it entirely.</p>
+        <p className="text-sm text-ink-600 leading-relaxed">Re-encode your videos, train, run infererence. Weights &amp; Biases logging out of the box</p>
       </div>
       <div className="surface p-5">
-        <div className="w-9 h-9 rounded-xl bg-accent-50 ring-1 ring-accent-100 text-accent-700 grid place-items-center mb-3">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-9 h-9 rounded-xl bg-accent-50 ring-1 ring-accent-100 text-accent-700 grid place-items-center flex-shrink-0">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+          </div>
+          <h3 className="text-lg font-semibold text-ink-900">Validated across species</h3>
         </div>
-        <h3 className="text-base font-semibold text-ink-900 mb-1">Validated across taxa</h3>
-        <p className="text-sm text-ink-600 leading-relaxed">Mice, ants, worms, and apes — single-animal to colony-scale. Beats prior SOTA on benchmarks.</p>
+        <p className="text-sm text-ink-600 leading-relaxed">Mice, ants, worms, apes, dolphins, zebras from single-animal to colony-scale. Beats prior SOTA on CalMS21</p>
       </div>
     </div>
 
     {/* About */}
+    {/*
     <div className="surface p-8 md:p-10">
       <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">About</span>
       <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-ink-900">Why FERAL exists</h2>
@@ -701,48 +721,49 @@ const HeroMosaic = () => (
           improving exponentially. To put that power in the hands of biologists who study behavior, we built FERAL.
         </p>
         <p>
-          FERAL — <em>Feature Extraction for Recognition of Animal Locomotion</em> — segments behaviors directly from
-          raw videos in a pipeline tailored for ethological research. This enables automated analysis in complex lab
-          and field recordings where earlier pose-based methods struggled. On existing benchmarks, it beats the
-          previous state of the art by a wide margin (more info coming soon).
+          FERAL (<em>Feature Extraction for Recognition of Animal Locomotion</em>) segments behaviors directly from
+          raw videos with latest video-understanding models. This enables automated behavior analysis in complex lab
+          and field recordings where earlier pose-based methods struggled. On Caltech Mouse behavior dataset (CALMs) 
+          we achieve state-of-the art performance (94.5 MaP).
         </p>
         <p>
-          You don't need keypoint tracking — just raw videos and labels. Reach out through
+          You don't need keypoint tracking, just raw videos and labels. Reach out through
           <button onClick={() => handleNavClick('contact')} className="link mx-1">Contact</button>
           or open a thread on
           <a href="https://github.com/Skovorp/feral/discussions" target="_blank" rel="noopener noreferrer" className="link ml-1">GitHub Discussions</a>.
         </p>
       </div>
     </div>
-
+     */}
+    
     {/* Acknowledgments */}
     <div className="surface p-8 md:p-10">
       <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Authors</span>
       <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-ink-900">Built at The Rockefeller University</h2>
-      <p className="mt-3 text-ink-600 max-w-2xl">A joint effort between the Data Science Platform and the Vosshall Laboratory.</p>
+      {/* <p className="mt-3 text-ink-600 max-w-2xl">A joint effort between the Data Science Platform and the Vosshall Laboratory.</p>*/}
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="group relative bg-gradient-to-br from-ink-50 to-white border border-ink-200 rounded-2xl p-6 transition hover:shadow-lifted hover:-translate-y-0.5">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-ink-900 text-white grid place-items-center text-sm font-semibold flex-shrink-0">PS</div>
             <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-ink-900 truncate">Peter Skovorodnikov</h4>
-              <p className="text-xs text-ink-500 uppercase tracking-wider mt-0.5">Lead Developer · Researcher</p>
-              <a href="mailto:peter.skovorodnikov@gmail.com" className="block mt-3 text-sm text-ink-700 hover:text-accent-700 transition truncate">peter.skovorodnikov@gmail.com</a>
+              <h4 className="font-semibold text-ink-900">Peter Skovorodnikov</h4>
+              <p className="text-xs text-ink-500 uppercase tracking-wider mt-0.5">Lead Developer</p>
+              <a href="mailto:peter.skovorodnikov@gmail.com" className="block mt-3 text-xs sm:text-sm text-ink-700 hover:text-accent-700 transition break-all">peter.skovorodnikov@gmail.com</a>
               <a href="https://aiml.rockefeller.edu/" target="_blank" rel="noopener noreferrer" className="block mt-1 text-xs text-ink-500 hover:text-ink-900 transition">Data Science Platform →</a>
             </div>
+            <img src="./src/images/peter.jpeg" alt="Peter Skovorodnikov" className="hidden sm:block w-12 h-12 rounded-xl object-cover flex-shrink-0" />
           </div>
         </div>
 
         <div className="group relative bg-gradient-to-br from-ink-50 to-white border border-ink-200 rounded-2xl p-6 transition hover:shadow-lifted hover:-translate-y-0.5">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-ink-900 text-white grid place-items-center text-sm font-semibold flex-shrink-0">JR</div>
             <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-ink-900 truncate">Jacopo Razzauti</h4>
-              <p className="text-xs text-ink-500 uppercase tracking-wider mt-0.5">Co-Developer · Researcher</p>
-              <a href="mailto:jacopo.razza@gmail.com" className="block mt-3 text-sm text-ink-700 hover:text-accent-700 transition truncate">jacopo.razza@gmail.com</a>
+              <h4 className="font-semibold text-ink-900">Jacopo Razzauti</h4>
+              <p className="text-xs text-ink-500 uppercase tracking-wider mt-0.5">Co-Developer</p>
+              <a href="mailto:jacopo.razza@gmail.com" className="block mt-3 text-xs sm:text-sm text-ink-700 hover:text-accent-700 transition break-all">jacopo.razza@gmail.com</a>
               <a href="https://www.rockefeller.edu/research/2355-vosshall-laboratory/" target="_blank" rel="noopener noreferrer" className="block mt-1 text-xs text-ink-500 hover:text-ink-900 transition">Vosshall Laboratory →</a>
             </div>
+            <img src="./src/images/jacopo.jpg" alt="Jacopo Razzauti" className="hidden sm:block w-12 h-12 rounded-xl object-cover flex-shrink-0" />
           </div>
         </div>
       </div>
@@ -796,9 +817,8 @@ const GettingStartedSection = ({ handleNavClick }) => (
     <div className="mt-5 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
       <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
       <div className="text-sm text-amber-900 leading-relaxed">
-        <strong>GPU requirement.</strong> FERAL uses large video models with bfloat16 + flash attention. You need an NVIDIA
-        GPU with <strong>Ampere architecture or newer</strong> (compute capability 8.0+) and ideally <strong>24&nbsp;GB VRAM</strong>.
-        V100 (Volta), T4 (Turing), and the free Google Colab T4 will <strong>not</strong> work. Supported: A100, H100, A10, L4, L40,
+        <strong>FERAL needs a modern NVIDIA GPU with 24&nbsp;GB VRAM</strong>. Ampere architecture or newer (compute capability 8.0+).
+        V100, T4, and the free Google Colab T4 will <strong>not</strong> work. Supported: A100, H100, L40,
         RTX&nbsp;3000/4000/5000 series, and newer.
       </div>
     </div>
@@ -806,8 +826,10 @@ const GettingStartedSection = ({ handleNavClick }) => (
     {/* High-level intro */}
     <p className="mt-6 text-ink-700 leading-relaxed max-w-3xl">
       To use FERAL you need (1) videos and (2) discrete behavior labels for
-      some of these videos. FERAL trains a deep learning model on the labels
-      you provide, evaluates it, and predicts labels for unannotated videos.
+      some of these videos. FERAL then trains a deep learning model to predict
+      behaviors that you have labeled. At the end, FERAL will automatically 
+      evaluate its accuracy using a hold-out set. Then you’ll be able to predict 
+      these behaviors on as many videos as you want using the model you trained!
     </p>
 
     {/* One-line install terminal */}
@@ -830,19 +852,19 @@ const GettingStartedSection = ({ handleNavClick }) => (
       <h3 className="mt-3 text-2xl font-semibold tracking-[-0.025em] text-ink-900">System Requirements</h3>
     </div>
     <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div className="rounded-xl border border-ink-200 bg-white p-4 flex items-start gap-3">
+      <div className="rounded-xl border border-ink-200 bg-white p-4 flex items-center gap-3">
         <span className="w-8 h-8 rounded-lg bg-ink-50 text-ink-700 grid place-items-center text-xs font-mono font-semibold flex-shrink-0">OS</span>
-        <div className="text-sm text-ink-700"><strong className="text-ink-900">Linux</strong> (officially supported). Windows isn't natively supported — see <a href="https://github.com/Skovorp/feral/issues/11" target="_blank" rel="noopener noreferrer" className="link">issue&nbsp;#11</a> for a community workaround. Mac untested.</div>
+        <div className="text-sm text-ink-700"><strong className="text-ink-900">Linux</strong> recommended. Windows should work too. Mac untested.</div>
       </div>
-      <div className="rounded-xl border border-ink-200 bg-white p-4 flex items-start gap-3">
+      <div className="rounded-xl border border-ink-200 bg-white p-4 flex items-center gap-3">
         <span className="w-8 h-8 rounded-lg bg-ink-50 text-ink-700 grid place-items-center text-xs font-mono font-semibold flex-shrink-0">PY</span>
         <div className="text-sm text-ink-700"><strong className="text-ink-900">Python 3.10+</strong></div>
       </div>
-      <div className="rounded-xl border border-ink-200 bg-white p-4 flex items-start gap-3">
+      <div className="rounded-xl border border-ink-200 bg-white p-4 flex items-center gap-3">
         <span className="w-8 h-8 rounded-lg bg-ink-50 text-ink-700 grid place-items-center text-xs font-mono font-semibold flex-shrink-0">PT</span>
         <div className="text-sm text-ink-700"><strong className="text-ink-900">PyTorch 2.4+</strong> with compatible CUDA</div>
       </div>
-      <div className="rounded-xl border border-ink-200 bg-white p-4 flex items-start gap-3">
+      <div className="rounded-xl border border-ink-200 bg-white p-4 flex items-center gap-3">
         <span className="w-8 h-8 rounded-lg bg-accent-50 text-accent-700 grid place-items-center text-xs font-mono font-semibold flex-shrink-0">GPU</span>
         <div className="text-sm text-ink-700"><strong className="text-ink-900">NVIDIA Ampere+</strong> (compute 8.0+), 24&nbsp;GB+ VRAM</div>
       </div>
@@ -850,7 +872,7 @@ const GettingStartedSection = ({ handleNavClick }) => (
     <p className="mt-3 text-xs text-ink-500 leading-relaxed">
       <strong>Windows note:</strong> Windows is not natively supported. The community workaround in
       <a href="https://github.com/Skovorp/feral/issues/11" target="_blank" rel="noopener noreferrer" className="link mx-1">issue&nbsp;#11</a>
-      uses <code>triton-windows</code> as a drop-in for <code>triton</code>; avoid PyTorch 2.8–2.9 on Windows because a
+      uses <code>triton-windows</code> as a drop-in for <code>triton</code>; avoid PyTorch 2.8 and 2.9 on Windows because a
       <code>torch.compile</code> bug crashes training (use 2.7 or 2.10+).
     </p>
 
@@ -858,7 +880,7 @@ const GettingStartedSection = ({ handleNavClick }) => (
       <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Workflow</span>
     </div>
     <p className="mt-3 text-ink-700 leading-relaxed">
-      FERAL workflow has <strong>3 stages</strong>:
+      Prepare your data in <strong>3 steps</strong>:
     </p>
 
     <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -913,18 +935,17 @@ const GettingStartedSection = ({ handleNavClick }) => (
       <div className="rounded-2xl border border-ink-200 bg-white p-6 flex flex-col">
         <div className="flex items-center gap-2 mb-3">
           <span className="pill bg-ink-900 text-white">Option A</span>
-          <span className="text-xs text-ink-500">Preferred</span>
         </div>
         <h4 className="font-semibold text-ink-900 text-lg">Local / HPC</h4>
         <p className="text-sm text-ink-600 mt-1 leading-relaxed">Best when you have your own GPU and command-line experience.</p>
-        <div className="mt-4 terminal">
+        {/* <div className="mt-4 terminal">
           <div className="terminal__bar"><span className="terminal__dot terminal__dot--r"></span><span className="terminal__dot terminal__dot--y"></span><span className="terminal__dot terminal__dot--g"></span><span className="ml-2">install</span></div>
           <div className="terminal__body"><div><span className="prompt">$</span> pip install feral</div></div>
-        </div>
+        </div>*/}
         <ul className="mt-4 space-y-1.5 text-sm text-ink-700">
           <li className="flex gap-2"><span className="text-accent-600">●</span> Bring your own CUDA + PyTorch (2.4+)</li>
           <li className="flex gap-2"><span className="text-accent-600">●</span> Data never leaves your machine</li>
-          <li className="flex gap-2"><span className="text-accent-600">●</span> Completely free</li>
+          <li className="flex gap-2"><span className="text-accent-600">●</span> Free </li>
           <li className="flex gap-2"><span className="text-amber-600">▲</span> Needs Ampere+ GPU, 24&nbsp;GB+ VRAM</li>
         </ul>
         <button onClick={() => handleNavClick("running-feral")} className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-ink-900 hover:bg-ink-800 text-white font-medium py-2 px-4 rounded-xl transition">
@@ -937,17 +958,17 @@ const GettingStartedSection = ({ handleNavClick }) => (
       <div className="rounded-2xl border-2 border-accent-400 bg-gradient-to-br from-accent-50 to-white p-6 flex flex-col shadow-glow-accent">
         <div className="flex items-center gap-2 mb-3">
           <span className="pill bg-accent-600 text-white">Option B</span>
-          <span className="text-xs text-accent-700 font-medium">Recommended</span>
         </div>
         <h4 className="font-semibold text-ink-900 text-lg">Google Colab</h4>
-        <p className="text-sm text-ink-600 mt-1 leading-relaxed">Run FERAL in your browser using our Colab notebook.</p>
+        <p className="text-sm text-ink-600 mt-1 leading-relaxed">Try FERAL in your browser using our Colab notebook.</p>
         <ul className="mt-4 space-y-1.5 text-sm text-ink-700">
-          <li className="flex gap-2"><span className="text-accent-600">●</span> Zero setup — open and run</li>
+          <li className="flex gap-2"><span className="text-accent-600">●</span> Zero setup</li>
           <li className="flex gap-2"><span className="text-accent-600">●</span> Use an A100 / L4 GPU</li>
-          <li className="flex gap-2"><span className="text-accent-600">●</span> Data stays in your Drive</li>
+          <li className="flex gap-2"><span className="text-accent-600">●</span> Integrated with your Drive</li>
           <li className="flex gap-2"><span className="text-amber-600">▲</span> Paid Colab Pro required</li>
+          <li className="flex gap-2"><span className="text-amber-600">▲</span> Runs longer than 8h might crash</li>
         </ul>
-        <button onClick={() => handleNavClick("colab")} className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-accent-600 hover:bg-accent-700 text-white font-medium py-2 px-4 rounded-xl transition">
+        <button onClick={() => handleNavClick("running-feral")} className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-accent-600 hover:bg-accent-700 text-white font-medium py-2 px-4 rounded-xl transition">
           Open Colab guide
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </button>
@@ -957,30 +978,29 @@ const GettingStartedSection = ({ handleNavClick }) => (
       <div className="rounded-2xl border border-ink-200 bg-white p-6 flex flex-col">
         <div className="flex items-center gap-2 mb-3">
           <span className="pill bg-ink-900 text-white">Option C</span>
-          <span className="text-xs text-ink-500">Cloud</span>
         </div>
-        <h4 className="font-semibold text-ink-900 text-lg">RunPod</h4>
+        <h4 className="font-semibold text-ink-900 text-lg">Cloud GPU (e.g. RunPod)</h4>
         <p className="text-sm text-ink-600 mt-1 leading-relaxed">Dedicated GPU server with full control. Best for large datasets.</p>
         <ul className="mt-4 space-y-1.5 text-sm text-ink-700">
           <li className="flex gap-2"><span className="text-accent-600">●</span> Long-running A100 / H100 pod</li>
           <li className="flex gap-2"><span className="text-accent-600">●</span> Persistent storage</li>
-          <li className="flex gap-2"><span className="text-accent-600">●</span> Pay-as-you-go</li>
-          <li className="flex gap-2"><span className="text-amber-600">▲</span> Slow to upload large data</li>
+          <li className="flex gap-2"><span className="text-amber-600">▲</span> Pay-as-you-go</li>
         </ul>
-        <button onClick={() => handleNavClick("runpod")} className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-ink-900 hover:bg-ink-800 text-white font-medium py-2 px-4 rounded-xl transition">
+        <button onClick={() => handleNavClick("running-feral")} className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-ink-900 hover:bg-ink-800 text-white font-medium py-2 px-4 rounded-xl transition">
           Run on RunPod
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </button>
       </div>
     </div>
 
-    {/* Bottom quick links */}
+    {/* Bottom quick links 
     <div className="mt-10 flex flex-wrap gap-2">
-      <button onClick={() => handleNavClick("video-preparation")} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-700 text-sm transition">📽️ Video Prep</button>
-      <button onClick={() => handleNavClick("label-preparation")} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-700 text-sm transition">🏷️ Label Prep</button>
-      <button onClick={() => handleNavClick("dataset-validator")} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-700 text-sm transition">🔍 Validator</button>
-      <button onClick={() => handleNavClick("running-feral")} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ink-900 hover:bg-ink-800 text-white text-sm transition">🚀 Run FERAL</button>
+      <button onClick={() => handleNavClick("video-preparation")} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-700 text-sm transition">Video Prep</button>
+      <button onClick={() => handleNavClick("label-preparation")} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-700 text-sm transition">Label Prep</button>
+      <button onClick={() => handleNavClick("dataset-validator")} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-700 text-sm transition">Validator</button>
+      <button onClick={() => handleNavClick("running-feral")} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ink-900 hover:bg-ink-800 text-white text-sm transition">Run FERAL</button>
     </div>
+    */}
 
   </section>
 );
@@ -1284,7 +1304,8 @@ if __name__ == "__main__":
 
                     <li>
                       Pick an <strong>empty</strong> output folder for the re-encoded videos
-                      (FERAL refuses to write into a non-empty directory to avoid clobbering files).
+                      (FERAL refuses to write into a non-empty directory to avoid clobbering files). 
+                      If the folder doesn't exist, we will create it automatically.
                     </li>
 
                     <li>
@@ -1319,78 +1340,9 @@ if __name__ == "__main__":
                     </table>
                   </div>
 
-                  <pre className="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 mb-6"><code>feral reencode ./raw_videos ./reencoded_videos -p 8 -s 384</code></pre>
+                  {/* <pre className="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 mb-6"><code>feral reencode ./raw_videos ./reencoded_videos -p 8 -s 384</code></pre>*/}
 
-                {/* Optional standalone script */}
-                <h3 className="text-2xl font-semibold text-gray-900 mt-8 mb-3">Standalone script (optional)</h3>
-                <p className="text-gray-700 leading-relaxed mb-3">
-                  Prefer not to install FERAL just to re-encode? You can run an equivalent standalone Python script
-                  that auto-installs FFmpeg if missing. Click below to view, copy, or download it.
-                </p>
-                <div className="mb-4">
-                    <button
-                        onClick={() => setIsCodeExpanded(!isCodeExpanded)}
-                        className="w-full flex items-center justify-between p-4 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg transition-colors duration-200"
-                    >
-                        <span className="font-medium text-gray-800">
-                            {isCodeExpanded ? '🔽 Hide Re-encoding Script' : '📝 Show Re-encoding Script'}
-                        </span>
-                        <svg
-                            className={`w-5 h-5 transform transition-transform duration-200 ${isCodeExpanded ? 'rotate-180' : ''}`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-
-                    {isCodeExpanded && (
-                        <div className="mt-4 border border-gray-300 rounded-lg overflow-hidden">
-                            {/* Action Buttons */}
-                            <div className="bg-gray-50 p-4 border-b border-gray-200 flex gap-3">
-                                <button
-                                    onClick={copyToClipboard}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                                        copySuccess
-                                            ? 'bg-green-500 text-white'
-                                            : 'bg-blue-500 hover:bg-blue-600 text-white'
-                                    }`}
-                                >
-                                    {copySuccess ? (
-                                        <>
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            Copied!
-                                        </>
-                                    ) : (
-                                        <>
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                            Copy Code
-                                        </>
-                                    )}
-                                </button>
-                                <button
-                                    onClick={downloadScript}
-                                    className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors duration-200"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    Download .py
-                                </button>
-                            </div>
-
-                            {/* Code Display */}
-                            <div className="bg-gray-900 p-4 text-sm font-mono overflow-x-auto text-green-400 max-h-96 overflow-y-auto">
-                                <pre><code>{reencodingScript}</code></pre>
-                            </div>
-                        </div>
-                    )}
-                </div>
+               
 
                   {/* What & why */}
                   <h3 className="text-2xl font-semibold text-gray-900 mt-8 mb-3">
@@ -1406,9 +1358,9 @@ if __name__ == "__main__":
                   </p>
 
                   <p className="text-gray-700 leading-relaxed mb-6">
-                    The model decodes videos at <strong>256&nbsp;×&nbsp;256&nbsp;px</strong> internally, so re-encoding to a
-                    smaller shortest-side (default <strong>512&nbsp;px</strong>) shrinks file size and speeds up data
-                    transfer to the cloud without throwing away signal. Aspect ratio is preserved.
+                    By default the model resizes videos to <strong>256&nbsp;×&nbsp;256&nbsp;px</strong> internally, so 
+                    during re-encoding we pre-downsize your videos (by default to <strong>512&nbsp;px</strong>). 
+                    This shrinks file size and speeds up data loading during training. Aspect ratio is preserved.
                   </p>
 
                   <p className="text-gray-700 leading-relaxed">
@@ -1436,7 +1388,21 @@ if __name__ == "__main__":
         };
 
         // LabelPreparationSection.jsx (or inline with your other sections)
-        const LabelPreparationSection = ({ handleNavClick }) => (
+        const LabelPreparationSection = ({ handleNavClick }) => {
+            const borisScript = window.BORIS_TO_FERAL_SCRIPT || '# Script not loaded';
+            const [borisCopied, setBorisCopied] = useState(false);
+
+            const copyBorisScript = async () => {
+                try {
+                    await navigator.clipboard.writeText(borisScript);
+                    setBorisCopied(true);
+                    setTimeout(() => setBorisCopied(false), 2000);
+                } catch (err) {
+                    console.error('Copy failed:', err);
+                }
+            };
+
+            return (
             <section
             id="label-preparation"
             className="surface p-8 md:p-10"
@@ -1492,7 +1458,7 @@ if __name__ == "__main__":
                 </p>
 <p className="text-gray-700 leading-relaxed mt-4 mb-2">
   For <strong>multi-label datasets</strong> (<code>is_multilabel: true</code>), each frame is represented by a
-  <strong>multi-hot vector</strong> (one entry per class, 0/1), not a single integer:
+   <strong>multi-hot vector</strong> (one entry per class, 0/1), not a single integer:
 </p>
 
 <div className="bg-ink-950 text-ink-100 p-4 rounded-xl text-[12.5px] font-mono overflow-x-auto border border-ink-800/50 leading-relaxed">
@@ -1531,9 +1497,9 @@ if __name__ == "__main__":
                             <strong>Required:</strong> Yes<br/>
                             <strong>Type:</strong> <code className="bg-gray-100 px-2 py-1 rounded text-sm">true</code> or <code className="bg-gray-100 px-2 py-1 rounded text-sm">false</code><br/>
                             <strong>Description:</strong> Set to <code className="bg-gray-100 px-2 py-1 rounded text-sm">false</code> if each frame
-                            has exactly one label (mutually exclusive classes — softmax + cross-entropy under the hood).
+                            has exactly one label (mutually exclusive classes, softmax + cross-entropy under the hood).
                             Set to <code className="bg-gray-100 px-2 py-1 rounded text-sm">true</code> if frames can carry several
-                            simultaneous behaviors (multi-hot vectors — sigmoid + BCE under the hood).
+                            simultaneous behaviors (multi-hot vectors, sigmoid + BCE under the hood).
                         </p>
                     </div>
 
@@ -1549,8 +1515,8 @@ if __name__ == "__main__":
                           <li>Keys must be <strong>strings</strong>, e.g. <code>"0"</code>, <code>"1"</code> (not raw integers).</li>
                           <li>Keys must be <strong>consecutive integers from <code>"0"</code> to <code>"N-1"</code></strong>. No gaps.</li>
                           <li>Values must be <strong>unique</strong>.</li>
-                          <li>Single-label: reserve <code>0</code> for a catch-all background class named <code>"other"</code>; class-averaged metrics automatically exclude it.</li>
-                          <li>Multi-label: no dedicated <code>"other"</code> class is needed — a frame of all zeros means &ldquo;no labeled behavior&rdquo;.</li>
+                          <li>Single-label: you can create a catch-all background class named <code>"other"</code>; class-averaged metrics automatically exclude it.</li>
+                          <li>Multi-label: no dedicated <code>"other"</code> class is needed, a frame of all zeros means &ldquo;no labeled behavior&rdquo;.</li>
                         </ul>
                     </div>
 
@@ -1562,15 +1528,14 @@ if __name__ == "__main__":
                           <strong>Allowed keys:</strong>
                       </p>
                       <ul className="list-disc list-inside text-gray-700 mt-1 ml-2 space-y-1 text-sm">
-                        <li><code>train</code> — videos used to update model weights.</li>
-                        <li><code>val</code> — videos used for in-loop validation and early-stop / EMA selection.</li>
-                        <li><code>test</code> — held-out videos scored at the end of training (optional).</li>
-                        <li><code>inference</code> — unannotated videos for the trained model to label (optional). These do <strong>not</strong> need entries in <code>labels</code>.</li>
+                        <li><code>train</code>, videos used to train the model</li>
+                        <li><code>val</code>, held-out videos evaluated after each training epoch</li>
+                        <li><code>test</code>, held-out videos scored at the end of training (optional)</li>
+                        <li><code>inference</code>, unannotated videos for the trained model to label (optional). These do <strong>not</strong> need entries in <code>labels</code>.</li>
                       </ul>
                       <p className="text-gray-700 leading-relaxed mt-2 text-sm">
-                        Any split can be omitted or empty. To run inference-only with a trained checkpoint, set
-                        <code className="bg-gray-100 px-1 py-0.5 rounded ml-1">train</code>/<code className="bg-gray-100 px-1 py-0.5 rounded">val</code>/<code className="bg-gray-100 px-1 py-0.5 rounded">test</code>
-                        &nbsp;to empty arrays and put your videos in <code>inference</code>.
+                        Any split can be omitted or empty. To run inference-only with a trained checkpoint use
+                        <code className="bg-gray-100 px-1 py-0.5 rounded ml-1">feral infer path/to/checkpoint path/to/video/folder</code>
                       </p>
                     </div>
 
@@ -1579,9 +1544,9 @@ if __name__ == "__main__":
                         <p className="text-gray-700 leading-relaxed">
                             <strong>Required:</strong> Yes (object; can be empty if you only run inference)<br/>
                             <strong>Single-label format:</strong>
-                            <code className="bg-gray-100 px-2 py-1 rounded text-sm ml-1">{'{ "video.mp4": [int, int, ...] }'}</code> — each element is a class ID in <code>[0, N-1]</code>.<br/>
+                            <code className="bg-gray-100 px-2 py-1 rounded text-sm ml-1">{'{ "video.mp4": [int, int, ...] }'}</code>, each element is a class ID in <code>[0, N-1]</code>.<br/>
                             <strong>Multi-label format:</strong>
-                            <code className="bg-gray-100 px-2 py-1 rounded text-sm ml-1">{'{ "video.mp4": [[0/1, ...], [0/1, ...], ...] }'}</code> — each frame is an array of length <code>N</code> with values 0 or 1.<br/>
+                            <code className="bg-gray-100 px-2 py-1 rounded text-sm ml-1">{'{ "video.mp4": [[0/1, ...], [0/1, ...], ...] }'}</code>, each frame is an array of length <code>N</code> with values 0 or 1.<br/>
                             <strong>Length:</strong> the array length for each video must equal the video's frame count exactly.
                         </p>
                     </div>
@@ -1613,10 +1578,10 @@ if __name__ == "__main__":
                     </p>
                   </div>
 
-                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">🔄 Converting Existing Annotations to FERAL Format</h3>
+                <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Converting Existing Annotations to FERAL Format</h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
                     FERAL doesn’t come with a built-in annotation interface. Instead, it integrates directly with the BORIS behavioral-annotation software. 
-                    If you use another tool, let us know and we’ll add support for it.
+                    Latest BORIS version can export labels directly in FERAL format. If you use another tool, let us know and we’ll add support for it.
                 </p>
 
                 <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-4">
@@ -1628,244 +1593,31 @@ if __name__ == "__main__":
 
                 <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-3">BORIS to JSON Conversion Script</h4>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                    Here's a conversion script for BORIS TSV files that produces the correct JSON structure:
+                    Currently BORIS plugin doesnt support multilabel behaviors. To export those or if you have an old BORIS version
+                    you can run this script manually. It will convert BORIS TSV files to a correct JSON structure.
                 </p>
 
-                <div className="bg-ink-950 text-ink-100 p-4 rounded-xl text-[12.5px] font-mono overflow-x-auto border border-ink-800/50 leading-relaxed">
-                    <div className="bg-ink-950 text-ink-100 p-4 rounded-xl text-[12.5px] font-mono overflow-x-auto border border-ink-800/50 leading-relaxed">
-  <pre><code>{`
-# ============================================
-# FERAL Unified Conversion Script
-# Handles BOTH single-label and multi-label BORIS exports
-# Supports TSV and CSV
-# No upload UI – reads from INPUT_PATH folder
-# ============================================
-
-import os, re, json, math
-import csv
-from pathlib import Path
-
-DEFAULT_FPS = 30.0
-
-# ---- ask the user once (single-label or multi-label) ----
-MODE = input("Are your labels MULTI-LABEL? (y/n): ").strip().lower()
-IS_MULTILABEL = (MODE == "y")
-
-# ---- user-defined input folder ----
-INPUT_PATH = "/path/to/your/boris_exports"   # ← edit this manually before running
-
-# ---- splitting parameters ----
-TRAIN_FRAC = 0.7
-VAL_FRAC   = 0.15
-TEST_FRAC  = 0.15
-SPLIT_STRATEGY = "fractions"   # or "all_train"
-
-# --------------------------------------------
-# Helpers
-# --------------------------------------------
-
-def _norm_name(s): return re.sub(r"\\s+", "_", str(s).strip().lower())
-
-def _safe_float(x):
-    try: return float(x)
-    except: return None
-
-def _read_table(path):
-    ext = path.suffix.lower()
-    delimiter = "\\t" if ext == ".tsv" else ","
-
-    with open(path, "r", encoding="utf-8", errors="ignore") as f:
-        reader = csv.reader(f, delimiter=delimiter)
-        rows = list(reader)
-
-    if not rows:
-        return [], []
-
-    header = [h.strip() for h in rows[0]]
-    data = []
-    for r in rows[1:]:
-        if not any(r): continue
-        if len(r) < len(header):
-            r = r + [""]*(len(header)-len(r))
-        data.append({header[i]: r[i].strip() for i in range(len(header))})
-    return header, data
-
-def _find_col(header, key):
-    key = key.lower()
-    for c in header:
-        if c.lower() == key: return c
-    for c in header:
-        if key in c.lower(): return c
-    return None
-
-def _extract_video_name(records, col_media, fallback):
-    for r in records:
-        p = r.get(col_media, "").strip()
-        if p:
-            name = Path(p).name
-            if "." not in name: name += ".mp4"
-            return name
-    return fallback + ".mp4"
-
-def _fps_total(records, col_fps, col_total, col_time):
-    fps, total = None, None
-    for r in records:
-        if fps is None:   fps   = _safe_float(r.get(col_fps, "")) if col_fps else None
-        if total is None: total = _safe_float(r.get(col_total,"")) if col_total else None
-    if not fps or fps <= 0: fps = DEFAULT_FPS
-    if not total or total <= 0:
-        mx = 0.0
-        for r in records:
-            t = _safe_float(r.get(col_time,""))
-            if t and t > mx: mx = t
-        total = mx
-    return fps, total
-
-def _collect_behaviors(tsv_paths):
-    beh = set()
-    for p in tsv_paths:
-        header, recs = _read_table(p)
-        col_b = _find_col(header, "behavior")
-        if not col_b: continue
-        for r in recs:
-            b = r.get(col_b, "").strip()
-            if b: beh.add(_norm_name(b))
-    return sorted(beh)
-
-# --------------------------------------------
-# Label filling logic
-# --------------------------------------------
-
-def _to_frame(t, fps, total_frames):
-    if t is None: return None
-    f = int(round(t * fps))
-    return max(0, min(f, total_frames))
-
-def _labels_single(records, fps, total_frames, col_t, col_b, col_s, beh_to_id):
-    labels = [0]*total_frames
-    active = {}
-
-    for r in records:
-        t = _safe_float(r.get(col_t,""))
-        b_raw = r.get(col_b,"").strip()
-        s = r.get(col_s,"").strip().upper() if col_s else ""
-        if not b_raw or t is None: continue
-
-        beh = _norm_name(b_raw)
-        cid = beh_to_id.get(beh, 0)
-        f = _to_frame(t, fps, total_frames)
-        if f is None: continue
-
-        if s == "START":
-            active[beh] = f
-        elif s == "STOP":
-            if beh in active:
-                a, b = active.pop(beh), f
-                a, b = min(a,b), max(a,b)
-                for ff in range(a, min(b,total_frames)):
-                    labels[ff] = cid
-        else:
-            ff = min(max(0,f), total_frames-1)
-            labels[ff] = cid
-
-    return labels
-
-def _labels_multi(records, fps, total_frames, col_t, col_b, col_s, beh_to_id, K):
-    labels = [[0]*K for _ in range(total_frames)]
-    active = {}
-
-    for r in records:
-        t = _safe_float(r.get(col_t,""))
-        b_raw = r.get(col_b,"").strip()
-        s = r.get(col_s,"").strip().upper() if col_s else ""
-        if not b_raw or t is None: continue
-
-        beh = _norm_name(b_raw)
-        if beh not in beh_to_id: continue
-        cid = beh_to_id[beh]
-        f = _to_frame(t, fps, total_frames)
-        if f is None: continue
-
-        if s == "START":
-            active[beh] = f
-        elif s == "STOP":
-            if beh in active:
-                a, b = active.pop(beh), f
-                a, b = min(a,b), max(a,b)
-                for ff in range(a, min(b,total_frames)):
-                    labels[ff][cid] = 1
-        else:
-            ff = min(max(0,f), total_frames-1)
-            labels[ff][cid] = 1
-
-    return labels
-
-# --------------------------------------------
-# Main conversion
-# --------------------------------------------
-
-tsv_files = sorted([p for p in Path(INPUT_PATH).iterdir()
-                    if p.suffix.lower() in (".tsv", ".csv")])
-
-if not tsv_files:
-    raise RuntimeError("No TSV/CSV files found in INPUT_PATH")
-
-behaviors = _collect_behaviors(tsv_files)
-if not behaviors:
-    raise RuntimeError("No behaviors found — check your files")
-
-beh_to_id = {b:i for i,b in enumerate(behaviors)}
-
-labels_json = {"is_multilabel": IS_MULTILABEL,
-               "class_names": {str(i): b for i,b in enumerate(behaviors)},
-               "labels": {},
-               "splits": {}}
-
-video_files = []
-
-for file in tsv_files:
-    header, recs = _read_table(file)
-    col_t   = _find_col(header, "time")
-    col_b   = _find_col(header, "behavior")
-    col_s   = _find_col(header, "status") or _find_col(header, "comment")
-    col_m   = _find_col(header, "media file path")
-    col_fps = _find_col(header, "fps")
-    col_len = _find_col(header, "total length")
-
-    name = _extract_video_name(recs, col_m, file.stem)
-    fps, total_sec = _fps_total(recs, col_fps, col_len, col_t)
-    total_frames = max(1, int(round(total_sec * fps)))
-
-    if IS_MULTILABEL:
-        L = _labels_multi(recs, fps, total_frames, col_t, col_b, col_s, beh_to_id, len(behaviors))
-    else:
-        L = _labels_single(recs, fps, total_frames, col_t, col_b, col_s, beh_to_id)
-
-    labels_json["labels"][name] = L
-    video_files.append(name)
-
-# ---- dataset splits ----
-n = len(video_files)
-n_train = max(1, int(n*TRAIN_FRAC))
-n_val   = int(n*VAL_FRAC)
-n_test  = n - n_train - n_val
-
-labels_json["splits"] = {
-    "train":     video_files[:n_train],
-    "val":       video_files[n_train:n_train+n_val],
-    "test":      video_files[n_train+n_val:],
-    "inference": video_files
-}
-
-# ---- save ----
-outpath = Path(INPUT_PATH)/"feral_behavioral_labels.json"
-with open(outpath, "w") as f:
-    json.dump(labels_json, f, indent=2)
-
-print("Saved JSON:", outpath)
-`}</code></pre>
-</div>
-
+                <div className="relative">
+                    <button
+                        onClick={copyBorisScript}
+                        className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-ink-800/80 hover:bg-ink-700 text-ink-100 text-xs font-medium border border-ink-700 transition"
+                        aria-label="Copy script"
+                    >
+                        {borisCopied ? (
+                            <>
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                Copied
+                            </>
+                        ) : (
+                            <>
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                Copy
+                            </>
+                        )}
+                    </button>
+                    <div className="bg-ink-950 text-ink-100 p-4 pr-20 rounded-xl text-[12.5px] font-mono overflow-x-auto border border-ink-800/50 leading-relaxed">
+                        <pre><code>{borisScript}</code></pre>
+                    </div>
                 </div>
 
                 <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
@@ -1876,8 +1628,9 @@ print("Saved JSON:", outpath)
                 </div>
 
             </section>
-        );
-  
+            );
+        };
+
 
  const RunningFeralSection = ({ handleNavClick }) => {
   const [isTransferExpanded, setIsTransferExpanded] = React.useState(false);
@@ -1887,68 +1640,57 @@ print("Saved JSON:", outpath)
       <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Step 3 · Train &amp; infer</span>
       <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Running FERAL</h2>
 
-      <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md p-3 mt-3">
-        <strong>Important:</strong> FERAL uses large video models. For smooth training we recommend
-        GPUs with at least <strong>24&nbsp;GB VRAM</strong> (e.g. A100 / RTX 4090 / RTX 6000). On
-        GPUs with less memory you will need to manually change the config to avoid CUDA out-of-memory errors.
-      </p>
+      <div className="mt-3 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
+        <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <div className="text-sm text-amber-900 leading-relaxed">
+          <strong>Hardware requirement.</strong> FERAL uses large video models. For smooth training we recommend GPUs with at least <strong>24&nbsp;GB VRAM</strong> (e.g. A100 / RTX 4090 / RTX 6000). On GPUs with less memory you will need to manually change the config to avoid CUDA out-of-memory errors.
+        </div>
+      </div>
 
-      {/* Option A: Google Colab */}
-      <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">
-        Option A: Google Colab (Recommended)
+      <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
+        Option A: Local or High Performance Cluster
       </h3>
       <p className="text-gray-700 leading-relaxed mb-3">
-        The easiest way to run FERAL is directly in your browser using our
-        <strong> interactive Google Colab notebook</strong>. This notebook is
-        <strong> fully self-contained</strong> and walks you through the full workflow:
+        Before you start, make sure your environment has at least:
       </p>
-      <ul className="list-disc list-inside text-gray-700 mb-3">
-        <li>💻 Zero setup — no local installation or dependency juggling</li>
-        <li>⚡ Uses a Colab GPU (we strongly recommend an <code>A100</code> if available)</li>
-        <li>💳 Requires a paid <strong>Colab Pro</strong> plan to access an A100/L4 — Colab Pro is <strong>no longer free for academics</strong></li>
-        <li>☁️ Your data can live in Google Drive and be accessed directly</li>
+      <ul className="list-disc list-inside text-gray-700 mb-4">
+        <li>Python 3.10</li>
+        <li>PyTorch 2.4.0</li>
+        <li>CUDA 12.4</li>
       </ul>
-
+      
       <p className="text-gray-700 leading-relaxed mb-3">
-        Inside the Colab, the main steps are:
+        You can try older versions, but we don&apos;t guarantee compatibility. Ensure that you
+        can access your video folder and the JSON file containing labels from the training job.
       </p>
-      <ol className="list-decimal list-inside text-gray-700 mb-4 space-y-1">
-        <li>
-          <strong>Video re-encoding:</strong> re-encode your raw videos to 256×256 H.264 MP4
-          (FERAL&apos;s expected input format).
-        </li>
-        <li>
-          <strong>Label conversion:</strong> convert BORIS TSV/CSV exports into a single
-          <code className="bg-gray-100 px-1 py-0.5 rounded ml-1">feral_behavioral_labels.json</code>{" "}
-          in the correct schema.
-        </li>
-        <li>
-          <strong>Training configuration:</strong> set how many videos and frames to use,
-          number of epochs, batch size, etc.
-        </li>
-        <li>
-          <strong>Training:</strong> launch a FERAL training run with logging to Weights &amp; Biases
-          (wandb) and periodic checkpoint saving in{" "}
-          <code className="bg-gray-100 px-1 py-0.5 rounded">feral/checkpoints/</code>.
-        </li>
-        <li>
-          <strong>Inference:</strong> optionally run a trained checkpoint on new videos using the
-          same JSON (see &quot;Using checkpoints for inference&quot; below).
-        </li>
-      </ol>
+
+      {/* Option B: Google Colab */}
+      <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">
+        Option B: Google Colab (Recommended)
+      </h3>
+      <p className="text-gray-700 leading-relaxed mb-4">
+        Run FERAL directly in your browser with our self-contained Colab notebook. No installation,
+        drivers, or environment setup, and your data can live in Google Drive.
+      </p>
+
+      <div className="mb-4 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
+        <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <div className="text-sm text-amber-900 leading-relaxed">
+          <strong>GPU requirement.</strong> Pick an <code>A100</code> or <code>L4</code> runtime in Colab.
+          The free T4 tier will <strong>not</strong> work with FERAL (no bfloat16 / flash-attention support).
+          Colab Pro is <strong>no longer free for academics</strong>.
+        </div>
+      </div>
 
       <a
         href="https://colab.research.google.com/drive/1wPe7MX3IiY3zsFkeTzLzHgynrtj-wXFP?usp=sharing"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition"
+        className="inline-flex items-center gap-2 bg-ink-900 hover:bg-ink-800 text-white font-medium py-2.5 px-5 rounded-xl shadow-soft hover:shadow-lifted transition"
       >
-        🚀 Launch FERAL in Colab
+        Launch FERAL in Colab
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
       </a>
-
-      <p className="text-sm text-gray-600 mt-3">
-        This method is ideal for most users and mirrors the behavior of local / cluster setups.
-      </p>
 
       {/* Colab runtime limits & downsampling */}
       <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2">
@@ -1956,79 +1698,54 @@ print("Saved JSON:", outpath)
       </h4>
       <p className="text-gray-700 leading-relaxed mb-2">
         Colab runtimes often reset after several hours. If training takes too long or crashes,
-        you can shorten runs by downsampling your dataset in the config cells:
+        you can shorten runs by downsampling your dataset. Just add <code className="bg-gray-100 px-1 py-0.5 rounded">--part_subsample 0.3</code> and
+        we'll randomly sample 30% of the chunks from all your videos. You can also add <code className="bg-gray-100 px-1 py-0.5 rounded">--subsample_keep_rare_threshold 0.03</code>
+        to keep all chunks with behaviors that are rarer than 3%.
       </p>
-      <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
-        <li>
-          <strong>Limit the number of videos</strong> used for training/validation (e.g., use only
-          a subset of videos while you prototype).
-        </li>
-        <li>
-          <strong>Subsample frames</strong> (e.g., analyze every N-th frame instead of all frames).
-        </li>
-        <li>
-          <strong>Cap maximum frames per video</strong> (truncate long recordings to a shorter
-          window for the first runs).
-        </li>
-        <li>
-          <strong>Reduce the number of epochs</strong> to get quicker “first-pass” models.</li>
-        <li>
-          <strong>Reduce batch size</strong> if you see CUDA out-of-memory errors.
-        </li>
-      </ul>
-      <p className="text-gray-700 leading-relaxed mb-6">
-        These options are exposed in the Colab configuration cells before training and are the
-        easiest way to keep Colab runs within the runtime and memory limits.
-      </p>
-
-      {/* Option B: Local / HPC */}
-      <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
-        Option B: Local or High Performance Cluster
-      </h3>
-      <p className="text-gray-700 leading-relaxed mb-3">
-        Each cluster is built differently. Before running FERAL, make sure your environment or
-        container has at least:
-      </p>
-      <ul className="list-disc list-inside text-gray-700 mb-4">
-        <li>Linux</li>
-        <li>Python 3.10</li>
-        <li>PyTorch 2.4.0</li>
-        <li>CUDA 12.4</li>
-      </ul>
-      <p className="text-gray-700 leading-relaxed mb-3">
-        We don’t currently support Windows natively, but you can try running FERAL on Windows by following 
-        the steps outlined in this <a href="https://github.com/Skovorp/feral/issues/11#issue-3769698588" 
-        className="text-blue-600 hover:underline" rel="noopener noreferrer"> issue</a>.
-      </p>
-      <p className="text-gray-700 leading-relaxed mb-3">
-        You can try newer/older versions, but we don&apos;t guarantee compatibility. Ensure that you
-        can access your video folder and the JSON file containing labels from the training job.
-      </p>
+      
 
       {/* Option C: RunPod */}
       <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
         Option C: Cloud Server on RunPod
       </h3>
       <p className="text-gray-700 leading-relaxed">
-        Prefer a dedicated GPU server? FERAL can run on
+        Any GPU cloud provider works for FERAL. We use
         <a
           href="https://www.runpod.io"
-          className="link ml-1"
+          target="_blank"
+          className="link mx-1"
           rel="noopener noreferrer"
         >
           RunPod
         </a>
-        . This option gives you full control of the environment and longer runtimes for large datasets.
+        because it&apos;s the easiest to spin up, with full control of the environment and long-running pods for large datasets.
       </p>
 
-      <ol className="list-decimal list-inside space-y-2 mt-3 text-gray-700">
+      <ul className="list-disc list-inside mt-4 space-y-2 text-sm text-gray-700">
+        <li>We suggest the <strong>H100 SXM</strong> GPU. Per-hour it&apos;s expensive, but it trains fastest. In our tests it&apos;s the most cost-efficient pick measured in <strong>$ / training run</strong>.</li>
+        <li>Use the <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">runpod-torch-v280</code> template (PyTorch&nbsp;2.8), which is what we run on.</li>
+      </ul>
+
+      <div className="mt-4 mb-2">
+        <a
+          href="https://console.runpod.io/deploy?type=GPU&gpu=H100+SXM&count=1&template=runpod-torch-v280"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 bg-ink-900 hover:bg-ink-800 text-white font-medium py-2.5 px-5 rounded-xl shadow-soft hover:shadow-lifted transition"
+        >
+          Deploy H100 + Torch&nbsp;2.8 template
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+      </div>
+
+      <ol className="list-decimal list-inside space-y-2 mt-4 text-gray-700">
         <li>
           Get a RunPod account with some credit, or contact us if you need access help.
         </li>
         <li>
           Go to{" "}
           <a
-            href="https://console.runpod.io/deploy?gpu=H100%20SXM&count=1&template=runpod-torch-v240"
+            href="https://console.runpod.io/deploy?type=GPU&gpu=H100+SXM&count=1&template=runpod-torch-v280"
             className="link"
             rel="noopener noreferrer"
           >
@@ -2056,7 +1773,7 @@ print("Saved JSON:", outpath)
           .
         </li>
         <li>
-          Transfer your videos and labels to the server (see transfer options below).
+          Transfer your videos and labels to the server ( we recommend trying gdown to download from google drive, or scp to upload directly from you machine (requires ssh setup), or use s3 compatible storage (industry standard, fast, but paid).
         </li>
       </ol>
 
@@ -2075,34 +1792,24 @@ print("Saved JSON:", outpath)
 
       <ul className="list-disc list-inside text-gray-700 mb-4">
         <li>
-          A folder containing all your <strong>re-encoded videos</strong> (256×256 <code>.mp4</code>{" "}
-          files from the Video Preparation step or Colab).
+          A folder containing all your <strong>re-encoded videos</strong>
         </li>
         <li>
           A single <code className="bg-gray-100 px-1 py-0.5 rounded">.json</code> file with your
-          frame-by-frame annotations in FERAL format (<code>class_names</code>,{" "}
-          <code>labels</code>, and <code>splits</code>).
+          frame-by-frame annotations in FERAL format.
         </li>
       </ul>
 
-      <p className="text-gray-700 leading-relaxed mb-4">
-        Place the JSON file <strong>in the same directory</strong> where the videos live, so FERAL
-        can find both the data and the labels.
-      </p>
+     
 
-      <div className="rounded-2xl border border-accent-200 bg-accent-50/60 p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="flex-1">
-          <p className="text-sm font-semibold text-accent-900">Confirm your JSON is valid</p>
-          <p className="text-sm text-accent-800/80 mt-0.5">Run it through the in-browser validator before launching a training run.</p>
-        </div>
-        <button
-          onClick={() => handleNavClick("dataset-validator")}
-          className="inline-flex items-center gap-2 bg-accent-600 hover:bg-accent-700 text-white font-medium py-2 px-4 rounded-xl transition flex-shrink-0"
-        >
-          🔍 Validate dataset
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-        </button>
-      </div>
+      <p className="text-sm text-ink-600 mb-3">Confirm your JSON is valid before launching a training run.</p>
+      <button
+        onClick={() => handleNavClick("dataset-validator")}
+        className="inline-flex items-center gap-2 bg-ink-900 hover:bg-ink-800 text-white font-medium py-2.5 px-5 rounded-xl shadow-soft hover:shadow-lifted transition mb-6"
+      >
+        Validate dataset
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </button>
 
       {/* Step 2: Start training */}
       <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
@@ -2110,8 +1817,7 @@ print("Saved JSON:", outpath)
       </h3>
 
       <p className="text-gray-700 leading-relaxed">
-        On Colab the notebook does this for you. On your own machine, RunPod, or an HPC cluster,
-        install the published package:
+        Just run this command. Note that this expects an already working pytorch installation
       </p>
 
       <pre className="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 mt-2"><code>pip install feral</code></pre>
@@ -2138,10 +1844,10 @@ print("Saved JSON:", outpath)
         FERAL will print an interactive prompt for Weights &amp; Biases logging:
       </p>
       <ul className="list-disc list-inside text-gray-700 mt-2 mb-4 space-y-1 text-sm">
-        <li><code className="bg-gray-100 px-1 py-0.5 rounded">open</code> — log to a shared community W&amp;B account (no setup, public).</li>
-        <li><code className="bg-gray-100 px-1 py-0.5 rounded">personal</code> — log to your own W&amp;B project (you'll be asked for a
+        <li><code className="bg-gray-100 px-1 py-0.5 rounded">open</code>, log to a shared community W&amp;B account (no setup, public).</li>
+        <li><code className="bg-gray-100 px-1 py-0.5 rounded">personal</code>, log to your own W&amp;B project (you'll be asked for a
           <a href="https://wandb.ai/authorize" target="_blank" rel="noopener noreferrer" className="link ml-1">W&amp;B API key</a> and project URL).</li>
-        <li><code className="bg-gray-100 px-1 py-0.5 rounded">skip</code> — no W&amp;B; metrics print to stdout. You still see per-epoch numbers.</li>
+        <li><code className="bg-gray-100 px-1 py-0.5 rounded">skip</code>, no W&amp;B; metrics print to stdout. You still see per-epoch numbers.</li>
       </ul>
 
       <h4 className="text-lg font-semibold text-gray-800 mt-4 mb-2">Useful flags for <code>feral train</code></h4>
@@ -2155,7 +1861,7 @@ print("Saved JSON:", outpath)
           </thead>
           <tbody className="text-gray-700">
             <tr className="border-b"><td className="px-4 py-2 font-mono">--checkpoint, -c PATH</td><td className="px-4 py-2">Resume / fine-tune from a saved checkpoint.</td></tr>
-            <tr className="border-b"><td className="px-4 py-2 font-mono">--part_subsample FLOAT</td><td className="px-4 py-2">Use a fraction (0–1) of training chunks. Useful for quick smoke tests on Colab.</td></tr>
+            <tr className="border-b"><td className="px-4 py-2 font-mono">--part_subsample FLOAT</td><td className="px-4 py-2">Use a fraction in (0-1) of training chunks. Useful for quick smoke tests on Colab.</td></tr>
             <tr className="border-b"><td className="px-4 py-2 font-mono">--subsample_keep_rare_threshold FLOAT</td><td className="px-4 py-2">When subsampling, keep all chunks containing classes whose frequency is below this threshold. Requires <code>--part_subsample</code>.</td></tr>
           </tbody>
         </table>
@@ -2179,7 +1885,7 @@ print("Saved JSON:", outpath)
         6. Inference on new videos
       </h3>
       <p className="text-gray-700 leading-relaxed mb-2">
-        Run a trained checkpoint on a folder of unlabeled videos — no labels JSON needed:
+        Run a trained checkpoint on a folder of unlabeled videos, no labels JSON needed:
       </p>
       <pre className="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 mb-3"><code>feral infer /path/to/checkpoint.pth /path/to/videos</code></pre>
       <p className="text-gray-700 leading-relaxed mb-2 text-sm">
@@ -2219,14 +1925,14 @@ print("Saved JSON:", outpath)
       <p className="text-gray-700 leading-relaxed">
         In Weights &amp; Biases, monitor:
         <br />
-        1. <strong>val_raster_plot / ema_val_raster_plot</strong> – raster of model predictions across validation videos.
+        1. <strong>val_raster_plot / ema_val_raster_plot</strong>: raster of model predictions across validation videos.
         <br />
-        2. <strong>ema_val_frame_level_map</strong> – main metric (Average Precision across classes, frame-level).
+        2. <strong>ema_val_frame_level_map</strong>: main metric (Average Precision across classes, frame-level).
         &lt;0.5 is weak, &gt;0.9 is strong.
         <br />
-        3. <strong>train_map / val_map / ema_val_map</strong> – batch-level Average Precision.
+        3. <strong>train_map / val_map / ema_val_map</strong>: batch-level Average Precision.
         <br />
-        4. <strong>train loss / val loss</strong> – should steadily go down. If train loss drops while val loss rises,
+        4. <strong>train loss / val loss</strong>: should steadily go down. If train loss drops while val loss rises,
         you're overfitting.
       </p>
 
@@ -2257,102 +1963,7 @@ print("Saved JSON:", outpath)
   );
 };
 
-        const ColabSection = () => (
-  <section id="colab" className="surface p-8 md:p-10">
-    <span className="pill bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-200">Recommended</span>
-    <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Run FERAL on Google Colab</h2>
-    <p className="mt-3 text-ink-700 leading-relaxed max-w-2xl">
-      The easiest way to try FERAL is in your browser using our interactive Colab notebook —
-      no installation, drivers, or environment setup.
-    </p>
 
-    <div className="mt-5 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
-      <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-      <div className="text-sm text-amber-900 leading-relaxed">
-        <strong>GPU requirement.</strong> Pick an <code>A100</code> or <code>L4</code> runtime in Colab.
-        The free T4 tier will <strong>not</strong> work with FERAL (no bfloat16 / flash-attention support).
-        Colab Pro is <strong>no longer free for academics</strong>.
-      </div>
-    </div>
-
-    <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-ink-700">
-      <li className="flex items-start gap-2"><span className="text-accent-600 mt-0.5">●</span> Zero-setup: open, connect, run.</li>
-      <li className="flex items-start gap-2"><span className="text-accent-600 mt-0.5">●</span> GPU accelerated (A100 / L4 recommended).</li>
-      <li className="flex items-start gap-2"><span className="text-accent-600 mt-0.5">●</span> Data stays in your Google Drive.</li>
-      <li className="flex items-start gap-2"><span className="text-amber-600 mt-0.5">▲</span> Paid Colab Pro required.</li>
-    </ul>
-
-    <div className="mt-7">
-      <a
-        href="https://colab.research.google.com/drive/1wPe7MX3IiY3zsFkeTzLzHgynrtj-wXFP?usp=sharing"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 bg-accent-600 hover:bg-accent-700 text-white font-medium py-2.5 px-5 rounded-xl shadow-soft hover:shadow-lifted transition"
-      >
-        🚀 Launch in Colab
-        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-      </a>
-    </div>
-
-    <p className="text-xs text-ink-500 mt-4 max-w-xl">
-      For most users this is the recommended path — training runs smoothly on modest datasets and reproduces identical
-      results to local or cloud-GPU setups.
-    </p>
-    <div className="mt-8 rounded-2xl border border-ink-200 bg-gradient-to-br from-ink-50 to-white p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-  <div>
-    <p className="text-sm font-semibold text-ink-900">Enjoying FERAL?</p>
-    <p className="text-sm text-ink-600">A GitHub star helps us support the research community.</p>
-  </div>
-  <a
-    href="https://github.com/Skovorp/feral"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-ink-900 hover:bg-ink-800 text-white text-sm font-medium transition flex-shrink-0"
-  >
-    <span>⭐</span> Star on GitHub
-  </a>
-</div>
-
-  </section>
-);
-
-const RunPodSection = () => (
-  <section id="runpod" className="surface p-8 md:p-10">
-    <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Cloud GPU</span>
-    <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Run FERAL on RunPod</h2>
-    <p className="mt-3 text-ink-700 leading-relaxed max-w-2xl">
-      Prefer a dedicated cloud GPU? FERAL runs end-to-end on
-      <a href="https://www.runpod.io" target="_blank" rel="noopener noreferrer" className="link mx-1">RunPod</a>.
-      Deployment takes about 5 minutes using their ready-made PyTorch template.
-    </p>
-
-    <ul className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm text-ink-700">
-      <li className="flex items-start gap-2"><span className="text-accent-600 mt-0.5">●</span> Full control over the environment</li>
-      <li className="flex items-start gap-2"><span className="text-accent-600 mt-0.5">●</span> Access to H100 / A100 / L40 GPUs</li>
-      <li className="flex items-start gap-2"><span className="text-accent-600 mt-0.5">●</span> Pay-as-you-go billing</li>
-    </ul>
-
-    <p className="mt-5 text-sm text-ink-600 max-w-2xl">
-      See the step-by-step guide in <button onClick={() => window.scrollTo({top:0, behavior:'smooth'})} className="link">Running FERAL → Option C</button> for the detailed walkthrough.
-    </p>
-
-    <div className="mt-8 rounded-2xl border border-ink-200 bg-gradient-to-br from-ink-50 to-white p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-  <div>
-    <p className="text-sm font-semibold text-ink-900">Enjoying FERAL?</p>
-    <p className="text-sm text-ink-600">A GitHub star helps us support the research community.</p>
-  </div>
-  <a
-    href="https://github.com/Skovorp/feral"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-ink-900 hover:bg-ink-800 text-white text-sm font-medium transition flex-shrink-0"
-  >
-    <span>⭐</span> Star on GitHub
-  </a>
-</div>
-
-  </section>
-);
 
  const DatasetValidatorSection = () => {
     const [file, setFile] = useState(null);
@@ -2386,7 +1997,7 @@ const RunPodSection = () => (
         const allowedTopKeys = new Set([...requiredKeys, 'description', 'version', 'comments']);
         Object.keys(data).forEach(k => {
             if (!allowedTopKeys.has(k)) {
-                warnings.push(`Unrecognized top-level key "${k}" — FERAL will ignore it.`);
+                warnings.push(`Unrecognized top-level key "${k}", FERAL will ignore it.`);
             }
         });
 
@@ -2501,10 +2112,10 @@ const RunPodSection = () => (
                 issues.push('All splits are empty or missing. Add at least one of train / val / test / inference.');
             }
             if (trainFiles.length === 0 && (valFiles.length > 0 || testFiles.length > 0)) {
-                warnings.push('"splits.train" is empty — FERAL will skip training and only evaluate / infer.');
+                warnings.push('"splits.train" is empty, FERAL will skip training and only evaluate / infer.');
             }
             if (trainFiles.length > 0 && valFiles.length === 0) {
-                warnings.push('"splits.val" is empty — you will have no validation curves or EMA selection during training.');
+                warnings.push('"splits.val" is empty, you will have no validation curves or EMA selection during training.');
             }
 
             // Duplicates within each split
@@ -2593,7 +2204,7 @@ const RunPodSection = () => (
                     frameCount: 0,
                     behaviorCounts: {},
                     classIdCounts: {},
-                    notes: split === 'inference' ? ['No labels (inference only — OK).'] : ['Missing labels.']
+                    notes: split === 'inference' ? ['No labels (inference only, OK).'] : ['Missing labels.']
                 };
                 return;
             }
@@ -2612,7 +2223,7 @@ const RunPodSection = () => (
                 return;
             }
             if (labelArray.length === 0) {
-                issues.push(`"labels.${fn}" is empty — must contain one entry per video frame.`);
+                issues.push(`"labels.${fn}" is empty, must contain one entry per video frame.`);
             }
 
             const frameCount = labelArray.length;
@@ -2783,7 +2394,7 @@ const RunPodSection = () => (
             <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Dataset Validator</h2>
             <p className="mt-3 text-ink-700 leading-relaxed max-w-2xl">
                 Upload your FERAL dataset JSON to validate its structure end-to-end and inspect dataset statistics.
-                The validator runs entirely in your browser — your file never leaves your machine.
+                The validator runs entirely in your browser, your file never leaves your machine.
             </p>
             <details className="mb-6 bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-700">
               <summary className="cursor-pointer font-medium">What does this validator check?</summary>
@@ -2814,23 +2425,27 @@ const RunPodSection = () => (
                 )}
             </div>
 
-            <button
-                onClick={validateDataset}
-                disabled={!file || isLoading}
-                className={`inline-flex items-center gap-2 bg-ink-900 hover:bg-ink-800 text-white font-medium py-2.5 px-5 rounded-xl shadow-soft hover:shadow-lifted transition ${(!file || isLoading) ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''}`}
-            >
-                {isLoading ? (
-                    <>
-                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3"/><path d="M22 12a10 10 0 01-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>
-                        Validating...
-                    </>
-                ) : (
-                    <>
-                        Validate Dataset
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </>
-                )}
-            </button>
+            {file ? (
+                <button
+                    onClick={validateDataset}
+                    disabled={isLoading}
+                    className={`inline-flex items-center gap-2 bg-ink-900 hover:bg-ink-800 text-white font-medium py-2.5 px-5 rounded-xl shadow-soft hover:shadow-lifted transition ${isLoading ? 'opacity-60 cursor-not-allowed pointer-events-none' : ''}`}
+                >
+                    {isLoading ? (
+                        <>
+                            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3"/><path d="M22 12a10 10 0 01-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>
+                            Validating...
+                        </>
+                    ) : (
+                        <>
+                            Validate Dataset
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </>
+                    )}
+                </button>
+            ) : (
+                <p className="text-sm text-ink-500">Choose a JSON file above to begin validation.</p>
+            )}
 
             {error && (
                 <div className="mt-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md" role="alert">
@@ -2930,7 +2545,7 @@ const RunPodSection = () => (
                         </div>
                     )}
 
-                    {/* Summary statistics — show even when there are issues, so users see partial info */}
+                    {/* Summary statistics, show even when there are issues, so users see partial info */}
                     {validationResult.metadata && (
                         <div className="space-y-6">
                             <div className="flex items-center justify-between flex-wrap gap-3">
@@ -3060,8 +2675,8 @@ const RunPodSection = () => (
                 {
                     emoji: "🐭",
                     title: "CalMS21",
-                    subtitle: "Resident–intruder mice",
-                    body: "Resident–intruder social interactions with rich behavior labels. FERAL learns directly from raw video and expert annotations to produce frame-level behavioral segmentation.",
+                    subtitle: "Resident-intruder mice",
+                    body: "Resident-intruder social interactions with rich behavior labels. FERAL learns directly from raw video and expert annotations to produce frame-level behavioral segmentation.",
                     media: "src/videos/calms_example.gif",
                     figure: null,
                     credit: (
@@ -3076,7 +2691,7 @@ const RunPodSection = () => (
                     emoji: "🪱",
                     title: "Worms",
                     subtitle: "C. elegans locomotor states",
-                    body: "Freely moving C. elegans performing four canonical locomotor behaviors: forward crawling, reverse crawling, turning, and pausing. Forward and reverse crawling look nearly identical frame-by-frame, so temporal context is essential — FERAL leverages overlapping chunk inference to disambiguate directionality.",
+                    body: "Freely moving C. elegans performing four canonical locomotor behaviors: forward crawling, reverse crawling, turning, and pausing. Forward and reverse crawling look nearly identical frame-by-frame, so temporal context is essential, FERAL leverages overlapping chunk inference to disambiguate directionality.",
                     media: "src/videos/worms_example.gif",
                     figure: "src/images/worms_figure.png",
                     credit: <span>Credits: Friedericke Buck.</span>,
@@ -3086,7 +2701,7 @@ const RunPodSection = () => (
                     emoji: "🐜",
                     title: "Ants",
                     subtitle: "Ooceraea biroi grooming",
-                    body: "Adult–larva interactions in the clonal raider ant Ooceraea biroi, recorded from the side at 10 fps. Self-grooming and allogrooming are challenging for pose pipelines because of occlusion and side-view geometry. FERAL identifies both directly from raw video.",
+                    body: "Adult-larva interactions in the clonal raider ant Ooceraea biroi, recorded from the side at 10 fps. Self-grooming and allogrooming are challenging for pose pipelines because of occlusion and side-view geometry. FERAL identifies both directly from raw video.",
                     media: "src/videos/ants_example.gif",
                     figure: "src/images/ants_figure.png",
                     credit: <span>Credits: Janet Zhao &amp; Dominic Frank.</span>,
@@ -3136,7 +2751,6 @@ const RunPodSection = () => (
                                     <div className="relative aspect-video bg-ink-950 overflow-hidden">
                                         <img src={ex.media} alt={`${ex.title} example`} className="absolute inset-0 w-full h-full object-contain" loading="lazy" />
                                         <div className="absolute top-3 left-3 inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-sm text-white text-xs">
-                                            <span>{ex.emoji}</span>
                                             <span>{ex.title}</span>
                                         </div>
                                     </div>
@@ -3144,7 +2758,7 @@ const RunPodSection = () => (
                                 <div className="p-6 flex-1 flex flex-col">
                                     {!ex.media && (
                                         <div className="mb-3 inline-flex items-center gap-2 text-xs uppercase tracking-wider text-ink-500">
-                                            <span className="text-base">{ex.emoji}</span>{ex.title}
+                                            {ex.title}
                                         </div>
                                     )}
                                     <h3 className="text-xl font-semibold text-ink-900 tracking-tight">{ex.title}</h3>
@@ -3248,20 +2862,20 @@ const RunPodSection = () => (
                                 <h3 className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-4">Maintainers</h3>
                                 <div className="space-y-3">
                                     <button onClick={() => sendDirectEmail('peter.skovorodnikov@gmail.com', 'Peter')} className="w-full text-left rounded-xl border border-ink-200 hover:border-accent-300 hover:bg-accent-50/40 transition p-4 flex items-start gap-3 group">
-                                        <div className="w-10 h-10 rounded-lg bg-ink-900 text-white grid place-items-center text-xs font-semibold flex-shrink-0">PS</div>
-                                        <div className="min-w-0">
+                                        <div className="flex-1 min-w-0">
                                             <p className="font-semibold text-ink-900">Peter Skovorodnikov</p>
                                             <p className="text-[11px] uppercase tracking-wider text-ink-500 mt-0.5">Lead developer</p>
                                             <p className="text-xs text-accent-700 mt-1.5 truncate group-hover:underline">peter.skovorodnikov@gmail.com</p>
                                         </div>
+                                        <img src="./src/images/peter.jpeg" alt="Peter Skovorodnikov" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
                                     </button>
                                     <button onClick={() => sendDirectEmail('jacopo.razza@gmail.com', 'Jacopo')} className="w-full text-left rounded-xl border border-ink-200 hover:border-accent-300 hover:bg-accent-50/40 transition p-4 flex items-start gap-3 group">
-                                        <div className="w-10 h-10 rounded-lg bg-ink-900 text-white grid place-items-center text-xs font-semibold flex-shrink-0">JR</div>
-                                        <div className="min-w-0">
+                                        <div className="flex-1 min-w-0">
                                             <p className="font-semibold text-ink-900">Jacopo Razzauti</p>
                                             <p className="text-[11px] uppercase tracking-wider text-ink-500 mt-0.5">Co-developer</p>
                                             <p className="text-xs text-accent-700 mt-1.5 truncate group-hover:underline">jacopo.razza@gmail.com</p>
                                         </div>
+                                        <img src="./src/images/jacopo.jpg" alt="Jacopo Razzauti" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
                                     </button>
                                 </div>
                             </div>
@@ -3269,7 +2883,7 @@ const RunPodSection = () => (
                             <div className="surface p-6">
                                 <h3 className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-3">Institution</h3>
                                 <div className="flex items-start gap-3">
-                                    <span className="text-xl">🏛️</span>
+                                    <svg className="w-5 h-5 mt-0.5 text-ink-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3l9 4.5M3 7.5l9-4.5m0 0v18m-9-13.5v13.5h18V7.5M6 21v-6m4 6v-6m4 6v-6m4 6v-6"/></svg>
                                     <div>
                                         <p className="font-semibold text-ink-900 text-sm">The Rockefeller University</p>
                                         <p className="text-xs text-ink-600 mt-1 leading-relaxed">
@@ -3307,7 +2921,7 @@ const RunPodSection = () => (
                 },
                 {
                     q: "What GPUs are supported?",
-                    a: <span>NVIDIA Ampere architecture or newer (compute capability 8.0+) with at least 24&nbsp;GB VRAM. That includes A100, H100, A10, L4, L40, RTX 3000/4000/5000 series, and newer. <strong>V100 (Volta) and T4 (Turing) — including the free Google Colab T4 — will not work</strong> because FERAL relies on bfloat16 and flash attention.</span>,
+                    a: <span>NVIDIA Ampere architecture or newer (compute capability 8.0+) with at least 24&nbsp;GB VRAM. That includes A100, H100, A10, L4, L40, RTX 3000/4000/5000 series, and newer. <strong>V100 (Volta) and T4 (Turing), including the free Google Colab T4, will not work</strong> because FERAL relies on bfloat16 and flash attention.</span>,
                 },
                 {
                     q: "What input video formats are supported?",
@@ -3315,11 +2929,11 @@ const RunPodSection = () => (
                 },
                 {
                     q: "Single-label or multi-label?",
-                    a: <span>Set <code>is_multilabel: false</code> when each frame has exactly one behavior (mutually exclusive — softmax). Set <code>is_multilabel: true</code> when frames can carry several simultaneous behaviors (multi-hot 0/1 vectors — sigmoid + BCE). The flag must match how your <code>labels</code> arrays are shaped; the validator will catch mismatches.</span>,
+                    a: <span>Set <code>is_multilabel: false</code> when each frame has exactly one behavior (mutually exclusive, softmax). Set <code>is_multilabel: true</code> when frames can carry several simultaneous behaviors (multi-hot 0/1 vectors, sigmoid + BCE). The flag must match how your <code>labels</code> arrays are shaped; the validator will catch mismatches.</span>,
                 },
                 {
                     q: "Do I need labels for inference videos?",
-                    a: <span>No. Videos listed under <code>splits.inference</code> do not need entries in <code>labels</code>. You can also run a trained checkpoint on any folder of videos with <code>feral infer CHECKPOINT VIDEO_FOLDER</code> — no JSON required.</span>,
+                    a: <span>No. Videos listed under <code>splits.inference</code> do not need entries in <code>labels</code>. You can also run a trained checkpoint on any folder of videos with <code>feral infer CHECKPOINT VIDEO_FOLDER</code>, no JSON required.</span>,
                 },
                 {
                     q: "Where are training results saved?",
@@ -3327,19 +2941,19 @@ const RunPodSection = () => (
                 },
                 {
                     q: "How do W&B logging options work?",
-                    a: <span><code>feral train</code> prompts you to choose: <code>open</code> (shared community W&amp;B project, no setup), <code>personal</code> (your own W&amp;B project — paste API key + project URL), or <code>skip</code> (metrics print to stdout only). For non-interactive runs, use <code>feral train-config CONFIG.yaml</code> with the W&amp;B key set in the YAML.</span>,
+                    a: <span><code>feral train</code> prompts you to choose: <code>open</code> (shared community W&amp;B project, no setup), <code>personal</code> (your own W&amp;B project, paste API key + project URL), or <code>skip</code> (metrics print to stdout only). For non-interactive runs, use <code>feral train-config CONFIG.yaml</code> with the W&amp;B key set in the YAML.</span>,
                 },
                 {
-                    q: "I'm running out of GPU memory — what can I tune?",
-                    a: <span>Lower <code>training.train_bs</code> / <code>training.val_bs</code> in the config, reduce <code>data.chunk_length</code>, or set <code>training.compile: false</code>. On Colab, you can also pass <code>--part_subsample 0.25</code> to <code>feral train</code> to use 25% of the chunks for a quick sanity-check run.</span>,
+                    q: "I'm running out of GPU memory, what can I tune?",
+                    a: <span>We&apos;re working on more memory-efficient versions of FERAL. For now, you have two knobs in the config: reduce the input image resolution, or drop the chunk length from <code>64</code> frames to <code>32</code> or <code>16</code></span>,
                 },
                 {
-                    q: "I'm on Windows — anything special?",
-                    a: <span>Windows isn't natively supported. The community has a working setup documented in <a href="https://github.com/Skovorp/feral/issues/11" target="_blank" rel="noopener noreferrer" className="link">issue&nbsp;#11</a> — it uses <code>triton-windows</code> as a drop-in for <code>triton</code>. Avoid PyTorch 2.8–2.9 on Windows because a <code>torch.compile</code> bug crashes training (<a href="https://github.com/pytorch/pytorch/issues/162430" target="_blank" rel="noopener noreferrer" className="link">pytorch#162430</a>); use 2.7 or 2.10+.</span>,
+                    q: "I'm on Windows, anything special?",
+                    a: <span>Yes, Windows is supported. On windows FERAL will automatically install <code>triton-windows</code> as a drop-in for <code>triton</code>. Avoid PyTorch 2.8 and 2.9 on Windows because of a <code>torch.compile</code> bug (<a href="https://github.com/pytorch/pytorch/issues/162430" target="_blank" rel="noopener noreferrer" className="link">pytorch#162430</a>); use 2.7 or 2.10+.</span>,
                 },
                 {
                     q: "What metrics should I track?",
-                    a: <span>The headline metric is <strong>ema_val_frame_level_map</strong> (Average Precision across classes, frame-level). &lt;0.5 is weak, &gt;0.9 is strong. Also watch <code>val_raster_plot</code>, <code>train_loss</code>/<code>val_loss</code>, and the EMA equivalents. EMA = exponential moving average of the weights (<code>ema = 0.999·ema + 0.001·weights</code>) — usually the EMA model generalizes better.</span>,
+                    a: <span>Watch <strong>mAP</strong> and <strong>F1</strong> on the <strong>val</strong> split. mAP &lt;&nbsp;0.5 is weak, &gt;&nbsp;0.9 is strong. FERAL also logs EMA versions of the metrics (computed on a smoothed copy of the weights), but EMA isn&apos;t necessarily better, compare both and pick whichever performs best on your val set.</span>,
                 },
             ];
             return (
