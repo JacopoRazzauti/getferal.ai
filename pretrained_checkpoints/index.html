@@ -111,14 +111,24 @@
             <section class="max-w-6xl mx-auto px-4 md:px-8 pt-14 pb-8">
                 <p class="text-xs font-semibold tracking-widest uppercase text-accent-600 mb-3">Pretrained checkpoints</p>
                 <h1 class="font-display text-4xl md:text-5xl text-ink-900 leading-tight">
-                    Run FERAL with <span class="display-rule">zero training</span>.
+                    A <span class="display-rule">starting point</span> for your own training.
                 </h1>
                 <p class="mt-4 text-ink-600 text-lg max-w-2xl leading-relaxed">
-                    Download a ready-to-run checkpoint and segment behavior straight from raw video.
-                    Each file embeds its full training config, class names, and multi-label flag — drop it
-                    into <code class="font-mono text-[13px] bg-ink-100 text-ink-800 px-1.5 py-0.5 rounded">feral infer</code> and go.
+                    These checkpoints were trained on the small example datasets below. They're meant as a
+                    starting point to fine-tune on your own videos, not finished off-the-shelf classifiers.
+                    Each file embeds its training config, class names, and multi-label flag, so you can pass
+                    one to <code class="font-mono text-[13px] bg-ink-100 text-ink-800 px-1.5 py-0.5 rounded">feral train</code> and continue from there.
                 </p>
-                <pre class="mt-6 bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 max-w-2xl"><code>feral infer ./ant_example.pt /path/to/videos</code></pre>
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-3xl">
+                    <div>
+                        <p class="text-xs font-semibold tracking-wider uppercase text-ink-400 mb-2">Run inference</p>
+                        <pre class="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50"><code>feral infer ./ant_example.pt ./your_videos</code></pre>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold tracking-wider uppercase text-ink-400 mb-2">Fine-tune from it</p>
+                        <pre class="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50"><code>feral train ./your_videos ./your_labels.json -c ./ant_example.pt</code></pre>
+                    </div>
+                </div>
             </section>
 
             <!-- Checkpoint cards -->
