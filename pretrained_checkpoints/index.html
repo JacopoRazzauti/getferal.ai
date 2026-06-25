@@ -119,21 +119,34 @@
                     Each file embeds its training config, class names, and multi-label flag, so you can pass
                     one to <code class="font-mono text-[13px] bg-ink-100 text-ink-800 px-1.5 py-0.5 rounded">feral train</code> and continue from there.
                 </p>
+
+                <!-- Two model sizes per dataset -->
+                <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-3xl">
+                    <div class="rounded-xl bg-white border border-ink-200 shadow-soft p-4">
+                        <p class="text-sm font-semibold text-ink-900">V-JEPA 2 · ViT-L</p>
+                        <p class="mt-1 text-sm text-ink-500 leading-relaxed">Our best results — the <span class="font-medium text-ink-700">max</span> run. Loads with the <span class="font-mono text-[12px] bg-ink-100 text-ink-800 px-1 py-0.5 rounded">default</span> config.</p>
+                    </div>
+                    <div class="rounded-xl bg-white border border-ink-200 shadow-soft p-4">
+                        <p class="text-sm font-semibold text-ink-900">V-JEPA 2.1 · 80M</p>
+                        <p class="mt-1 text-sm text-ink-500 leading-relaxed">Lighter backbone for limited GPUs. Loads with the <span class="font-mono text-[12px] bg-ink-100 text-ink-800 px-1 py-0.5 rounded">lite</span> config.</p>
+                    </div>
+                </div>
+
                 <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-3xl">
                     <div>
                         <p class="text-xs font-semibold tracking-wider uppercase text-ink-400 mb-2">Run inference</p>
-                        <pre class="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50"><code>feral infer ./ant_example.pt ./your_videos</code></pre>
+                        <pre class="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50"><code>feral infer ./checkpoint.pt ./your_videos</code></pre>
                     </div>
                     <div>
                         <p class="text-xs font-semibold tracking-wider uppercase text-ink-400 mb-2">Fine-tune from it</p>
-                        <pre class="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50"><code>feral train ./your_videos ./your_labels.json -c ./ant_example.pt</code></pre>
+                        <pre class="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50"><code>feral train ./your_videos ./your_labels.json -c ./checkpoint.pt</code></pre>
                     </div>
                 </div>
             </section>
 
             <!-- Checkpoint cards -->
             <section class="max-w-6xl mx-auto px-4 md:px-8 pb-16">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
                     <!-- Mice -->
                     <article class="flex flex-col rounded-2xl bg-white border border-ink-200 shadow-soft hover:shadow-lifted transition overflow-hidden">
@@ -148,30 +161,35 @@
                             <p class="text-sm text-ink-500 mb-4">Resident-intruder social interactions · CalMS21</p>
 
                             <h3 class="text-xs font-semibold tracking-widest uppercase text-ink-400 mb-2">Behaviors</h3>
-                            <div class="flex flex-wrap gap-2 mb-5">
+                            <div class="flex flex-wrap gap-2 mb-6">
                                 <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">attack</span>
                                 <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">investigation</span>
                                 <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">mount</span>
                                 <span class="px-2.5 py-1 rounded-full bg-ink-50 text-ink-500 text-xs font-medium border border-ink-200">other</span>
                             </div>
 
-                            <dl class="flex items-center gap-6 text-sm mb-6 mt-auto">
-                                <div>
-                                    <dt class="text-ink-400 text-xs uppercase tracking-wider">Size</dt>
-                                    <dd class="font-mono text-ink-800 font-medium">340 MB</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-ink-400 text-xs uppercase tracking-wider">Backbone</dt>
-                                    <dd class="font-mono text-ink-800 font-medium">V-JEPA 2</dd>
-                                </div>
-                            </dl>
-
-                            <a href="https://pub-4fb1a0edab25450ba18c14df6b416c24.r2.dev/mouse_example.pt"
-                               download
-                               class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white text-sm font-semibold transition shadow-soft hover:shadow-glow-accent">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
-                                <span>Download checkpoint</span>
-                            </a>
+                            <div class="mt-auto space-y-2.5">
+                                <a href="https://pub-4fb1a0edab25450ba18c14df6b416c24.r2.dev/calms/max/massive_spirited_okapi_best_checkpoint.pt"
+                                   download="calms_vjepa2_vitl.pt"
+                                   class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white transition shadow-soft hover:shadow-glow-accent">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+                                    <span class="flex-1 text-left leading-tight">
+                                        <span class="block text-sm font-semibold">V-JEPA 2 · ViT-L</span>
+                                        <span class="block text-[11px] text-white/60">Best (max) results</span>
+                                    </span>
+                                    <span class="font-mono text-xs text-white/70">1.2 GB</span>
+                                </a>
+                                <a href="https://pub-4fb1a0edab25450ba18c14df6b416c24.r2.dev/calms/lite/huge_spirited_yak_best_checkpoint.pt"
+                                   download="calms_vjepa2.1_80m.pt"
+                                   class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl bg-white border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-800 transition">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+                                    <span class="flex-1 text-left leading-tight">
+                                        <span class="block text-sm font-semibold">V-JEPA 2.1 · 80M</span>
+                                        <span class="block text-[11px] text-ink-400">Lite config</span>
+                                    </span>
+                                    <span class="font-mono text-xs text-ink-400">340 MB</span>
+                                </a>
+                            </div>
                         </div>
                     </article>
 
@@ -188,29 +206,85 @@
                             <p class="text-sm text-ink-500 mb-4">Adult–larva grooming · <em>Ooceraea biroi</em></p>
 
                             <h3 class="text-xs font-semibold tracking-widest uppercase text-ink-400 mb-2">Behaviors</h3>
-                            <div class="flex flex-wrap gap-2 mb-5">
+                            <div class="flex flex-wrap gap-2 mb-6">
                                 <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">self-grooming</span>
                                 <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">larvae-grooming</span>
                                 <span class="px-2.5 py-1 rounded-full bg-ink-50 text-ink-500 text-xs font-medium border border-ink-200">other</span>
                             </div>
 
-                            <dl class="flex items-center gap-6 text-sm mb-6 mt-auto">
-                                <div>
-                                    <dt class="text-ink-400 text-xs uppercase tracking-wider">Size</dt>
-                                    <dd class="font-mono text-ink-800 font-medium">340 MB</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-ink-400 text-xs uppercase tracking-wider">Backbone</dt>
-                                    <dd class="font-mono text-ink-800 font-medium">V-JEPA 2</dd>
-                                </div>
-                            </dl>
+                            <div class="mt-auto space-y-2.5">
+                                <a href="https://pub-4fb1a0edab25450ba18c14df6b416c24.r2.dev/ants_adult_larva/max/mega_elegant_armadillo_best_checkpoint.pt"
+                                   download="ants_adult_larva_vjepa2_vitl.pt"
+                                   class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white transition shadow-soft hover:shadow-glow-accent">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+                                    <span class="flex-1 text-left leading-tight">
+                                        <span class="block text-sm font-semibold">V-JEPA 2 · ViT-L</span>
+                                        <span class="block text-[11px] text-white/60">Best (max) results</span>
+                                    </span>
+                                    <span class="font-mono text-xs text-white/70">1.2 GB</span>
+                                </a>
+                                <a href="https://pub-4fb1a0edab25450ba18c14df6b416c24.r2.dev/ants_adult_larva/lite/massive_vibrant_manatee_best_checkpoint.pt"
+                                   download="ants_adult_larva_vjepa2.1_80m.pt"
+                                   class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl bg-white border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-800 transition">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+                                    <span class="flex-1 text-left leading-tight">
+                                        <span class="block text-sm font-semibold">V-JEPA 2.1 · 80M</span>
+                                        <span class="block text-[11px] text-ink-400">Lite config</span>
+                                    </span>
+                                    <span class="font-mono text-xs text-ink-400">340 MB</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
 
-                            <a href="https://pub-4fb1a0edab25450ba18c14df6b416c24.r2.dev/ant_example.pt"
-                               download
-                               class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white text-sm font-semibold transition shadow-soft hover:shadow-glow-accent">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
-                                <span>Download checkpoint</span>
-                            </a>
+                    <!-- Apes -->
+                    <article class="flex flex-col rounded-2xl bg-white border border-ink-200 shadow-soft hover:shadow-lifted transition overflow-hidden">
+                        <figure class="aspect-video bg-black flex items-center justify-center overflow-hidden">
+                            <img src="/src/videos/gorilla1.gif" alt="PanAf wild great-ape field recordings" class="w-full h-full object-contain" />
+                        </figure>
+                        <div class="flex flex-col flex-1 p-6">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-2xl" aria-hidden="true">🦍</span>
+                                <h2 class="text-xl font-bold tracking-tight text-ink-900">Apes</h2>
+                            </div>
+                            <p class="text-sm text-ink-500 mb-4">Wild great apes in the field · PanAf</p>
+
+                            <h3 class="text-xs font-semibold tracking-widest uppercase text-ink-400 mb-2">Behaviors</h3>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">walking</span>
+                                <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">standing</span>
+                                <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">sitting</span>
+                                <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">sitting-on-back</span>
+                                <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">running</span>
+                                <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">climbing-up</span>
+                                <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">climbing-down</span>
+                                <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">hanging</span>
+                                <span class="px-2.5 py-1 rounded-full bg-accent-50 text-accent-700 text-xs font-medium border border-accent-100">camera-interaction</span>
+                                <span class="px-2.5 py-1 rounded-full bg-ink-50 text-ink-500 text-xs font-medium border border-ink-200">background</span>
+                            </div>
+
+                            <div class="mt-auto space-y-2.5">
+                                <a href="https://pub-4fb1a0edab25450ba18c14df6b416c24.r2.dev/panaf500_min16/max/mega_sparkling_lynx_best_checkpoint.pt"
+                                   download="panaf_vjepa2_vitl.pt"
+                                   class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl bg-ink-900 hover:bg-ink-800 text-white transition shadow-soft hover:shadow-glow-accent">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+                                    <span class="flex-1 text-left leading-tight">
+                                        <span class="block text-sm font-semibold">V-JEPA 2 · ViT-L</span>
+                                        <span class="block text-[11px] text-white/60">Best (max) results</span>
+                                    </span>
+                                    <span class="font-mono text-xs text-white/70">1.2 GB</span>
+                                </a>
+                                <a href="https://pub-4fb1a0edab25450ba18c14df6b416c24.r2.dev/panaf500_min16/lite/colossal_dynamic_sloth_best_checkpoint.pt"
+                                   download="panaf_vjepa2.1_80m.pt"
+                                   class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl bg-white border border-ink-200 hover:border-ink-300 hover:bg-ink-50 text-ink-800 transition">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+                                    <span class="flex-1 text-left leading-tight">
+                                        <span class="block text-sm font-semibold">V-JEPA 2.1 · 80M</span>
+                                        <span class="block text-[11px] text-ink-400">Lite config</span>
+                                    </span>
+                                    <span class="font-mono text-xs text-ink-400">340 MB</span>
+                                </a>
+                            </div>
                         </div>
                     </article>
 
