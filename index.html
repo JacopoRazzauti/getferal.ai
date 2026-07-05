@@ -379,6 +379,8 @@
 
                                 <div className="sidebar-group-title pt-3">Run FERAL</div>
                                 <SidebarLink section="running-feral" current={activeSection} onClick={handleNavClick}>Running FERAL</SidebarLink>
+                                <SidebarLink section="config-docs" current={activeSection} onClick={handleNavClick}>Config documentation</SidebarLink>
+                                <SidebarLink section="api-docs" current={activeSection} onClick={handleNavClick}>API documentation</SidebarLink>
 
                                 <div className="sidebar-group-title pt-3">Reference</div>
                                 <SidebarLink section="examples" current={activeSection} onClick={handleNavClick}>Examples</SidebarLink>
@@ -441,6 +443,8 @@
                             {activeSection === 'video-preparation' && <VideoPreparationSection />}
                             {activeSection === 'label-preparation' && <LabelPreparationSection handleNavClick={handleNavClick} />}
                             {activeSection === 'running-feral' && <RunningFeralSection handleNavClick={handleNavClick} />}
+                            {activeSection === 'config-docs' && <ConfigDocsSection handleNavClick={handleNavClick} />}
+                            {activeSection === 'api-docs' && <ApiDocsSection handleNavClick={handleNavClick} />}
                             {activeSection === 'dataset-validator' && <DatasetValidatorSection />}
                             {activeSection === 'examples' && <ExamplesSection />}
                             {activeSection === 'contact' && <ContactSection />}
@@ -543,12 +547,23 @@ const HeroMosaic = () => (
 
     {/* ---------- ROW 2: Main Feature ---------- */}
     <div>
-      <figure className="overflow-hidden rounded-xl border border-gray-200 shadow-sm bg-black flex items-center justify-center">
+      <figure className="relative overflow-hidden rounded-xl border border-gray-200 shadow-sm bg-black flex items-center justify-center">
         <img
           src="src/images/camera_interaction.gif"
           alt="Example behavior"
           className="w-full h-full object-contain"
         />
+        <figcaption
+          className="absolute rounded-lg bg-black/60 text-white font-semibold tracking-wide backdrop-blur-sm"
+          style={{
+            top: "2.5%",
+            right: "2.5%",
+            fontSize: "clamp(0.9rem, 2.6vw, 2rem)",
+            padding: "0.4em 0.8em",
+          }}
+        >
+          Camera interaction
+        </figcaption>
       </figure>
     </div>
 
@@ -1964,6 +1979,312 @@ if __name__ == "__main__":
   );
 };
 
+
+// ===== Config documentation helpers =====
+const RiskPill = ({ level }) => (
+  level === 'high'
+    ? <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide bg-red-100 text-red-700 ring-1 ring-inset ring-red-200 whitespace-nowrap">High&#8209;risk</span>
+    : <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide bg-emerald-100 text-emerald-700 ring-1 ring-inset ring-emerald-200 whitespace-nowrap">Safe to tune</span>
+);
+
+const ParamRow = ({ name, def: defVal, level, children }) => (
+  <tr className={`border-b border-gray-100 align-top ${level === 'high' ? 'bg-red-50/40' : ''}`}>
+    <td className="px-4 py-3">
+      <div className="font-mono text-[13px] text-ink-900 break-words">{name}</div>
+      <div className="mt-1.5"><RiskPill level={level} /></div>
+    </td>
+    <td className="px-4 py-3 font-mono text-[12px] text-gray-500 whitespace-nowrap">{defVal}</td>
+    <td className="px-4 py-3 text-sm text-gray-700 leading-relaxed">{children}</td>
+  </tr>
+);
+
+const ParamTable = ({ children }) => (
+  <div className="overflow-x-auto mb-8 rounded-xl border border-gray-200">
+    <table className="w-full text-left min-w-[640px]">
+      <thead className="text-xs uppercase bg-gray-50 text-gray-500">
+        <tr>
+          <th className="px-4 py-2.5 font-medium w-40">Parameter</th>
+          <th className="px-4 py-2.5 font-medium">Default</th>
+          <th className="px-4 py-2.5 font-medium">What it does &amp; how to tune</th>
+        </tr>
+      </thead>
+      <tbody>{children}</tbody>
+    </table>
+  </div>
+);
+
+const ConfigDocsSection = ({ handleNavClick }) => (
+  <section id="config-docs" className="surface p-8 md:p-10">
+    <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Reference · Config parameters</span>
+    <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">Config documentation</h2>
+
+    <p className="text-gray-700 leading-relaxed mt-4">
+      Every FERAL run is driven by a config with the same schema as{" "}
+      <a href="https://github.com/Skovorp/feral/blob/main/feral/default_config.yaml" target="_blank" rel="noopener noreferrer" className="link"><code>feral/default_config.yaml</code></a>.
+      This page documents every parameter: what it does, its default, and how to change it for
+      what you&apos;re trying to do. Presets (<code className="bg-gray-100 px-1 py-0.5 rounded">--mode</code>) override a
+      handful of these for you, so most users never edit YAML by hand.
+    </p>
+
+    <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 rounded-2xl border border-gray-200 bg-gray-50/60 p-4 text-sm">
+      <div className="flex items-center gap-2"><RiskPill level="high" /><span className="text-gray-700">Wrong values crash the run or silently wreck accuracy. Change only if you know why.</span></div>
+      <div className="flex items-center gap-2"><RiskPill level="safe" /><span className="text-gray-700">Adjust freely to fit your dataset and hardware.</span></div>
+    </div>
+
+    <div className="mt-4 flex gap-3 rounded-2xl border border-sky-200 bg-sky-50/70 p-4">
+      <svg className="w-5 h-5 text-sky-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <div className="text-sm text-sky-900 leading-relaxed">
+        Checkpoints embed the full config they were trained with. <code className="bg-white/70 px-1 py-0.5 rounded">feral infer</code> reads
+        the data and model parameters (backbone, resolution, chunking, etc.) back from the checkpoint, so you don&apos;t re-specify them at inference.
+      </div>
+    </div>
+
+    {/* Presets */}
+    <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">Start here: presets (<code>--mode</code>)</h3>
+    <p className="text-gray-700 leading-relaxed mb-4">
+      A preset is a small overlay on the defaults. Pass it to{" "}
+      <code className="bg-gray-100 px-1 py-0.5 rounded">feral train --mode</code> (or{" "}
+      <code className="bg-gray-100 px-1 py-0.5 rounded">feral infer --mode</code>) instead of editing YAML.
+      Terms like EMA, mixup, and label smoothing are defined in the parameter tables below.
+    </p>
+    <div className="overflow-x-auto mb-6 rounded-xl border border-gray-200">
+      <table className="w-full text-left text-sm min-w-[640px]">
+        <thead className="text-xs uppercase bg-gray-50 text-gray-500">
+          <tr>
+            <th className="px-4 py-2.5 font-medium">Mode</th>
+            <th className="px-4 py-2.5 font-medium">What it changes</th>
+            <th className="px-4 py-2.5 font-medium">Use when</th>
+          </tr>
+        </thead>
+        <tbody className="text-gray-700">
+          <tr className="border-b border-gray-100 align-top">
+            <td className="px-4 py-3 font-mono text-[13px] text-ink-900">lite</td>
+            <td className="px-4 py-3">Smallest V-JEPA&nbsp;2.1 (ViT-B/384), full fine-tune, 50% chunk overlap, EMA off.</td>
+            <td className="px-4 py-3">You want the cheapest, fastest run — iterating, a small GPU, or a tight budget.</td>
+          </tr>
+          <tr className="border-b border-gray-100 align-top">
+            <td className="px-4 py-3 font-mono text-[13px] text-ink-900">max</td>
+            <td className="px-4 py-3">Default backbone; trains at 66% overlap, evaluates/infers at 80% overlap + 9-frame smoothing, EMA on.</td>
+            <td className="px-4 py-3">You want the strongest accuracy. This is the recipe that hits SOTA on CalMS21.</td>
+          </tr>
+          <tr className="align-top">
+            <td className="px-4 py-3 font-mono text-[13px] text-ink-900">rare</td>
+            <td className="px-4 py-3">ViT-B/384 full fine-tune; mixup and label smoothing off, grad-norm clip and class-weight cap on.</td>
+            <td className="px-4 py-3">A behavior is scarce and the model keeps ignoring it (rare-positive data).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p className="text-gray-700 leading-relaxed mt-10 text-sm">
+      The full parameter reference follows, grouped by where each key sits in the config.
+      <code>model:</code>, <code>data:</code>, and <code>training:</code> are nested blocks;
+      the <strong>Top-level</strong> and <strong>Augmentation &amp; EMA</strong> keys sit at the config root.
+    </p>
+
+    {/* Top-level */}
+    <h3 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Top-level</h3>
+    <ParamTable>
+      <ParamRow name="run_name" def="new_run" level="safe">Names the run. Used in checkpoint and answer filenames and as the W&amp;B run name. Cosmetic — set it to anything descriptive.</ParamRow>
+      <ParamRow name="backbone" def="vjepa2_vitl_diving48" level="high">The frozen video encoder the classifier is built on. Options span V-JEPA&nbsp;2 (<code>vjepa2_vitl_*</code>), V-JEPA&nbsp;2.1 (<code>vjepa2_1_vitb/l/g/gg_384</code>), and VideoPrism (<code>videoprism_v1_base/large</code>). Bigger is more accurate but far heavier — the giant/gigantic variants run out of memory (OOM) on a single 24&nbsp;GB GPU, and VideoPrism needs PyTorch&nbsp;≥&nbsp;2.5. Never swap this on an existing checkpoint: the head is trained for one encoder&apos;s feature space.</ParamRow>
+      <ParamRow name="predict_per_item" def="64" level="high">How many per-frame predictions the model emits per chunk. In every shipped config this equals <code>chunk_length</code>. Leave it at 64 unless you change <code>chunk_length</code> to match — a mismatch misaligns predictions with frames.</ParamRow>
+      <ParamRow name="seed" def="0" level="safe">RNG seed. Change it to get a different weight init and data order (e.g. to average several runs).</ParamRow>
+      <ParamRow name="device" def="cuda" level="high">Compute device. FERAL relies on bfloat16 + flash-attention, which need a modern NVIDIA GPU — keep this <code>cuda</code>. <code>cpu</code> and <code>mps</code> will not run.</ParamRow>
+      <ParamRow name="starting_checkpoint" def="null" level="safe">Path to a checkpoint to warm-start / fine-tune from (<code>null</code> = fresh head). Same as <code>--checkpoint</code> on the CLI.</ParamRow>
+      <ParamRow name="max_batches" def="null" level="safe">Cap on batches per epoch (<code>null</code> = no cap). Set something small like 5 for a quick smoke test.</ParamRow>
+      <ParamRow name="multilabel_threshold" def="0.85" level="safe">Probability cutoff for turning per-frame scores into positive labels on multi-label datasets. Affects exported labels and reported metrics only, not training. Lower to catch more positives, raise for precision.</ParamRow>
+    </ParamTable>
+
+    {/* model */}
+    <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3"><code>model:</code></h3>
+    <ParamTable>
+      <ParamRow name="fc_drop_rate" def="0.5" level="safe">Dropout on the classification head. Raise (0.6–0.7) if a small dataset overfits; lower toward 0.3 for large ones.</ParamRow>
+      <ParamRow name="class_weights" def="inv_freq_sqrt" level="safe">How class imbalance is handled in the loss. <code>inv_freq_sqrt</code> up-weights rare classes gently (inverse square-root frequency); <code>inv_freq</code> is the stronger 1/frequency; <code>null</code> disables weighting. Try <code>inv_freq</code> for very skewed data.</ParamRow>
+      <ParamRow name="freeze_encoder_layers" def="12" level="safe">How many backbone transformer blocks to freeze (only the rest + head train). More frozen = less VRAM and less overfit but a lower ceiling; <code>0</code> = full fine-tune. Presets range 0–12. This is the first parameter to reach for when trading memory against accuracy.</ParamRow>
+      <ParamRow name="gradient_checkpointing" def="false" level="safe">Recompute activations in the backward pass for a big VRAM cut at ~25–30% lower speed — enough to fit a ViT-L in ~9&nbsp;GB at batch size 4. V-JEPA only; it errors on VideoPrism backbones.</ParamRow>
+      <ParamRow name="max_class_weight" def="null" level="safe">Cap on any single class&apos;s weight so an ultra-rare class doesn&apos;t dominate the loss (<code>null</code> = no cap). Set e.g. 20 for very skewed data (the <code>rare</code> preset does).</ParamRow>
+    </ParamTable>
+
+    {/* data */}
+    <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3"><code>data:</code></h3>
+    <ParamTable>
+      <ParamRow name="chunk_length" def="64" level="high">Frames per chunk — the model&apos;s temporal window. Coupled to <code>predict_per_item</code> and to how the backbone was pretrained; 64 is the tested value. Changing it changes the token count (how many patches the transformer processes — more tokens means more compute and VRAM) and the label alignment, so keep <code>predict_per_item</code> equal to it.</ParamRow>
+      <ParamRow name="chunk_shift" def="32" level="safe">Stride between consecutive chunks. Overlap = 1&nbsp;−&nbsp;<code>chunk_shift</code>/<code>chunk_length</code> (32&nbsp;→&nbsp;50%, 16&nbsp;→&nbsp;75%). Smaller means more overlap: more training data and smoother labels, but slower. The <code>max</code> preset trains at 21 (66%).</ParamRow>
+      <ParamRow name="chunk_step" def="1" level="safe">Stride within a chunk — take every Nth frame, so the window spans <code>(chunk_length−1)·step+1</code> real frames. Raise to 2–3 to cover more time for slow behaviors at the same token cost; it effectively lowers the fps the model sees.</ParamRow>
+      <ParamRow name="eval_chunk_shift" def="null" level="safe">Chunk stride used only for val/test/inference (<code>null</code> = reuse <code>chunk_shift</code>). Lets you evaluate at a denser overlap than you trained — the <code>max</code> preset trains at 66% but evaluates at 80% (shift 12).</ParamRow>
+      <ParamRow name="eval_smoothing_window" def="null" level="safe">N-frame moving average over the per-frame probabilities (which are already averaged across overlapping chunks) at val/test/inference (<code>null</code> or 1 = off). Smooths jittery labels; 9 is the <code>max</code> value. Applied per class, never across a video boundary.</ParamRow>
+      <ParamRow name="resize_to" def="256" level="safe">Square input resolution (px) fed to the backbone. Higher = more spatial detail but quadratically more tokens and VRAM. Keep it a multiple of the patch size (16); backbones are native to 256, 288, or 384, and most example configs use 256 or 384. V-JEPA interpolates position embeddings when this differs from the backbone&apos;s native size (you just get a warning). Same as <code>--resolution</code>.</ParamRow>
+      <ParamRow name="resize_style" def="square" level="safe"><code>square</code> stretches frames to <code>resize_to</code>×<code>resize_to</code>; <code>rectangle</code> preserves aspect ratio with the short side at <code>resize_to</code>. Use <code>rectangle</code> if squashing distorts your animals.</ParamRow>
+      <ParamRow name="do_aa" def="true" level="safe">Anti-alias when downscaling frames. Leave on; turn off only to match a pipeline that didn&apos;t anti-alias.</ParamRow>
+      <ParamRow name="part_sample" def="1.0" level="safe">Fraction (0–1) of training chunks to keep — a random subsample. Use &lt;1.0 for fast smoke tests or Colab. Same as <code>--part_subsample</code>.</ParamRow>
+      <ParamRow name="subsample_keep_rare_threshold" def="null" level="safe">When subsampling, always keep chunks that contain any class rarer than this frequency, so you don&apos;t drop rare behaviors. Requires <code>part_sample</code>&nbsp;&lt;&nbsp;1.</ParamRow>
+    </ParamTable>
+
+    {/* training */}
+    <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3"><code>training:</code></h3>
+    <ParamTable>
+      <ParamRow name="epochs" def="10" level="safe">Passes over the training set. 10 is a solid default; raise for small datasets that underfit and watch val metrics for overfitting.</ParamRow>
+      <ParamRow name="train_bs" def="4" level="safe">Training batch size. The biggest lever on VRAM — drop to 2 or 1 if you OOM, raise if you have headroom. Retune <code>lr</code> if you change it a lot.</ParamRow>
+      <ParamRow name="val_bs" def="8" level="safe">Validation/inference batch size. No effect on the model; raise for speed until you OOM.</ParamRow>
+      <ParamRow name="num_workers" def="-1" level="safe">DataLoader worker processes. <code>-1</code> = auto (min(16, CPUs)); <code>0</code> = load in the main process (useful when debugging).</ParamRow>
+      <ParamRow name="part_warmup" def="0.2" level="safe">Fraction of total steps spent linearly warming the LR from 0. 0.2 = first 20%. Raise it for a very high LR or an unstable start.</ParamRow>
+      <ParamRow name="lr" def="4.0e-5" level="high">Peak learning rate for the AdamW optimizer. The single most sensitive parameter — too high diverges or collapses to one class, too low underfits. 4e-5 is tuned for the default fine-tune; move in 2× steps and scale with batch size.</ParamRow>
+      <ParamRow name="weight_decay" def="0.1" level="safe">AdamW weight decay (regularization). Raise toward 0.2 if overfitting, lower toward 0.05 if underfitting.</ParamRow>
+      <ParamRow name="label_smoothing" def="0.1" level="safe">Softens the hard 0/1 training labels to curb overconfidence. Helps most datasets; set 0 for rare-positive data where it hurts (the <code>rare</code> preset does).</ParamRow>
+      <ParamRow name="compile" def="true" level="safe"><code>torch.compile</code> for a large speedup. Safe to leave on; turn off if you hit a compiler/platform bug (see the README&apos;s Windows/torch notes) — training still works, just slower.</ParamRow>
+      <ParamRow name="patience" def="null" level="safe">Early-stopping patience in epochs (<code>null</code> = off). Set e.g. 3 to stop when val stops improving.</ParamRow>
+      <ParamRow name="grad_clip_norm" def="null" level="safe">Global gradient-norm clip (<code>null</code> = off). Set 1.0 to tame gradient spikes on rare-class runs (the <code>rare</code> preset does).</ParamRow>
+      <ParamRow name="log_grad_norm" def="true" level="safe">Log the global grad norm every step (cheap). Diagnostic only — leave on.</ParamRow>
+      <ParamRow name="heavy_log_every" def="null" level="safe">If set (e.g. 200), every N steps log per-layer grad/weight norms and loss histograms. Diagnostic; leave <code>null</code> for normal runs.</ParamRow>
+    </ParamTable>
+
+    {/* augmentation / EMA */}
+    <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">Augmentation &amp; EMA</h3>
+    <ParamTable>
+      <ParamRow name="mixup_alpha" def="0.8" level="safe">Strength of mixup augmentation on chunks (<code>null</code> = off). 0.8 is a good default; turn it off for rare-positive datasets where blending destroys the signal (the <code>rare</code> preset does).</ParamRow>
+      <ParamRow name="ema_decay" def="null" level="safe">Exponential moving average of weights, used for evaluation (<code>null</code> = off). 0.999 (the <code>max</code> preset) can lift final accuracy; leave off for short full fine-tunes.</ParamRow>
+    </ParamTable>
+
+    <div className="mt-8 rounded-2xl border border-gray-200 bg-gray-50/60 p-5">
+      <p className="text-sm text-gray-700 leading-relaxed">
+        Ready-to-edit configs for real datasets (CalMS21, ants, worms, MABe) live in{" "}
+        <a href="https://github.com/Skovorp/feral/tree/main/configs" target="_blank" rel="noopener noreferrer" className="link"><code>configs/</code></a> in the repo.
+        To run one, see{" "}
+        <button onClick={() => handleNavClick("api-docs")} className="link"><code>feral train-config</code> in the API reference</button>.
+      </p>
+    </div>
+  </section>
+);
+
+const ApiDocsSection = ({ handleNavClick }) => (
+  <section id="api-docs" className="surface p-8 md:p-10">
+    <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Reference · CLI &amp; Python API</span>
+    <h2 className="mt-3 text-3xl md:text-[2.5rem] font-semibold tracking-[-0.03em] text-ink-900">API documentation</h2>
+
+    <p className="text-gray-700 leading-relaxed mt-4">
+      FERAL exposes two interfaces: a command-line tool (<code className="bg-gray-100 px-1 py-0.5 rounded">feral ...</code>),
+      installed with the package, and a small Python API (<code className="bg-gray-100 px-1 py-0.5 rounded">import feral</code>)
+      for scripting. Both drive the same training and inference code. Parameter meanings are in the{" "}
+      <button onClick={() => handleNavClick("config-docs")} className="link">config documentation</button>.
+    </p>
+
+    {/* CLI */}
+    <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">Command-line interface</h3>
+
+    <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2"><code>feral reencode</code></h4>
+    <p className="text-gray-700 leading-relaxed mb-2 text-sm">Re-encode videos into a format that supports fast random frame access. Installs FFmpeg if it isn&apos;t found.</p>
+    <pre className="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 mb-3"><code>feral reencode INPUT_DIR OUTPUT_DIR [-p PROCESSES] [-s SMALLEST_SIDE]</code></pre>
+    <div className="overflow-x-auto mb-6 rounded-xl border border-gray-200">
+      <table className="w-full text-left text-sm min-w-[560px]">
+        <thead className="text-xs uppercase bg-gray-50 text-gray-500"><tr><th className="px-4 py-2.5 font-medium">Argument</th><th className="px-4 py-2.5 font-medium">Description</th></tr></thead>
+        <tbody className="text-gray-700">
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">INPUT_DIR</td><td className="px-4 py-2.5">Directory of input videos (must contain only videos).</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">OUTPUT_DIR</td><td className="px-4 py-2.5">Destination directory (must be empty or not yet exist).</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--processes, -p</td><td className="px-4 py-2.5">Parallel worker processes. Default 4.</td></tr>
+          <tr><td className="px-4 py-2.5 font-mono text-[13px]">--smallest-side, -s</td><td className="px-4 py-2.5">Downscale so the shortest side is at most this many px, preserving aspect ratio. Default 512.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2"><code>feral train</code></h4>
+    <p className="text-gray-700 leading-relaxed mb-2 text-sm">Interactive training from a video folder and a labels JSON. Prompts for W&amp;B logging unless you pass a flag.</p>
+    <pre className="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 mb-3"><code>feral train VIDEO_FOLDER LABELS_JSON [--mode lite|max|rare] [--resolution PX]
+           [--no-wandb] [--public-wandb] [-c CHECKPOINT]
+           [--part_subsample F] [--subsample_keep_rare_threshold F]
+           [--gradient-checkpointing]</code></pre>
+    <div className="overflow-x-auto mb-6 rounded-xl border border-gray-200">
+      <table className="w-full text-left text-sm min-w-[560px]">
+        <thead className="text-xs uppercase bg-gray-50 text-gray-500"><tr><th className="px-4 py-2.5 font-medium">Argument</th><th className="px-4 py-2.5 font-medium">Description</th></tr></thead>
+        <tbody className="text-gray-700">
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">VIDEO_FOLDER</td><td className="px-4 py-2.5">Folder of re-encoded training videos.</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">LABELS_JSON</td><td className="px-4 py-2.5">Path to your <code>labels.json</code> (see Label Preparation).</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--mode</td><td className="px-4 py-2.5">Apply a preset: <code>lite</code>, <code>max</code>, or <code>rare</code>. See the config docs.</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--resolution</td><td className="px-4 py-2.5">Square input resolution, e.g. 384. Overrides the backbone default.</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--no-wandb</td><td className="px-4 py-2.5">Skip Weights &amp; Biases; print metrics to stdout only (non-interactive).</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--public-wandb</td><td className="px-4 py-2.5">Log to the shared community W&amp;B account, no prompt (public).</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--checkpoint, -c</td><td className="px-4 py-2.5">Warm-start / fine-tune from a saved checkpoint.</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--part_subsample</td><td className="px-4 py-2.5">Keep a fraction (0–1) of training chunks. Good for quick tests.</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--subsample_keep_rare_threshold</td><td className="px-4 py-2.5">When subsampling, keep all chunks with classes below this frequency. Requires <code>--part_subsample</code>.</td></tr>
+          <tr><td className="px-4 py-2.5 font-mono text-[13px]">--gradient-checkpointing</td><td className="px-4 py-2.5">Trade speed for a big VRAM cut (V-JEPA only).</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2"><code>feral train-config</code></h4>
+    <p className="text-gray-700 leading-relaxed mb-2 text-sm">Non-interactive training from a YAML config — for HPC jobs, CI, or scripted sweeps. The config follows the schema in the <button onClick={() => handleNavClick("config-docs")} className="link">config documentation</button>; set <code>data.prefix</code> (video folder) and <code>data.label_json</code> inside it.</p>
+    <pre className="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 mb-6"><code>feral train-config path/to/config.yaml</code></pre>
+
+    <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2"><code>feral infer</code></h4>
+    <p className="text-gray-700 leading-relaxed mb-2 text-sm">Label a folder of unlabeled videos from a trained checkpoint. Data and model settings are read from the checkpoint, so no config or labels JSON is needed.</p>
+    <pre className="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 mb-3"><code>feral infer CHECKPOINT VIDEO_FOLDER [-o OUTPUT] [-b BATCH_SIZE]
+           [-w NUM_WORKERS] [--compile] [--mode lite|max] [--resolution PX]</code></pre>
+    <div className="overflow-x-auto mb-6 rounded-xl border border-gray-200">
+      <table className="w-full text-left text-sm min-w-[560px]">
+        <thead className="text-xs uppercase bg-gray-50 text-gray-500"><tr><th className="px-4 py-2.5 font-medium">Argument</th><th className="px-4 py-2.5 font-medium">Description</th></tr></thead>
+        <tbody className="text-gray-700">
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">CHECKPOINT</td><td className="px-4 py-2.5">Path to a checkpoint from <code>feral train</code> (under <code>checkpoints/</code>).</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">VIDEO_FOLDER</td><td className="px-4 py-2.5">Folder of videos to label.</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--output, -o</td><td className="px-4 py-2.5">Output JSON path. Default <code>inference_&lt;folder&gt;.json</code>.</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--batch_size, -b</td><td className="px-4 py-2.5">Batch size. Default 8.</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--num_workers, -w</td><td className="px-4 py-2.5">DataLoader workers. Default 4.</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--compile</td><td className="px-4 py-2.5">Compile the model with <code>torch.compile</code> (faster after warm-up).</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--mode</td><td className="px-4 py-2.5">Overlap preset — <code>lite</code> (50%, faster) or <code>max</code> (80% + smoothing). Model size stays as trained.</td></tr>
+          <tr><td className="px-4 py-2.5 font-mono text-[13px]">--resolution</td><td className="px-4 py-2.5">Override the square input resolution (default: as trained).</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    {/* Python API */}
+    <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">Python API</h3>
+    <p className="text-gray-700 leading-relaxed mb-3 text-sm">
+      <code className="bg-gray-100 px-1 py-0.5 rounded">import feral</code> exposes the public surface below. Imports are lazy —
+      heavy dependencies like torch load only when you touch a symbol that needs them, so <code>import feral</code> stays fast.
+    </p>
+    <div className="overflow-x-auto mb-6 rounded-xl border border-gray-200">
+      <table className="w-full text-left text-sm min-w-[640px]">
+        <thead className="text-xs uppercase bg-gray-50 text-gray-500"><tr><th className="px-4 py-2.5 font-medium">Symbol</th><th className="px-4 py-2.5 font-medium">Description</th></tr></thead>
+        <tbody className="text-gray-700">
+          <tr className="border-b border-gray-100 align-top"><td className="px-4 py-2.5 font-mono text-[12.5px]">run_training(cfg)</td><td className="px-4 py-2.5">Train from a config <em>dict</em> (same schema as <code>default_config.yaml</code>). Writes checkpoints to <code>checkpoints/</code> and predictions to <code>answers/</code>; returns <code>None</code>.</td></tr>
+          <tr className="border-b border-gray-100 align-top"><td className="px-4 py-2.5 font-mono text-[12.5px]">run_inference_folder(checkpoint_path, video_folder, output=None, batch_size=8, num_workers=4, compile=False, mode=None, resolution=None)</td><td className="px-4 py-2.5">Label every video in <code>video_folder</code> from a checkpoint and write a JSON of per-frame predictions.</td></tr>
+          <tr className="border-b border-gray-100 align-top"><td className="px-4 py-2.5 font-mono text-[12.5px]">apply_mode(cfg, mode)</td><td className="px-4 py-2.5">Return <code>cfg</code> deep-merged with a preset overlay (<code>"lite"</code>, <code>"max"</code>, <code>"rare"</code>). Non-mutating.</td></tr>
+          <tr className="border-b border-gray-100 align-top"><td className="px-4 py-2.5 font-mono text-[12.5px]">PRESETS</td><td className="px-4 py-2.5">Dict of the preset overlays, keyed by mode name.</td></tr>
+          <tr className="border-b border-gray-100 align-top"><td className="px-4 py-2.5 font-mono text-[12.5px]">BACKBONES</td><td className="px-4 py-2.5">Dict of available backbones → build spec (<code>source</code>, slug/hub name, <code>hidden_dim</code>, <code>img_size</code>).</td></tr>
+          <tr className="border-b border-gray-100 align-top"><td className="px-4 py-2.5 font-mono text-[12.5px]">FeralModel</td><td className="px-4 py-2.5">The <code>nn.Module</code>: frozen backbone + classification head.</td></tr>
+          <tr className="border-b border-gray-100 align-top"><td className="px-4 py-2.5 font-mono text-[12.5px]">ClsDataset</td><td className="px-4 py-2.5">The chunked-video <code>Dataset</code> used for training and evaluation.</td></tr>
+          <tr className="border-b border-gray-100 align-top"><td className="px-4 py-2.5 font-mono text-[12.5px]">validate_labels_json(labels_json, video_folder)</td><td className="px-4 py-2.5">Validate a labels dict against the video folder, raising clear errors on problems.</td></tr>
+          <tr className="align-top"><td className="px-4 py-2.5 font-mono text-[12.5px]">__version__</td><td className="px-4 py-2.5">Installed FERAL version string.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2">Example</h4>
+    <pre className="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 mb-3"><code>{`import yaml
+import feral
+
+# Load the packaged defaults, then apply the "lite" preset.
+with open("feral/default_config.yaml") as f:
+    cfg = yaml.safe_load(f)
+cfg = feral.apply_mode(cfg, "lite")
+
+# Point it at your data and name the run.
+cfg["data"]["prefix"] = "reencoded_videos/"
+cfg["data"]["label_json"] = "labels.json"
+cfg["run_name"] = "my_run"
+
+feral.run_training(cfg)   # writes checkpoints/my_run_best_checkpoint.pt
+
+# Label new videos with the trained checkpoint.
+feral.run_inference_folder(
+    "checkpoints/my_run_best_checkpoint.pt",
+    "new_videos/",
+    output="predictions.json",
+)`}</code></pre>
+    <p className="text-gray-700 leading-relaxed text-sm">
+      For the command-line equivalent of every step above, see{" "}
+      <button onClick={() => handleNavClick("running-feral")} className="link">Running FERAL</button>.
+    </p>
+  </section>
+);
 
 
  const DatasetValidatorSection = () => {
