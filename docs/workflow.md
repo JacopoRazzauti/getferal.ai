@@ -51,13 +51,13 @@ cfg = feral.apply_mode(feral.load_default_config(), "lite")
 cfg["data"].update(prefix="/path/to/videos", label_json="/path/to/labels.json")
 cfg["training"].update(epochs=1, compile=False)
 cfg["max_batches"] = None
-cfg["max_train_batches"] = 1
+cfg["max_train_batches"] = 2
 cfg["output_dir"] = "/path/to/runs/smoke"
 cfg.pop("wandb", None)
 feral.run_training(cfg)
 ```
 
-This limits training only; validation, test and inference still process their complete existing splits, so include that cost in the run budget. Do not use `max_batches` to truncate held-out evaluation. The training split must contain enough chunks for one full training batch (4 by default); do not alter held-out splits to make a smoke run fit. A smoke run checks execution, not model quality. Keep its outputs separate and remove the batch limit for the full run. Training is epoch-based: total time grows with the number of video chunks and epochs. Existing validation data selects checkpoints; without a validation split, the last epoch is saved. Do not select recipes on test scores.
+Two batches advance past the initial zero-learning-rate warmup step. This limits training only; validation, test and inference still process their complete existing splits, so include that cost in the run budget. Do not use `max_batches` to truncate held-out evaluation. The training split must contain enough chunks for one full training batch (4 by default); do not alter held-out splits to make a smoke run fit. A smoke run checks execution, not model quality. Keep its outputs separate and remove the batch limit for the full run. Training is epoch-based: total time grows with the number of video chunks and epochs. Existing validation data selects checkpoints; without a validation split, the last epoch is saved. Do not select recipes on test scores.
 
 For runs with `output_dir`, `run.json` records status (`running`, `completed`, or `failed`), the resolved recipe, label-file SHA-256 and canonical split SHA-256 (not video-content hashes), timestamps and absolute checkpoint/output paths. The output directory must be new or empty. Inspect `run.json`, the checkpoint under `checkpoints/`, and predictions under `answers/`. A terminated process can leave a `running` manifest; confirm the process exit and output files before declaring success. Check that inference covers every requested video, frame counts agree, probabilities are finite and within [0, 1], and representative ethograms look plausible. Report per-class results as well as averages when labels are available. `test_optimal/*` metrics and threshold-fitting rasters fit thresholds to the evaluated labels: they are oracle diagnostics, not unbiased test results. Report fixed-threshold test F1; select thresholds and recipes on validation data only.
 
