@@ -27,8 +27,7 @@ Table 8 reports the following **mAP (%)**:
 
 These values belong to that comparison; do not substitute a different headline result. `rare` is an additional code preset for rare classes (disables MixUp, label smoothing and EMA; adds gradient clipping and caps class weights). It is not a Table 8 benchmark winner. Choose it using training-label frequencies and validation evidence, not merely the species name.
 
-## Using public W&B experiments
 
-[Community runs](https://wandb.ai/sposiboh/feral_public) can suggest experiments. A high score alone is not a reusable recipe. Before borrowing a configuration, record its run URL, code revision if available, backbone/checkpoint, class mapping, dataset and split identity, resolution, epochs, batch sizes, overlap, augmentation, EMA, metric definition and compute. Exclude failed/incomplete runs and comparisons with incompatible splits or labels. Treat missing provenance as unknown, not a match.
+## Choosing a recipe
 
-Compare a small number of compatible recipes on the existing validation split and within the user's compute budget. Preserve the test split for final evaluation. Record the chosen configuration and observed runtime with the outputs. Published Tables 3 and 8 are the starting evidence; community experiments are candidate recipes until reproduced on your data.
+Use the published comparisons above as starting guidance. Keep the preset training batch size and learning rate together. Select changes using your existing validation split, preserve the test split for final evaluation, and record the recipe and observed runtime. Agents should use these compiled recommendations, not fetch individual W&B runs.

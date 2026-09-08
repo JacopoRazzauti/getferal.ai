@@ -9,7 +9,7 @@ The website is the documentation source. The workflow page marks unreleased CLI 
 - [Released CLI and Python API](https://www.getferal.ai/docs/reference.md): PyPI 1.0.0 commands and packaged configuration without browser execution.
 
 - [Run FERAL](https://www.getferal.ai/docs/workflow.md): labels schema, validation, local training, smoke checks and checkpoint-only inference.
-- [Hardware and recipes](https://www.getferal.ai/docs/hardware.md): measured GPU requirements, runtimes and recipe trade-offs from bioRxiv v2; how to assess public W&B runs.
+- [Hardware and recipes](https://www.getferal.ai/docs/hardware.md): measured GPU requirements, runtimes and recipe trade-offs from bioRxiv v2.
 - [Agent skill](https://www.getferal.ai/skills/feral-run/SKILL.md): execution guidance for an agent with videos, labels and authorized compute.
 - [Full website](https://www.getferal.ai/): installation, CLI and Python API reference.
 - [Source](https://github.com/Skovorp/feral): implementation, tests and releases.
