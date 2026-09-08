@@ -3,7 +3,7 @@ name: feral-run
 description: Train or run FERAL animal-behavior models from a user's videos and labels, choosing a hardware-compatible recipe and checking outputs. Use when an agent is asked to operate FERAL, including checkpoint-only inference.
 ---
 
-Read [the workflow](https://www.getferal.ai/docs/workflow.md) for the label schema and commands, and [hardware and recipes](https://www.getferal.ai/docs/hardware.md) when selecting compute or a preset. If working in the website checkout, use `docs/workflow.md` and `docs/hardware.md` at its root. For PyPI 1.0.0, use the [released reference](https://www.getferal.ai/docs/reference.md). Check the installed `feral --help`: some documented automation commands are unreleased source-checkout features, not PyPI 1.0.0.
+Read [the workflow](https://www.getferal.ai/docs/workflow.md) for the label schema and commands, and [hardware and recipes](https://www.getferal.ai/docs/hardware.md) when selecting compute or a preset. If working in the website checkout, use `docs/workflow.md` and `docs/hardware.md` at its root. For CLI and Python API usage, use the [reference](https://www.getferal.ai/docs/reference.md). Check the installed `feral --help` for supported commands; older installations may need an upgrade or the current source checkout.
 
 Use the supplied video folder, labels or checkpoint and available compute. Honor the user's existing scope and budget; do not upload videos, enable public logging, or rent additional compute without authorization. Local `--no-wandb` avoids prompts and external logging, but initial package/model downloads need network or a prepared cache.
 

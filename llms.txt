@@ -2,11 +2,11 @@
 
 > Supervised raw-video-to-frame-label toolkit for animal behavior. Runs on user-provided NVIDIA GPUs; annotations define the behavior vocabulary.
 
-The website is the documentation source. The workflow page marks unreleased CLI additions explicitly; inspect the installed version/help before using them.
+The website is the documentation source. Inspect the installed CLI help before using workflow commands.
 
 ## Documentation
 
-- [Released CLI and Python API](https://www.getferal.ai/docs/reference.md): PyPI 1.0.0 commands and packaged configuration without browser execution.
+- [Released CLI and Python API](https://www.getferal.ai/docs/reference.md): CLI commands and packaged configuration without browser execution.
 
 - [Run FERAL](https://www.getferal.ai/docs/workflow.md): labels schema, validation, local training, smoke checks and checkpoint-only inference.
 - [Hardware and recipes](https://www.getferal.ai/docs/hardware.md): measured GPU requirements, runtimes and recipe trade-offs from bioRxiv v2.

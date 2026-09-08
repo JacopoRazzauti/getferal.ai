@@ -1,6 +1,6 @@
-# Released CLI and Python API (1.0.0)
+# Released CLI and Python API
 
-Install with `python -m pip install feral==1.0.0` in a Python 3.10+ environment with a compatible CUDA-enabled PyTorch installation. The supported execution target is an NVIDIA Ampere-or-newer GPU; see [hardware](hardware.md). Native Windows is not a tested execution environment; use Linux/WSL2. The repository README lists the tested environment.
+Install with `python -m pip install feral` in a Python 3.10+ environment with a compatible CUDA-enabled PyTorch installation. The supported execution target is an NVIDIA Ampere-or-newer GPU; see [hardware](hardware.md). Native Windows is not a tested execution environment; use Linux/WSL2. The repository README lists the tested environment.
 
 ## Commands
 
@@ -18,7 +18,7 @@ Inference options include `--batch_size 8`, `--num_workers 4`, and `--mode lite`
 
 ## Python
 
-Version 1.0.0 exposes `run_training`, `run_inference_folder`, `apply_mode`, `validate_labels_json`, `BACKBONES`, `FeralModel`, and `ClsDataset`. Load internal defaults as a package resource, independent of the working directory:
+The Python API exposes `run_training`, `run_inference_folder`, `apply_mode`, `validate_labels_json`, `BACKBONES`, `FeralModel`, and `ClsDataset`. Load internal defaults as a package resource, independent of the working directory:
 
 ```python
 import json
@@ -46,4 +46,4 @@ feral.run_inference_folder(
 )
 ```
 
-The [automation workflow](workflow.md) documents additions in the unreleased checkout, including structured diagnostics and output manifests. Do not assume those commands exist in 1.0.0.
+The [automation workflow](workflow.md) covers structured diagnostics and output manifests. Check `feral --help` for availability in your installation.

@@ -4,7 +4,7 @@ FERAL learns predefined behaviors from frame labels. It produces per-frame class
 
 ## Install and check
 
-The examples below include **unreleased source-checkout features**: `doctor`, `validate`, `--output-dir`, `load_default_config`, and `max_train_batches`. They are not in PyPI 1.0.0. Install the checkout containing these changes with `python -m pip install -e /path/to/feral`, then check `feral --help`. For released commands, see [the released API reference](reference.md).
+These examples use `doctor`, `validate`, `--output-dir`, `load_default_config`, and `max_train_batches`. Check `feral --help` for support in your installation. If a command is missing, upgrade FERAL or install the current source checkout with `python -m pip install -e /path/to/feral`. See the [CLI and Python API reference](reference.md).
 
 Use an NVIDIA Ampere-or-newer GPU. CPU, Apple MPS, T4 and V100 are not supported for training/inference. See [hardware and recipes](hardware.md) before choosing a machine.
 
