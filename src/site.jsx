@@ -332,6 +332,45 @@ const HeroMosaic = () => (
 
 
 
+        const AgentCard = () => {
+            const [copyStatus, setCopyStatus] = useState('');
+            const url = 'https://getferal.ai/llms.txt';
+            const copyUrl = async () => {
+                try {
+                    await navigator.clipboard.writeText(url);
+                    setCopyStatus('Copied!');
+                } catch {
+                    setCopyStatus('Select the URL to copy it manually.');
+                }
+            };
+            return (
+                <div className="surface p-8 md:p-10">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+                        <div className="flex-1 min-w-0">
+                            <h2 className="text-3xl font-semibold tracking-[-0.03em] text-ink-900">FERAL is agent friendly!</h2>
+                            <p className="mt-3 text-ink-600 leading-relaxed">Your agent can help install FERAL, choose where to run it, prepare videos, validate labels, and select a training preset for your data and GPU. It can run training and inference, check results, and troubleshoot errors using our docs and dedicated skill.</p>
+                        </div>
+                        <div className="flex items-center gap-4 self-end sm:self-auto flex-shrink-0">
+                            <img src="/src/images/codex.png" alt="Codex" className="w-14 h-14 object-contain" />
+                            <img src="/src/images/clawd.svg" alt="Claude Code" className="w-16 h-14 object-contain" />
+                        </div>
+                    </div>
+                    <div className="mt-5 flex flex-col md:flex-row md:items-center gap-4">
+                    <p className="text-ink-900 flex-shrink-0"><strong>Just give your agent this:</strong></p>
+                    <div className="flex w-full md:flex-1 min-w-0 items-center gap-3 bg-ink-950 rounded-xl px-5 py-3 border border-ink-800/50">
+                        <span className="min-w-0 flex-1 font-mono text-sm text-accent-300 break-all select-all">{url}</span>
+                        <button type="button" onClick={copyUrl} className="flex-shrink-0 p-2 rounded-lg text-ink-400 hover:text-white hover:bg-white/10 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-300" aria-label="Copy FERAL llms.txt URL" title={copyStatus === 'Copied!' ? 'Copied!' : 'Copy URL'}>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
+                                {copyStatus === 'Copied!' ? <path strokeLinecap="round" strokeLinejoin="round" d="m5 12 4 4L19 6" /> : <><rect x="9" y="9" width="11" height="11" rx="2" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4" /></>}
+                            </svg>
+                        </button>
+                    </div>
+                    </div>
+                    <p role="status" className={copyStatus && copyStatus !== 'Copied!' ? 'text-sm text-ink-600 mt-2' : 'sr-only'}>{copyStatus}</p>
+                </div>
+            );
+        };
+
         // Content Sections
         const HomeSection = ({ handleNavClick }) => (
   <section id="home" className="space-y-10">
@@ -340,10 +379,6 @@ const HeroMosaic = () => (
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-400/60 to-transparent"></div>
       <div className="px-6 md:px-12 pt-12 md:pt-16 pb-12 md:pb-16">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.16em] text-ink-500">
-            <span className="w-1 h-1 rounded-full bg-accent-500"></span>
-            Open source · v1.0.0 
-          </span>
           {/* <a
             href="https://www.biorxiv.org/content/10.1101/2025.11.16.688666v2"
             target="_blank"
@@ -435,32 +470,25 @@ const HeroMosaic = () => (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div className="surface p-5">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-xl bg-accent-50 ring-1 ring-accent-100 text-accent-700 grid place-items-center flex-shrink-0">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-          </div>
           <h3 className="text-lg font-semibold text-ink-900">No pose estimation</h3>
         </div>
         <p className="text-sm text-ink-600 leading-relaxed">FERAL learns directly from raw pixels. Works in cluttered, occluded, and multi-animal scenes.</p>
       </div>
       <div className="surface p-5">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-xl bg-accent-50 ring-1 ring-accent-100 text-accent-700 grid place-items-center flex-shrink-0">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
-          </div>
           <h3 className="text-lg font-semibold text-ink-900">Just 3 commands</h3>
         </div>
         <p className="text-sm text-ink-600 leading-relaxed">Re-encode your videos, train, run infererence. Weights &amp; Biases logging out of the box</p>
       </div>
       <div className="surface p-5">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-xl bg-accent-50 ring-1 ring-accent-100 text-accent-700 grid place-items-center flex-shrink-0">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
-          </div>
           <h3 className="text-lg font-semibold text-ink-900">Validated across species</h3>
         </div>
         <p className="text-sm text-ink-600 leading-relaxed">Mice, ants, worms, apes, dolphins, zebras from single-animal to colony-scale. Beats prior SOTA on CalMS21</p>
       </div>
     </div>
+
+    <AgentCard />
 
     {/* About */}
     {/*
@@ -490,8 +518,7 @@ const HeroMosaic = () => (
     
     {/* Acknowledgments */}
     <div className="surface p-8 md:p-10">
-      <span className="pill bg-ink-100 text-ink-600 ring-1 ring-inset ring-ink-200">Authors</span>
-      <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-ink-900">Built at The Rockefeller University</h2>
+      <h2 className="text-3xl font-semibold tracking-[-0.03em] text-ink-900">Built at The Rockefeller University</h2>
       {/* <p className="mt-3 text-ink-600 max-w-2xl">A joint effort between the Data Science Platform and the Vosshall Laboratory.</p>*/}
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -520,17 +547,6 @@ const HeroMosaic = () => (
         </div>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-4 text-xs text-ink-500 border-t border-ink-200/70 pt-5">
-        <p>If FERAL helps your research, please consider citing us and starring the repo.</p>
-        <a
-          href="https://github.com/Skovorp/feral"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-ink-700 hover:text-ink-900 font-medium transition"
-        >
-          <span>⭐</span> Star on GitHub
-        </a>
-      </div>
     </div>
 
     <a
@@ -539,17 +555,16 @@ const HeroMosaic = () => (
       rel="noopener noreferrer"
       className="block group relative overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-white hover:border-amber-300 transition shadow-soft hover:shadow-lifted"
     >
-      <div className="px-6 md:px-8 py-6 md:py-7 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+      <div className="px-6 md:px-10 py-8 md:py-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
         <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
           <span className="w-12 h-12 rounded-xl bg-amber-400/25 ring-1 ring-amber-300 grid place-items-center flex-shrink-0 group-hover:bg-amber-400/45 transition">
             <svg className="w-6 h-6 text-amber-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path d="M10 1.5l2.61 5.29 5.84.85-4.22 4.12.99 5.81L10 14.83l-5.22 2.74.99-5.81L1.55 7.64l5.84-.85L10 1.5z"/></svg>
           </span>
           <div className="min-w-0">
-            <p className="text-base font-semibold text-ink-900">Help us reach more researchers</p>
-            <p className="text-sm text-ink-600 mt-0.5">A GitHub star is the single most impactful way to support an open-source academic project.</p>
+            <p className="text-2xl md:text-3xl font-semibold text-ink-900">Help us reach more researchers!</p>
           </div>
         </div>
-        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-ink-900 group-hover:bg-ink-800 text-white text-sm font-medium transition flex-shrink-0">
+        <span className="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-ink-900 group-hover:bg-ink-800 text-white text-base md:text-lg font-medium transition flex-shrink-0">
           <span>⭐</span> Star FERAL on GitHub
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </span>
@@ -569,9 +584,9 @@ const GettingStartedSection = ({ handleNavClick }) => (
     <div className="mt-5 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
       <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
       <div className="text-sm text-amber-900 leading-relaxed">
-        <strong>FERAL needs a modern NVIDIA GPU; configurations are benchmarked from 8&nbsp;GB VRAM</strong>. Ampere architecture or newer (compute capability 8.0+).
+        <strong>FERAL needs a modern NVIDIA GPU</strong>. Ampere architecture or newer (compute capability 8.0+).
         V100, T4, and the free Google Colab T4 will <strong>not</strong> work. Supported: A100, H100, L40,
-        RTX&nbsp;3000/4000/5000 series, and newer. Use <code>--mode lite --gradient-checkpointing</code> on smaller GPUs; see <a href="/docs/hardware.md" className="link">hardware recipes and the paper’s Table 3</a>.
+        RTX&nbsp;3000/4000/5000 series, and newer.
       </div>
     </div>
 
@@ -1395,7 +1410,7 @@ if __name__ == "__main__":
       <div className="mt-3 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
         <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
         <div className="text-sm text-amber-900 leading-relaxed">
-          <strong>Hardware requirement.</strong> FERAL uses large video models. For smooth training we recommend GPUs with at least <strong>24&nbsp;GB VRAM</strong> (e.g. A100 / RTX 4090 / RTX 6000). For smaller GPUs, start with <code>--mode lite --gradient-checkpointing</code> and reduce <code>--batch-size</code> as needed. See <a href="/docs/hardware.md" className="link">measured hardware recipes</a>.
+          <strong>Hardware requirement.</strong> FERAL uses large video models. For smooth training we recommend GPUs with at least <strong>24&nbsp;GB VRAM</strong> (e.g. A100 / RTX 4090 / RTX 6000). For smaller GPUs, start with <code>--mode lite --gradient-checkpointing</code>. See <a href="https://www.biorxiv.org/content/10.1101/2025.11.16.688666v2" target="_blank" rel="noopener noreferrer" className="link">hardware benchmarks in our paper</a>.
         </div>
       </div>
 
@@ -1860,11 +1875,11 @@ const ConfigDocsSection = ({ handleNavClick }) => (
     <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3"><code>training:</code></h3>
     <ParamTable>
       <ParamRow name="epochs" def="10" level="safe">Passes over the training set. 10 is a solid default; raise for small datasets that underfit and watch val metrics for overfitting.</ParamRow>
-      <ParamRow name="train_bs" def="4" level="safe">Training batch size. The biggest lever on VRAM — drop to 2 or 1 if you OOM, raise if you have headroom. Retune <code>lr</code> if you change it a lot.</ParamRow>
+      <ParamRow name="train_bs" def="4" level="high">Training batch size. Keep the preset value; the learning rate is tuned to it.</ParamRow>
       <ParamRow name="val_bs" def="8" level="safe">Validation/inference batch size. No effect on the model; raise for speed until you OOM.</ParamRow>
       <ParamRow name="num_workers" def="-1" level="safe">DataLoader worker processes. <code>-1</code> = auto (min(16, CPUs)); <code>0</code> = load in the main process (useful when debugging).</ParamRow>
-      <ParamRow name="part_warmup" def="0.2" level="safe">Fraction of total steps spent linearly warming the LR from 0. 0.2 = first 20%. Raise it for a very high LR or an unstable start.</ParamRow>
-      <ParamRow name="lr" def="4.0e-5" level="high">Peak learning rate for the AdamW optimizer. The single most sensitive parameter — too high diverges or collapses to one class, too low underfits. 4e-5 is tuned for the default fine-tune; move in 2× steps and scale with batch size.</ParamRow>
+      <ParamRow name="part_warmup" def="0.2" level="high">Fraction of total steps spent linearly warming the LR from 0. 0.2 = first 20%. Raise it for a very high LR or an unstable start.</ParamRow>
+      <ParamRow name="lr" def="4.0e-5" level="high">Peak learning rate for the AdamW optimizer. The single most sensitive parameter — too high diverges or collapses to one class, too low underfits. 4e-5 is tuned for the default fine-tune.</ParamRow>
       <ParamRow name="weight_decay" def="0.1" level="safe">AdamW weight decay (regularization). Raise toward 0.2 if overfitting, lower toward 0.05 if underfitting.</ParamRow>
       <ParamRow name="label_smoothing" def="0.1" level="safe">Softens the hard 0/1 training labels to curb overconfidence. Helps most datasets; set 0 for rare-positive data where it hurts (the <code>rare</code> preset does).</ParamRow>
       <ParamRow name="compile" def="true" level="safe"><code>torch.compile</code> for a large speedup. Safe to leave on; turn off if you hit a compiler/platform bug (see the README&apos;s Windows/torch notes) — training still works, just slower.</ParamRow>
@@ -2844,29 +2859,11 @@ feral.run_inference_folder(
         };
 
         const ContactSection = () => {
-            const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
-
-            const handleInputChange = (e) => {
-                const { name, value } = e.target;
-                setFormData(prev => ({ ...prev, [name]: value }));
-            };
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                const recipients = 'jacopo.razza@gmail.com,peter.skovorodnikov@gmail.com';
-                const subject = encodeURIComponent(formData.subject || 'FERAL Inquiry');
-                const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
-                window.location.href = `mailto:${recipients}?subject=${subject}&body=${body}`;
-            };
-
             const sendDirectEmail = (email, name) => {
                 const subject = encodeURIComponent('FERAL Inquiry');
                 const body = encodeURIComponent(`Hello ${name},\n\nI have a question about FERAL:\n\n`);
                 window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
             };
-
-            const inputCls = "w-full px-3.5 py-2.5 bg-white border border-ink-200 rounded-xl text-sm text-ink-900 placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition";
-            const labelCls = "block text-xs font-semibold text-ink-700 uppercase tracking-wider mb-1.5";
 
             return (
                 <section id="contact" className="space-y-6">
@@ -2881,44 +2878,35 @@ feral.run_inference_folder(
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-                        {/* Form */}
-                        <div className="lg:col-span-3 surface p-7 md:p-8">
-                            <h3 className="text-lg font-semibold text-ink-900 mb-5 flex items-center gap-2">
-                                <svg className="w-4 h-4 text-accent-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
-                                Send a message
-                            </h3>
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="lg:col-span-3 flex flex-col gap-5">
+                            <div className="surface p-6 lg:flex-1">
+                                <h3 className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-3">Institution</h3>
+                                <div className="flex items-start gap-3">
+                                    <svg className="w-5 h-5 mt-0.5 text-ink-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3l9 4.5M3 7.5l9-4.5m0 0v18m-9-13.5v13.5h18V7.5M6 21v-6m4 6v-6m4 6v-6m4 6v-6"/></svg>
                                     <div>
-                                        <label htmlFor="name" className={labelCls}>Name</label>
-                                        <input type="text" id="name" name="name" required value={formData.name} onChange={handleInputChange} className={inputCls} placeholder="Your full name" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="email" className={labelCls}>Email</label>
-                                        <input type="email" id="email" name="email" required value={formData.email} onChange={handleInputChange} className={inputCls} placeholder="you@institution.edu" />
+                                        <p className="font-semibold text-ink-900 text-sm">The Rockefeller University</p>
+                                        <p className="text-xs text-ink-600 mt-1 leading-relaxed">
+                                            Data Science Platform · Laboratory of Neurogenetics and Behavior<br/>
+                                            1230 York Avenue, New York, NY 10065
+                                        </p>
                                     </div>
                                 </div>
-                                <div>
-                                    <label htmlFor="subject" className={labelCls}>Subject</label>
-                                    <input type="text" id="subject" name="subject" value={formData.subject} onChange={handleInputChange} className={inputCls} placeholder="Brief description of your inquiry" />
+                            </div>
+
+                            <a href="https://github.com/Skovorp/feral/discussions" target="_blank" rel="noopener noreferrer" className="surface p-6 block lg:flex lg:flex-col lg:justify-center lg:flex-1 hover:border-accent-300 hover:shadow-lifted transition group">
+                                <div className="flex items-start gap-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.6" stroke="currentColor" className="w-5 h-5 text-accent-600 flex-shrink-0 mt-0.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zM12.375 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm3.75 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/></svg>
+                                    <div>
+                                        <p className="font-semibold text-ink-900 text-sm group-hover:text-accent-700 transition">GitHub Discussions</p>
+                                        <p className="text-xs text-ink-600 mt-0.5">Best place for questions, feature requests, and bug reports.</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label htmlFor="message" className={labelCls}>Message</label>
-                                    <textarea id="message" name="message" required rows="5" value={formData.message} onChange={handleInputChange} className={inputCls + " resize-y"} placeholder="Tell us about your project, data, or what you'd like FERAL to do..."></textarea>
-                                </div>
-                                <div className="flex items-center justify-between gap-4 pt-1">
-                                    <p className="text-xs text-ink-500">Opens your default email client.</p>
-                                    <button type="submit" className="inline-flex items-center gap-2 bg-ink-900 hover:bg-ink-800 text-white font-medium py-2.5 px-5 rounded-xl shadow-soft hover:shadow-lifted transition">
-                                        Send message
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                                    </button>
-                                </div>
-                            </form>
+                            </a>
                         </div>
 
-                        {/* Right column: contacts + institution */}
-                        <div className="lg:col-span-2 space-y-5">
-                            <div className="surface p-6">
+                        {/* Maintainers */}
+                        <div className="lg:col-span-2">
+                            <div className="surface p-6 h-full">
                                 <h3 className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-4">Maintainers</h3>
                                 <div className="space-y-3">
                                     <button onClick={() => sendDirectEmail('peter.skovorodnikov@gmail.com', 'Peter')} className="w-full text-left rounded-xl border border-ink-200 hover:border-accent-300 hover:bg-accent-50/40 transition p-4 flex items-start gap-3 group">
@@ -2940,29 +2928,6 @@ feral.run_inference_folder(
                                 </div>
                             </div>
 
-                            <div className="surface p-6">
-                                <h3 className="text-xs font-semibold text-ink-500 uppercase tracking-wider mb-3">Institution</h3>
-                                <div className="flex items-start gap-3">
-                                    <svg className="w-5 h-5 mt-0.5 text-ink-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3l9 4.5M3 7.5l9-4.5m0 0v18m-9-13.5v13.5h18V7.5M6 21v-6m4 6v-6m4 6v-6m4 6v-6"/></svg>
-                                    <div>
-                                        <p className="font-semibold text-ink-900 text-sm">The Rockefeller University</p>
-                                        <p className="text-xs text-ink-600 mt-1 leading-relaxed">
-                                            Data Science Platform · Laboratory of Neurogenetics and Behavior<br/>
-                                            1230 York Avenue, New York, NY 10065
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <a href="https://github.com/Skovorp/feral/discussions" target="_blank" rel="noopener noreferrer" className="surface p-6 block hover:border-accent-300 hover:shadow-lifted transition group">
-                                <div className="flex items-start gap-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.6" stroke="currentColor" className="w-5 h-5 text-accent-600 flex-shrink-0 mt-0.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zM12.375 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm3.75 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/></svg>
-                                    <div>
-                                        <p className="font-semibold text-ink-900 text-sm group-hover:text-accent-700 transition">GitHub Discussions</p>
-                                        <p className="text-xs text-ink-600 mt-0.5">Best place for questions, feature requests, and bug reports.</p>
-                                    </div>
-                                </div>
-                            </a>
                         </div>
                     </div>
                 </section>
@@ -3005,7 +2970,7 @@ feral.run_inference_folder(
                 },
                 {
                     q: "I'm running out of GPU memory, what can I tune?",
-                    a: <span>Start with <code>--mode lite --gradient-checkpointing</code>. Reduce <code>--batch-size</code> if needed. See <a href="/docs/hardware.md" className="link">hardware recipes</a> for measured throughput and memory tradeoffs.</span>,
+                    a: <span>Start with <code>--mode lite --gradient-checkpointing</code>. See <a href="https://www.biorxiv.org/content/10.1101/2025.11.16.688666v2" target="_blank" rel="noopener noreferrer" className="link">our paper</a> for measured throughput and memory tradeoffs.</span>,
                 },
                 {
                     q: "I'm on Windows, anything special?",

@@ -32,11 +32,3 @@ These values belong to that comparison; do not substitute a different headline r
 [Community runs](https://wandb.ai/sposiboh/feral_public) can suggest experiments. A high score alone is not a reusable recipe. Before borrowing a configuration, record its run URL, code revision if available, backbone/checkpoint, class mapping, dataset and split identity, resolution, epochs, batch sizes, overlap, augmentation, EMA, metric definition and compute. Exclude failed/incomplete runs and comparisons with incompatible splits or labels. Treat missing provenance as unknown, not a match.
 
 Compare a small number of compatible recipes on the existing validation split and within the user's compute budget. Preserve the test split for final evaluation. Record the chosen configuration and observed runtime with the outputs. Published Tables 3 and 8 are the starting evidence; community experiments are candidate recipes until reproduced on your data.
-
-The unreleased source checkout includes a read-only exporter (run from the code repository):
-
-```bash
-python scripts/export_recipe_candidates.py --project sposiboh/feral_public --limit 20 --output candidates.json
-```
-
-It uses existing W&B authentication/environment settings and fetches full run details. Output includes allowlisted recipe parameters, validation summary metrics (never test metrics), runtime, source links, and missing provenance. `labels_sha256` and `splits_sha256` are required to establish comparable data; `insufficient_evidence` or `needs_review` is not a recommendation. The exporter does not rank a best recipe or run training. This script is not part of PyPI 1.0.0.
