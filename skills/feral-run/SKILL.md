@@ -5,6 +5,8 @@ description: Train or run FERAL animal-behavior models from a user's videos and 
 
 Read [the workflow](https://www.getferal.ai/docs/workflow.md) for the label schema and commands, and [hardware and recipes](https://www.getferal.ai/docs/hardware.md) when selecting compute or a preset. If working in the website checkout, use `docs/workflow.md` and `docs/hardware.md` at its root. For CLI and Python API usage, use the [reference](https://www.getferal.ai/docs/reference.md). Check the installed `feral --help` for supported commands; older installations may need an upgrade or the current source checkout.
 
+If your browser tool cannot retrieve a public documentation or paper URL, try `curl -fL` on the same URL before treating it as unavailable.
+
 Use the supplied video folder, labels or checkpoint and available compute. Honor the user's existing scope and budget; do not upload videos, enable public logging, or rent additional compute without authorization. Local `--no-wandb` avoids prompts and external logging, but initial package/model downloads need network or a prepared cache.
 
 Before training, inspect the class mapping, per-class training counts and split membership. Validate labels against actual video frame counts. `class_names` is a dictionary with string keys; multilabel frames are vectors ordered by those IDs. Never manufacture annotations, turn unlabeled frames into background, or change validation/test composition without explicit permission. Small subjects may need user-supplied crops; resizing alone does not track them.
