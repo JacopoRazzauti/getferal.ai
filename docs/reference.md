@@ -36,7 +36,7 @@ feral.validate_labels_json(labels, cfg["data"]["prefix"])
 feral.run_training(cfg)
 ```
 
-`run_training` returns `None` and writes `answers/` and `checkpoints/` relative to the working directory. Use a separate working directory per released-version run. The default recipe trains 10 epochs, with training batch size 4, evaluation batch size 8, 64-frame windows and 256-pixel square input. Validation selects the checkpoint; without validation, the last epoch is saved. `do_aa` enables TrivialAugmentWide, not anti-aliasing.
+`run_training` returns `None`. By default, it writes `answers/` and `checkpoints/` relative to the working directory. Set `cfg["output_dir"]` to a fresh directory to keep the run’s outputs and `run.json` together. The default recipe trains 10 epochs, with training batch size 4, evaluation batch size 8, 64-frame windows and 256-pixel square input. Validation selects the checkpoint; without validation, the last epoch is saved. `do_aa` enables TrivialAugmentWide, not anti-aliasing.
 
 ```python
 feral.run_inference_folder(
