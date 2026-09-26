@@ -14,7 +14,7 @@ Re-encoding requires an input folder containing only videos and an empty output 
 
 Omit `--mode` for default training, or choose `lite`, `max`, or `rare`. `--gradient-checkpointing` reduces training memory use. `--no-wandb` disables logging noninteractively; `--public-wandb` enables public community logging. Without either, training asks which logging option to use. Do not combine the two flags. `--checkpoint PATH` supplies starting weights, which must match the chosen backbone and classifier.
 
-Inference options include `--batch_size 8`, `--num_workers 4`, and `--mode lite`/`--mode max` for overlap/smoothing settings. Inference modes do not change model size. Leave resolution as trained unless deliberately evaluating a change. Run `feral COMMAND --help` for the installed option list.
+Inference options include `--batch_size 8`, `--num_workers 4`, and `--mode lite`/`--mode max` for overlap/smoothing settings. Inference modes do not change model size. Leave resolution as trained unless deliberately evaluating a change. `--save_embeddings PATH` (v1.0.2+) also writes one `{filename}.npz` per video to that folder, with `embeddings`, a `(frames, hidden_dim)` float32 array of attention-pooled per-frame embeddings aligned with the prediction JSON, and `metadata`, a JSON string recording the checkpoint path and SHA-256, run name, timestamp, FERAL and PyTorch versions, command line, chunk and resize settings, backbone and class names. Load with `d = np.load(path); d["embeddings"]; json.loads(str(d["metadata"]))`. Run `feral COMMAND --help` for the installed option list.
 
 ## Python
 
@@ -43,6 +43,7 @@ feral.run_inference_folder(
     checkpoint_path="/path/to/model.pt",
     video_folder="/path/to/new_videos",
     output="/path/to/predictions.json",
+    save_embeddings="/path/to/embeddings",  # optional, v1.0.2+
 )
 ```
 

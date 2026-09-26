@@ -1674,9 +1674,27 @@ if __name__ == "__main__":
             <tr className="border-b"><td className="px-4 py-2 font-mono">--batch_size, -b INT</td><td className="px-4 py-2">8</td><td className="px-4 py-2">DataLoader batch size for inference.</td></tr>
             <tr className="border-b"><td className="px-4 py-2 font-mono">--num_workers, -w INT</td><td className="px-4 py-2">4</td><td className="px-4 py-2">DataLoader workers.</td></tr>
             <tr className="border-b"><td className="px-4 py-2 font-mono">--compile</td><td className="px-4 py-2">off</td><td className="px-4 py-2">Wrap the model in <code>torch.compile</code> for faster inference.</td></tr>
+            <tr className="border-b"><td className="px-4 py-2 font-mono">--save_embeddings PATH</td><td className="px-4 py-2">off</td><td className="px-4 py-2">Also write per-frame embeddings, one <code>.npz</code> per video, to this folder (v1.0.2+).</td></tr>
           </tbody>
         </table>
       </div>
+      <h4 className="text-lg font-semibold text-gray-800 mt-4 mb-2">Per-frame embeddings</h4>
+      <p className="text-gray-700 leading-relaxed mb-2 text-sm">
+        With <code>--save_embeddings PATH</code>, inference also saves the model's attention-pooled per-frame
+        embeddings (taken after the clip projector, before the classification head) for clustering, probing, or
+        training your own downstream models. Each video gets one <code>&#123;filename&#125;.npz</code> with two keys:
+        <code>embeddings</code>, a <code>(frames, hidden_dim)</code> float32 array aligned frame-for-frame with the
+        prediction JSON (overlapping chunks are averaged and gaps filled exactly like the predictions), and
+        <code>metadata</code>, a JSON string recording the checkpoint path and SHA-256, run name, timestamp, FERAL and
+        PyTorch versions, command line, chunk and resize settings, backbone, and class names, so two embedding runs
+        can always be told apart.
+      </p>
+      <pre className="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 mb-3"><code>{`feral infer /path/to/checkpoint.pth /path/to/videos --save_embeddings /path/to/embeddings
+
+import json, numpy as np
+d = np.load("/path/to/embeddings/mouse.mp4.npz")
+emb = d["embeddings"]                  # (frames, hidden_dim)
+meta = json.loads(str(d["metadata"]))  # checkpoint, settings, timestamp`}</code></pre>
 
       <p className="text-gray-700 leading-relaxed mb-4 text-sm">
         Alternatively, you can also run inference through <code>feral train</code> by removing the train partition
