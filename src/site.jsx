@@ -609,7 +609,7 @@ const GettingStartedSection = ({ handleNavClick }) => (
       </div>
       <div className="terminal__body">
         <div><span className="prompt">$</span> pip install feral</div>
-        <div className="comment mt-2"># Provides: feral reencode | train | train-config | infer</div>
+        <div className="comment mt-2"># Provides: feral reencode | validate | train | train-config | infer</div>
       </div>
     </div>
 
@@ -629,7 +629,7 @@ const GettingStartedSection = ({ handleNavClick }) => (
       </div>
       <div className="rounded-xl border border-ink-200 bg-white p-4 flex items-center gap-3">
         <span className="w-8 h-8 rounded-lg bg-ink-50 text-ink-700 grid place-items-center text-xs font-mono font-semibold flex-shrink-0">PT</span>
-        <div className="text-sm text-ink-700"><strong className="text-ink-900">PyTorch 2.5+</strong> with compatible CUDA</div>
+        <div className="text-sm text-ink-700"><strong className="text-ink-900">PyTorch 2.6+</strong> with compatible CUDA</div>
       </div>
       <div className="rounded-xl border border-ink-200 bg-white p-4 flex items-center gap-3">
         <span className="w-8 h-8 rounded-lg bg-accent-50 text-accent-700 grid place-items-center text-xs font-mono font-semibold flex-shrink-0">GPU</span>
@@ -710,7 +710,7 @@ const GettingStartedSection = ({ handleNavClick }) => (
           <div className="terminal__body"><div><span className="prompt">$</span> pip install feral</div></div>
         </div>*/}
         <ul className="mt-4 space-y-1.5 text-sm text-ink-700">
-          <li className="flex gap-2"><span className="text-accent-600">●</span> Bring your own CUDA + PyTorch (2.5+)</li>
+          <li className="flex gap-2"><span className="text-accent-600">●</span> Bring your own CUDA + PyTorch (2.6+)</li>
           <li className="flex gap-2"><span className="text-accent-600">●</span> Data never leaves your machine</li>
           <li className="flex gap-2"><span className="text-accent-600">●</span> Free </li>
           <li className="flex gap-2"><span className="text-amber-600">▲</span> Needs Ampere+ GPU; 8&nbsp;GB+ with memory-saving settings</li>
@@ -1422,7 +1422,7 @@ if __name__ == "__main__":
       </p>
       <ul className="list-disc list-inside text-gray-700 mb-4">
         <li>Python 3.10</li>
-        <li>PyTorch 2.4.0</li>
+        <li>PyTorch 2.6</li>
         <li>CUDA 12.4</li>
       </ul>
       
@@ -1578,6 +1578,16 @@ if __name__ == "__main__":
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
       </button>
 
+      <p className="text-gray-700 leading-relaxed mb-2">
+        Once FERAL is installed, you can also check the JSON against the videos themselves from the command line:
+      </p>
+      <pre className="bg-ink-950 text-accent-300 font-mono text-[13px] rounded-xl p-4 overflow-x-auto border border-ink-800/50 mb-3"><code>feral validate /path/to/reencoded/videos /path/to/labels.json</code></pre>
+      <p className="text-gray-700 leading-relaxed mb-6 text-sm">
+        This checks the label JSON and that every video&apos;s frame count matches its labels, then prints a per-split
+        summary of videos, labeled frames, and frames per class. Add <code>--json</code> for output a script can read;
+        the exit code is 0 when the dataset is valid and 1 otherwise.
+      </p>
+
       {/* Step 2: Start training */}
       <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
         2. Install FERAL
@@ -1591,7 +1601,14 @@ if __name__ == "__main__":
 
       <p className="text-gray-700 leading-relaxed mt-3">
         That single command installs the <code className="bg-gray-100 px-1 py-0.5 rounded">feral</code> CLI
-        with subcommands <code>reencode</code>, <code>train</code>, <code>train-config</code>, and <code>infer</code>.
+        with subcommands <code>reencode</code>, <code>validate</code>, <code>train</code>, <code>train-config</code>, and <code>infer</code>.
+      </p>
+
+      <p className="text-gray-700 leading-relaxed mt-3">
+        <code>pip install feral</code> accepts a range of versions for each dependency, so it can share an
+        environment with other tools. To get the exact versions we test with, install
+        <a href="https://github.com/Skovorp/feral/blob/main/requirements.txt" target="_blank" rel="noopener noreferrer" className="link mx-1"><code>requirements.txt</code></a>
+        first with <code>pip install -r requirements.txt</code>, then <code>pip install feral</code>.
       </p>
 
       <h3 className="text-2xl font-semibold text-gray-800 mt-10 mb-3">
@@ -1616,6 +1633,11 @@ if __name__ == "__main__":
           <a href="https://wandb.ai/authorize" target="_blank" rel="noopener noreferrer" className="link ml-1">W&amp;B API key</a> and project URL).</li>
         <li><code className="bg-gray-100 px-1 py-0.5 rounded">skip</code>, no W&amp;B; metrics print to stdout. You still see per-epoch numbers.</li>
       </ul>
+      <p className="text-gray-700 leading-relaxed mb-4 text-sm">
+        Since FERAL 1.0.3 the <code>open</code> option needs no API key on your machine: runs are sent through our relay
+        at <code>wandb.getferal.ai</code>, which forwards them to the community project. If your network cannot reach
+        the relay, training continues and metrics print to stdout.
+      </p>
 
       <h4 className="text-lg font-semibold text-gray-800 mt-4 mb-2">Useful flags for <code>feral train</code></h4>
       <div className="overflow-x-auto mb-4">
@@ -1970,7 +1992,7 @@ const ApiDocsSection = ({ handleNavClick }) => (
           <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--mode</td><td className="px-4 py-2.5">Apply a preset: <code>lite</code>, <code>max</code>, or <code>rare</code>. See the config docs.</td></tr>
           <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--resolution</td><td className="px-4 py-2.5">Square input resolution, e.g. 384. Overrides the backbone default.</td></tr>
           <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--no-wandb</td><td className="px-4 py-2.5">Skip Weights &amp; Biases; print metrics to stdout only (non-interactive).</td></tr>
-          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--public-wandb</td><td className="px-4 py-2.5">Log to the shared community W&amp;B account, no prompt (public).</td></tr>
+          <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--public-wandb</td><td className="px-4 py-2.5">Log to the shared community W&amp;B account, no prompt (public). Goes through <code>wandb.getferal.ai</code>; falls back to stdout if it cannot be reached.</td></tr>
           <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--checkpoint, -c</td><td className="px-4 py-2.5">Warm-start / fine-tune from a saved checkpoint.</td></tr>
           <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--part_subsample</td><td className="px-4 py-2.5">Keep a fraction (0–1) of training chunks. Good for quick tests.</td></tr>
           <tr className="border-b border-gray-100"><td className="px-4 py-2.5 font-mono text-[13px]">--subsample_keep_rare_threshold</td><td className="px-4 py-2.5">When subsampling, keep all chunks with classes below this frequency. Requires <code>--part_subsample</code>.</td></tr>
@@ -2956,7 +2978,7 @@ feral.run_inference_folder(
             const items = [
                 {
                     q: "How do I install FERAL?",
-                    a: <span>One command: <code className="bg-gray-100 px-1 py-0.5 rounded">pip install feral</code>. This installs the <code>feral</code> CLI with subcommands <code>reencode</code>, <code>train</code>, <code>train-config</code>, and <code>infer</code>. You need Python 3.10+ and PyTorch 2.5+.</span>,
+                    a: <span>One command: <code className="bg-gray-100 px-1 py-0.5 rounded">pip install feral</code>. This installs the <code>feral</code> CLI with subcommands <code>reencode</code>, <code>validate</code>, <code>train</code>, <code>train-config</code>, and <code>infer</code>. You need Python 3.10+ and PyTorch 2.6+.</span>,
                 },
                 {
                     q: "How do I cite FERAL?",
@@ -2984,7 +3006,7 @@ feral.run_inference_folder(
                 },
                 {
                     q: "How do W&B logging options work?",
-                    a: <span><code>feral train</code> prompts you to choose: <code>open</code> (shared community W&amp;B project, no setup), <code>personal</code> (your own W&amp;B project, paste API key + project URL), or <code>skip</code> (metrics print to stdout only). For non-interactive runs, pass <code>--no-wandb</code> to keep metrics local or <code>--public-wandb</code> to publish to the community project.</span>,
+                    a: <span><code>feral train</code> prompts you to choose: <code>open</code> (shared community W&amp;B project, no setup), <code>personal</code> (your own W&amp;B project, paste API key + project URL), or <code>skip</code> (metrics print to stdout only). For non-interactive runs, pass <code>--no-wandb</code> to keep metrics local or <code>--public-wandb</code> to publish to the community project. Since FERAL 1.0.3 the community option carries no API key: runs go through our relay at <code>wandb.getferal.ai</code>, and if a firewall blocks it, training continues with metrics on stdout.</span>,
                 },
                 {
                     q: "I'm running out of GPU memory, what can I tune?",

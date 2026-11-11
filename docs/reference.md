@@ -1,18 +1,19 @@
 # Released CLI and Python API
 
-Install with `python -m pip install feral` in a Python 3.10+ environment with a compatible CUDA-enabled PyTorch installation. The supported execution target is an NVIDIA Ampere-or-newer GPU; see [hardware](hardware.md). Native Windows is not a tested execution environment; use Linux/WSL2. The repository README lists the tested environment.
+Install with `python -m pip install feral` in a Python 3.10+ environment with a compatible CUDA-enabled PyTorch installation (2.6 or newer since v1.0.3). The package accepts a range of dependency versions; for the exact tested versions, install the repository's `requirements.txt` first. The supported execution target is an NVIDIA Ampere-or-newer GPU; see [hardware](hardware.md). Native Windows is not a tested execution environment; use Linux/WSL2. The repository README lists the tested environment.
 
 ## Commands
 
 ```bash
 feral reencode /path/to/originals /path/to/encoded
+feral validate /path/to/videos /path/to/labels.json --json
 feral train /path/to/videos /path/to/labels.json --mode lite --no-wandb
 feral infer /path/to/model.pt /path/to/new_videos --output /path/to/predictions.json
 ```
 
 Re-encoding requires an input folder containing only videos and an empty output folder. Training needs frame labels; [the label schema](workflow.md#labels) describes the single JSON file. Checkpoints carry model configuration and class names, so inference needs no labels JSON.
 
-Omit `--mode` for default training, or choose `lite`, `max`, or `rare`. `--gradient-checkpointing` reduces training memory use. `--no-wandb` disables logging noninteractively; `--public-wandb` enables public community logging. Without either, training asks which logging option to use. Do not combine the two flags. `--checkpoint PATH` supplies starting weights, which must match the chosen backbone and classifier.
+Omit `--mode` for default training, or choose `lite`, `max`, or `rare`. `--gradient-checkpointing` reduces training memory use. `--no-wandb` disables logging noninteractively; `--public-wandb` enables public community logging (since v1.0.3 through the relay at `wandb.getferal.ai`, with no API key in the package; if the relay is unreachable, training continues with metrics on stdout). Without either, training asks which logging option to use. Do not combine the two flags. `--checkpoint PATH` supplies starting weights, which must match the chosen backbone and classifier.
 
 Inference options include `--batch_size 8`, `--num_workers 4`, and `--mode lite`/`--mode max` for overlap/smoothing settings. Inference modes do not change model size. Leave resolution as trained unless deliberately evaluating a change. `--save_embeddings PATH` (v1.0.2+) also writes one `{filename}.npz` per video to that folder, with `embeddings`, a `(frames, hidden_dim)` float32 array of attention-pooled per-frame embeddings aligned with the prediction JSON, and `metadata`, a JSON string recording the checkpoint path and SHA-256, run name, timestamp, FERAL and PyTorch versions, command line, chunk and resize settings, backbone and class names. Load with `d = np.load(path); d["embeddings"]; json.loads(str(d["metadata"]))`. Run `feral COMMAND --help` for the installed option list.
 
